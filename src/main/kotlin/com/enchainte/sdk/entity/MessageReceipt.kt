@@ -1,4 +1,4 @@
-package enchainte.sdk.java.entity
+package com.enchainte.sdk.entity
 
 class MessageReceipt (
         val root: String,
