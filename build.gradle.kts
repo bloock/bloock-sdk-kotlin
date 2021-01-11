@@ -12,26 +12,49 @@ plugins {
     `java-library`
 }
 
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
 repositories {
     // Use jcenter for resolving dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
+    mavenCentral()
 }
 
 dependencies {
-    // Align versions of all Kotlin components
+    // Kotlin
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-
-    // Use the Kotlin JDK 8 standard library.
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    implementation("com.github.kittinunf.fuel:fuel:2.3.0")
-    
-    implementation("org.json:json:20200518")
+    // Hashing
+    implementation("com.rfksystems:blake2b:1.0.0")
 
-    // Use the Kotlin test library.
+    // Utils
+    implementation("commons-codec:commons-codec:1.14")
+    implementation("io.reactivex.rxjava3:rxjava:3.0.9")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx3:1.4.2")
+
+    // Networking
+    implementation("io.ktor:ktor-client-core:1.5.0")
+    implementation("io.ktor:ktor-client-cio:1.5.0")
+    implementation("io.ktor:ktor-client-gson:1.5.0")
+    implementation("io.ktor:ktor-client-logging:1.5.0")
+    implementation("io.ktor:ktor-client-auth:1.5.0")
+
+    // Blockchain
+    implementation("org.web3j:core:4.7.0")
+
+
+    // Testing
     testImplementation("org.jetbrains.kotlin:kotlin-test")
-
-    // Use the Kotlin JUnit integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+    testImplementation("io.ktor:ktor-client-mock:1.5.0")
+    testImplementation("org.web3j:web3j-unit:4.7.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.7.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.7.0")
 }

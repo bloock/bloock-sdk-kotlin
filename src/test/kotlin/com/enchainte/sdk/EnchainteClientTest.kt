@@ -1,21 +1,16 @@
 package com.enchainte.sdk
 
-import com.enchainte.sdk.`interface`.MessageCallback
-import com.enchainte.sdk.entity.Message
-import kotlin.test.Test
-import kotlin.test.*
+import com.enchainte.sdk.common.BaseTest
+import com.enchainte.sdk.common.ClientTest
+import com.enchainte.sdk.message.domain.Message
+import org.junit.jupiter.api.Test
+import kotlin.test.assertNotNull
 
-class EnchainteClientTest {
-    @Test fun testSendMessageMethod() {
-        val client = EnchainteClient("")
-        assertNotNull(client.sendMessage(Message.fromHash(""), object: MessageCallback {
-            override fun onMessageSuccess() {
-                TODO("Not yet implemented")
-            }
+@ClientTest
+class EnchainteClientTest: BaseTest() {
 
-            override fun onMessageError(message: String) {
-                TODO("Not yet implemented")
-            }
-        }), "sendMessage should return 'true'")
+    @Test
+    fun testSendMessageMethod(client: EnchainteClient) {
+        assertNotNull(client.sendMessage(Message.fromHash("")).subscribe(), "sendMessage should return 'true'")
     }
 }
