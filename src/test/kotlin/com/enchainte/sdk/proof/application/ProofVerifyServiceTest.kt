@@ -3,7 +3,7 @@ package com.enchainte.sdk.proof.application
 import com.enchainte.sdk.common.BaseTest
 import com.enchainte.sdk.shared.Factory
 import com.enchainte.sdk.proof.domain.Proof
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import kotlin.test.assertFalse

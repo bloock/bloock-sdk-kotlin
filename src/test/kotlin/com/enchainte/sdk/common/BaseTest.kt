@@ -12,7 +12,6 @@ import kotlin.test.BeforeTest
 open class BaseTest {
     @BeforeTest
     fun setup() {
-        Factory.load("test_api_key")
         loadMockHttpEngine("test_api_key")
     }
 

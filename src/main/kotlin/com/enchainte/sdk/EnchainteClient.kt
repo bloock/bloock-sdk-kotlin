@@ -5,6 +5,7 @@ import com.enchainte.sdk.message.domain.Message
 import com.enchainte.sdk.message.domain.MessageReceipt
 import com.enchainte.sdk.proof.domain.Proof
 import com.enchainte.sdk.shared.Factory
+import com.enchainte.sdk.shared.infrastructure.http.setApiKey
 import io.ktor.client.*
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Single
@@ -13,13 +14,11 @@ import kotlinx.coroutines.rx3.rxMaybe
 import kotlinx.coroutines.rx3.rxSingle
 
 class EnchainteClient(apiKey: String) {
-    private val config: ConfigService
-    private val httpClient: HttpClient
+    private val config: ConfigService = Factory.getConfig()
+    private val httpClient: HttpClient = Factory.getHttpClient()
 
     init {
-        Factory.load(apiKey)
-        config = Factory.getConfig()
-        httpClient = Factory.getHttpClient()
+        httpClient.setApiKey(apiKey)
 
         runBlocking {
             config.loadConfiguration()

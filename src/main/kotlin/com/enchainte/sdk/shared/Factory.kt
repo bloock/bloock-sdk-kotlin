@@ -21,49 +21,32 @@ import io.ktor.client.features.logging.*
 internal object Factory {
 
     // Infrastructure
-    internal lateinit var httpClient: HttpClient
-    private var hashAlgorithm: HashAlgorithm = Blake2b()
-    private lateinit var blockchainClient: BlockchainClient
-
-    // Config
-    private lateinit var config: ConfigService
-
-    // Message
-    private lateinit var messageFindService: MessageFindService
-    private lateinit var messageWaitService: MessageWaitService
-    private lateinit var messageWriteService: MessageWriteService
-
-    // Proof
-    private lateinit var proofRetrieveService: ProofRetrieveService
-    private lateinit var verifyService: ProofVerifyService
-
-    fun load(key: String) {
-        httpClient = HttpClient(CIO) {
-            install(JsonFeature) {
-                serializer = GsonSerializer()
-            }
-            install(Auth) {
-                bearer {
-                    apiKey = key
-                }
-            }
-            /*install(Logging) {
-                logger = Logger.DEFAULT
-                level = LogLevel.ALL
+    internal var httpClient: HttpClient = HttpClient(CIO) {
+        install(JsonFeature) {
+            serializer = GsonSerializer()
+        }
+        install(Auth) {
+            /*bearer {
+                apiKey = key
             }*/
         }
-        config = ConfigService(httpClient)
-        hashAlgorithm = Blake2b()
-        blockchainClient = Web3(config)
-
-
-        messageFindService = MessageFindService(httpClient, config)
-        messageWaitService = MessageWaitService(config)
-        messageWriteService = MessageWriteService(httpClient, config)
-
-        proofRetrieveService = ProofRetrieveService(httpClient, config)
-        verifyService = ProofVerifyService()
+        /*install(Logging) {
+            logger = Logger.DEFAULT
+            level = LogLevel.ALL
+        }*/
     }
+    private var config: ConfigService = ConfigService(httpClient)
+    private var hashAlgorithm: HashAlgorithm = Blake2b()
+    private var blockchainClient: BlockchainClient = Web3(config)
+
+    // Message
+    private var messageFindService: MessageFindService = MessageFindService(httpClient, config)
+    private var messageWaitService: MessageWaitService = MessageWaitService(config)
+    private var messageWriteService: MessageWriteService = MessageWriteService(httpClient, config)
+
+    // Proof
+    private var proofRetrieveService: ProofRetrieveService = ProofRetrieveService(httpClient, config)
+    private var verifyService: ProofVerifyService = ProofVerifyService()
 
     fun getHttpClient(): HttpClient {
         return httpClient

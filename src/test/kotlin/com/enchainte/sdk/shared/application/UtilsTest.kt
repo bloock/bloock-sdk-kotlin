@@ -2,7 +2,7 @@ package com.enchainte.sdk.shared.application
 
 import com.enchainte.sdk.common.BaseTest
 import kotlinx.coroutines.runBlocking
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue

@@ -2,7 +2,7 @@ package com.enchainte.sdk.message.domain
 
 import com.enchainte.sdk.common.BaseTest
 import com.enchainte.sdk.message.domain.Message
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue

@@ -3,6 +3,17 @@
  *
  * This generated file contains a sample Kotlin library project to get you started.
  */
+object DependencyVersions {
+    const val KOIN_VERSION = "2.2.0"
+    const val APACHE_COMMONS_VERSION = "1.14"
+    const val KT_COROUTINES_RX_VERSION = "1.4.2"
+    const val KTOR_VERSION = "1.5.0"
+    const val WEB3_VERSION = "4.7.0"
+    const val BLAKE2B_VERSION = "1.0.0"
+    const val RXJAVA_VERSION = "3.0.9"
+
+    const val JUNIT_VERSION = "5.7.0"
+}
 
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin.
@@ -10,12 +21,6 @@ plugins {
 
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
 }
 
 repositories {
@@ -31,30 +36,36 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     // Hashing
-    implementation("com.rfksystems:blake2b:1.0.0")
+    implementation("com.rfksystems:blake2b:${DependencyVersions.BLAKE2B_VERSION}")
 
     // Utils
-    implementation("commons-codec:commons-codec:1.14")
-    implementation("io.reactivex.rxjava3:rxjava:3.0.9")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx3:1.4.2")
+    implementation("org.koin:koin-core:${DependencyVersions.KOIN_VERSION}")
+    implementation("commons-codec:commons-codec:${DependencyVersions.APACHE_COMMONS_VERSION}")
+    implementation("io.reactivex.rxjava3:rxjava:${DependencyVersions.RXJAVA_VERSION}")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx3:${DependencyVersions.KT_COROUTINES_RX_VERSION}")
 
     // Networking
-    implementation("io.ktor:ktor-client-core:1.5.0")
-    implementation("io.ktor:ktor-client-cio:1.5.0")
-    implementation("io.ktor:ktor-client-gson:1.5.0")
-    implementation("io.ktor:ktor-client-logging:1.5.0")
-    implementation("io.ktor:ktor-client-auth:1.5.0")
+    implementation("io.ktor:ktor-client-core:${DependencyVersions.KTOR_VERSION}")
+    implementation("io.ktor:ktor-client-cio:${DependencyVersions.KTOR_VERSION}")
+    implementation("io.ktor:ktor-client-gson:${DependencyVersions.KTOR_VERSION}")
+    implementation("io.ktor:ktor-client-logging:${DependencyVersions.KTOR_VERSION}")
+    implementation("io.ktor:ktor-client-auth:${DependencyVersions.KTOR_VERSION}")
 
     // Blockchain
-    implementation("org.web3j:core:4.7.0")
-
+    implementation("org.web3j:core:${DependencyVersions.WEB3_VERSION}")
 
     // Testing
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
-    testImplementation("io.ktor:ktor-client-mock:1.5.0")
-    testImplementation("org.web3j:web3j-unit:4.7.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.7.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.7.0")
+    testImplementation("io.ktor:ktor-client-mock:${DependencyVersions.KTOR_VERSION}")
+    testImplementation("org.web3j:web3j-unit:${DependencyVersions.WEB3_VERSION}")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:${DependencyVersions.JUNIT_VERSION}")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${DependencyVersions.JUNIT_VERSION}")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:${DependencyVersions.JUNIT_VERSION}")
+}
+
+tasks {
+    "test"(Test::class) {
+        useJUnitPlatform()
+    }
 }

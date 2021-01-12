@@ -1,11 +1,10 @@
 package com.enchainte.sdk.e2e
 
 import com.enchainte.sdk.EnchainteClient
-import com.enchainte.sdk.common.BaseTest
 import com.enchainte.sdk.message.domain.Message
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import kotlin.test.assertTrue
 
 class E2ETest {
@@ -21,7 +20,7 @@ class E2ETest {
 
         val client = EnchainteClient("xfJvoW4xZONxW2tDD5Vypwu3S23LfC-GaexO2epA7UjHilfFSm4gaMeZUuvcJtXz")
         println("SENDING MESSAGE: ${message.getHash()}")
-        client.sendMessage(message).subscribe()
+        client.sendMessage(message).blockingSubscribe()
 
         runBlocking {
             println("WAITING MESSAGE")

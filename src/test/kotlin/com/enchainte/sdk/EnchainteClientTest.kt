@@ -11,6 +11,6 @@ class EnchainteClientTest: BaseTest() {
 
     @Test
     fun testSendMessageMethod(client: EnchainteClient) {
-        assertNotNull(client.sendMessage(Message.fromHash("")).subscribe(), "sendMessage should return 'true'")
+        assertNotNull(client.sendMessage(Message.fromString("")).subscribe(), "sendMessage should return 'true'")
     }
 }

@@ -7,7 +7,7 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
@@ -17,8 +17,8 @@ class AuthInterceptorTest: BaseTest() {
         val apiKey = "123456789abcdef"
 
         val httpClient = loadMockHttpEngine(apiKey)
-        Factory.getConfig().loadConfiguration()
-        val response = httpClient.get<HttpResponse>("https://api.enchainte.com/")
+        val config = Factory.getConfig().loadConfiguration()
+        val response = httpClient.get<HttpResponse>("${config.HOST}/")
 
         assertNotNull(response)
         assertEquals(

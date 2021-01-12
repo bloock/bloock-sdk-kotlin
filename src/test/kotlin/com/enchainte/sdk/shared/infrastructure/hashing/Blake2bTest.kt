@@ -2,7 +2,7 @@ package com.enchainte.sdk.shared.infrastructure.hashing
 
 import com.enchainte.sdk.common.BaseTest
 import com.enchainte.sdk.shared.Factory
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class Blake2bTest: BaseTest() {

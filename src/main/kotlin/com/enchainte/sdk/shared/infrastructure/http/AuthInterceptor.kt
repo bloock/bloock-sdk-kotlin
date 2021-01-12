@@ -36,6 +36,13 @@ internal class BearerProvider (
     }
 }
 
+internal fun HttpClient.setApiKey(key: String) {
+    val feature = Factory.httpClient.get(Auth)
+    feature.bearer {
+        apiKey = key
+    }
+}
+
 internal fun Auth.bearer(block: BearerConfig.() -> Unit) {
     with(BearerConfig().apply(block)) {
         providers.add(BearerProvider(apiKey))

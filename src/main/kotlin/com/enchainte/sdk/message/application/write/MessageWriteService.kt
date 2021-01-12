@@ -19,9 +19,10 @@ internal class MessageWriteService (val httpClient: HttpClient, val config: Conf
 
     init {
         GlobalScope.launch {
-            delay(config.getConfiguration().WRITE_INTERVAL.toLong())
-
-            sendMessages()
+            while(true) {
+                delay(config.getConfiguration().WRITE_INTERVAL.toLong())
+                sendMessages()
+            }
         }
     }
 

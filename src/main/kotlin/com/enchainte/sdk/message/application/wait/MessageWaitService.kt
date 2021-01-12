@@ -16,6 +16,7 @@ internal class MessageWaitService(val config: ConfigService) {
         do {
             val messageFindService = Factory.getMessageFindService()
             messageReceipts = messageFindService.getMessages(messages)
+
             completed = messageReceipts.size >= messages.size && messageReceipts.all { receipt ->
                 (receipt.status == "success") || (receipt.status == "error")
             }
