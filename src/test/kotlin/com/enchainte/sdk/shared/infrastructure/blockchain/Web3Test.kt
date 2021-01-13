@@ -1,6 +1,5 @@
 package com.enchainte.sdk.shared.infrastructure.blockchain
 
-import com.enchainte.sdk.common.BaseTest
 import com.enchainte.sdk.shared.application.Utils
 import com.enchainte.sdk.shared.infrastructure.blockchain.contract.CheckpointContract
 import org.junit.jupiter.api.Test

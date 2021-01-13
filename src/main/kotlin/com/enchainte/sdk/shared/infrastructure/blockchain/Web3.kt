@@ -4,7 +4,6 @@ import com.enchainte.sdk.config.application.ConfigService
 import com.enchainte.sdk.shared.application.BlockchainClient
 import com.enchainte.sdk.shared.application.Utils
 import com.enchainte.sdk.shared.infrastructure.blockchain.contract.CheckpointContract
-import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.JsonRpc2_0Web3j
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.ReadonlyTransactionManager
