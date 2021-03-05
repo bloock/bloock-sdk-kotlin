@@ -1,5 +1,5 @@
 package com.enchainte.sdk.shared.application
 
-interface BlockchainClient {
+internal interface BlockchainClient {
     fun validateRoot(root: String): Boolean
 }

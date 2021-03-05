@@ -1,5 +1,3 @@
-package com.enchainte.sdk.e2e;
-
 import com.enchainte.sdk.EnchainteClient;
 import com.enchainte.sdk.message.domain.Message;
 import org.junit.jupiter.api.Test;
@@ -22,8 +20,12 @@ public class E2EJavaTest {
         client.waitMessageReceipts(Collections.singletonList(message)).blockingSubscribe();
 
         System.out.println("VALIDATING MESSAGE");
-        var valid = false;
-        while (!valid) {
+
+        boolean valid = false;
+        long start_time = System.currentTimeMillis();
+        long wait_time = 60000;
+        long end_time = start_time + wait_time;
+        while (!valid && System.currentTimeMillis() < end_time) {
             valid = client.verifyMessages(Collections.singletonList(message)).blockingGet();
             Thread.sleep(500);
         }

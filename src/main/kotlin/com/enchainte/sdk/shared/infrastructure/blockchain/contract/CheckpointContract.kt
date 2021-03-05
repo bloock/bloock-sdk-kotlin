@@ -38,7 +38,7 @@ import java.util.*
  *
  * Generated with web3j version 4.7.0.
  */
-class CheckpointContract : Contract {
+internal class CheckpointContract : Contract {
     @Deprecated("")
     protected constructor(
         contractAddress: String?,

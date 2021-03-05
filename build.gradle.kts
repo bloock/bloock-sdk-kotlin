@@ -3,6 +3,21 @@
  *
  * This generated file contains a sample Kotlin library project to get you started.
  */
+object Library {
+    const val BINTRAY_REPO = ""
+    const val BINTRAY_NAME = ""
+
+    const val LIBRARY_NAME = ""
+    const val GROUP_ID = "com.enchainte.sdk"
+    const val ARTIFACT_NAME = "enchainte-sdk"
+    const val VERSION = "0.1.0"
+
+    const val DESCRIPTION = ""
+    const val SITE_URL = ""
+    const val GIT_URL = ""
+    const val LICENSE = ""
+}
+
 object DependencyVersions {
     const val KOIN_VERSION = "2.2.0"
     const val APACHE_COMMONS_VERSION = "1.14"
@@ -18,9 +33,40 @@ object DependencyVersions {
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin.
     id("org.jetbrains.kotlin.jvm") version "1.3.70"
+    id("org.unbroken-dome.test-sets") version "3.0.1"
+    id("com.jfrog.bintray") version "1.8.5"
+    id("org.jetbrains.dokka") version "1.4.20"
 
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
+    `maven-publish`
+}
+
+sourceSets {
+    create("integrationTest") {
+        withConvention(org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet::class) {
+            kotlin.srcDir("src/integrationTest/kotlin")
+            java.srcDir("src/integrationTest/java")
+            resources.srcDir("src/integrationTest/resources")
+            compileClasspath += sourceSets["main"].output + configurations["testRuntimeClasspath"]
+            runtimeClasspath += output + compileClasspath + sourceSets["test"].runtimeClasspath
+        }
+    }
+}
+
+task<Test>("integrationTest") {
+    description = "Runs the integration tests"
+    group = "verification"
+    testClassesDirs = sourceSets["integrationTest"].output.classesDirs
+    classpath = sourceSets["integrationTest"].runtimeClasspath
+    outputs.upToDateWhen { false }
+    mustRunAfter(tasks["test"])
+    useJUnitPlatform()
+}
+
+tasks.dokkaGfm.configure {
+    outputDirectory.set(rootDir)
+    moduleName.set("docs")
 }
 
 repositories {
@@ -67,5 +113,17 @@ dependencies {
 tasks {
     "test"(Test::class) {
         useJUnitPlatform()
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("sdk") {
+            groupId = "com.enchainte.sdk"
+            artifactId = "sdk"
+            version = "0.1"
+
+            from(components["java"])
+        }
     }
 }

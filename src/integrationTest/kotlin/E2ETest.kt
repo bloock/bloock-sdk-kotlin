@@ -1,8 +1,5 @@
-package com.enchainte.sdk.e2e
-
 import com.enchainte.sdk.EnchainteClient
 import com.enchainte.sdk.message.domain.Message
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import kotlin.test.assertTrue
@@ -27,10 +24,14 @@ class E2ETest {
             client.waitMessageReceipts(listOf(message)).blockingSubscribe()
 
             println("VALIDATING MESSAGE")
+
             var valid = false
-            while (!valid) {
+            val startTime = System.currentTimeMillis()
+            val waitTime: Long = 60000
+            val endTime = startTime + waitTime
+            while (!valid && System.currentTimeMillis() < endTime) {
                 valid = client.verifyMessages(listOf(message)).blockingGet()
-                delay(500)
+                Thread.sleep(500)
             }
 
             assertTrue(valid)
