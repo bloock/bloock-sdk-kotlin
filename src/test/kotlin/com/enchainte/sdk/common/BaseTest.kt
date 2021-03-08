@@ -30,7 +30,7 @@ open class BaseTest {
                     try {
                         val responseHeaders = headersOf("Content-Type" to listOf(ContentType.Application.Json.toString()))
 
-                        respond(HttpMockResponses.getResponse(request.url.fullUrl), headers = responseHeaders)
+                        respond(HttpMockResponses.getResponse(request.url.host, request.url.encodedPath), headers = responseHeaders)
                     } catch (t: Throwable) {
                         respondError(HttpStatusCode.BadRequest, t.message ?: "Unexpected error")
                     }

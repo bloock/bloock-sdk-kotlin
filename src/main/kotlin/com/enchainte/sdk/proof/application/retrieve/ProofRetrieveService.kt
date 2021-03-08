@@ -13,7 +13,7 @@ internal class ProofRetrieveService(private val httpClient: HttpClient, private 
 
     suspend fun getProof(messages: List<Message>): Proof? {
         return try {
-            val url = "${config.getConfiguration().HOST}${config.getConfiguration().PROOF_ENDPOINT}"
+            val url = "${config.getConfiguration().HOST}${config.getConfiguration().API_VERSION}${config.getConfiguration().PROOF_ENDPOINT}"
             val requestBody = RetrieveProofRequest(messages.map { it.getHash() })
             val response = httpClient.post<RetrieveProofResponse> {
                 url(url)

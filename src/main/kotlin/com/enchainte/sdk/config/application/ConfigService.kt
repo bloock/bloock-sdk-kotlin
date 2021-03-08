@@ -54,6 +54,7 @@ internal class ConfigService(private val httpClient: HttpClient) {
 
             this.configuration =  Configuration(
                 HOST = resultMap["SDK_HOST"]!!,
+                API_VERSION = resultMap["SDK_API_VERSION"]!!,
                 WRITE_ENDPOINT = resultMap["SDK_WRITE_ENDPOINT"]!!,
                 PROOF_ENDPOINT = resultMap["SDK_PROOF_ENDPOINT"]!!,
                 FETCH_ENDPOINT = resultMap["SDK_FETCH_ENDPOINT"]!!,

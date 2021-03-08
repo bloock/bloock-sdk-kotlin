@@ -15,7 +15,8 @@ class E2ETest {
 
         val message = Message.fromHex(randomHex)
 
-        val client = EnchainteClient("xfJvoW4xZONxW2tDD5Vypwu3S23LfC-GaexO2epA7UjHilfFSm4gaMeZUuvcJtXz")
+        val apiKey = System.getenv("API_KEY")
+        val client = EnchainteClient(apiKey)
         println("SENDING MESSAGE: ${message.getHash()}")
         client.sendMessage(message).blockingSubscribe()
 

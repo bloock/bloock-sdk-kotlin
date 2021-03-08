@@ -2,6 +2,7 @@ package com.enchainte.sdk.config.domain
 
 internal class Configuration (
     val HOST: String = "",
+    val API_VERSION: String = "",
     val WRITE_ENDPOINT: String = "",
     val PROOF_ENDPOINT: String = "",
     val FETCH_ENDPOINT: String = "",

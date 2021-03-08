@@ -36,6 +36,7 @@ class EnchainteClient(apiKey: String) {
 
         runBlocking {
             config.loadConfiguration()
+            config.setTestEnvironment(true)
         }
     }
 

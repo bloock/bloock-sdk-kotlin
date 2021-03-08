@@ -12,12 +12,12 @@ import io.ktor.http.*
 internal class MessageFindService(val httpClient: HttpClient, val config: ConfigService) {
     suspend fun getMessages(messages: List<Message>): List<MessageReceipt> {
         return try {
-            val url = "${config.getConfiguration().HOST}${config.getConfiguration().FETCH_ENDPOINT}"
+            val url = "${config.getConfiguration().HOST}${config.getConfiguration().API_VERSION}${config.getConfiguration().FETCH_ENDPOINT}"
 
             val response = httpClient.post<List<MessageRetrieveResponse>>{
                 url(url)
                 contentType(ContentType.Application.Json)
-                body = MessageRetrieveRequest(hashes = messages.map { it.getHash() })
+                body = MessageRetrieveRequest(messages = messages.map { it.getHash() })
             }
 
             response.map {
@@ -30,7 +30,7 @@ internal class MessageFindService(val httpClient: HttpClient, val config: Config
                 MessageReceipt(root, message, txHash, status, error)
             }
         } catch (t: Throwable) {
-            emptyList()
+            throw Exception()
         }
     }
 }

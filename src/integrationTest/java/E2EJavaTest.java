@@ -12,7 +12,9 @@ public class E2EJavaTest {
     public void e2eJavaTest() throws Exception {
         Message message = Message.fromHex(getRandomHexString());
 
-        EnchainteClient client = new EnchainteClient("xfJvoW4xZONxW2tDD5Vypwu3S23LfC-GaexO2epA7UjHilfFSm4gaMeZUuvcJtXz");
+        String apiKey = System.getenv("API_KEY");
+        EnchainteClient client = new EnchainteClient(apiKey);
+
         System.out.println("SENDING MESSAGE: " + message.getHash());
         client.sendMessage(message).blockingSubscribe();
 

@@ -41,11 +41,11 @@ internal class MessageWriteService (val httpClient: HttpClient, val config: Conf
         messages = HashMap()
 
         try {
-            val url = "${config.getConfiguration().HOST}${config.getConfiguration().WRITE_ENDPOINT}"
+            val url = "${config.getConfiguration().HOST}${config.getConfiguration().API_VERSION}${config.getConfiguration().WRITE_ENDPOINT}"
             httpClient.post<MessageWriteResponse> {
                 url(url)
                 contentType(ContentType.Application.Json)
-                body = MessageWriteRequest(hashes = toSend.map { (key, _) -> key.getHash() })
+                body = MessageWriteRequest(messages = toSend.map { (key, _) -> key.getHash() })
             }
 
             toSend.forEach { (message, emitter) ->

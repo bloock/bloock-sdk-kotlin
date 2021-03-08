@@ -6,14 +6,10 @@ import com.google.gson.Gson
 
 internal class HttpMockResponses {
     companion object {
-        fun getResponse(url: String): String {
-            println("REQUEST TO: $url")
+        fun getResponse(host: String, path: String): String {
             val gson = Gson()
-            return when (url) {
-                "https://api.enchainte.com/" -> {
-                    "Hello, world"
-                }
-                "https://enchainte-config.azconfig.io" -> {
+            return when (host) {
+                "enchainte-config.azconfig.io" -> {
                     val config = ConfigResponse(
                         items = listOf(
                             ConfigItemResponse("HOST", "https://api.enchainte.com"),
@@ -32,7 +28,14 @@ internal class HttpMockResponses {
                     )
                     gson.toJson(config)
                 }
-                else -> throw Error("Not mocked request")
+                else -> when (path) {
+                    "/" -> {
+                        "Hello, world"
+                    }
+                    else -> {
+                        throw Error("Not mocked request")
+                    }
+                }
             }
         }
     }
