@@ -22,7 +22,11 @@ jobs:
           java-version: 15
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: Build with Gradle
+      - name: Build
         run: ./gradlew build
+      - name: Unit test
+        run: ./gradlew test
+      - name: Integration test
+        run: API_KEY=${{ secrets.API_KEY }} ./gradlew integrationTest
       - name: Publish
-        run: ./gradlew publish
+        run: ./gradlew -PMAVEN_UPLOAD_USER=${{ secrets.SONATYPE_USER }} -PMAVEN_UPLOAD_PWD=${{ secrets.SONATYPE_PASSWORD }}  -PPGP_SIGNING_KEY="${{ secrets.PGP_SIGNING_KEY }}" -PPGP_SIGNING_PASSWORD="${{ secrets.PGP_SIGNING_PASSWORD }}" publish

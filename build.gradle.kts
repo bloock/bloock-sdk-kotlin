@@ -41,6 +41,7 @@ plugins {
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
     `maven-publish`
+    signing
 }
 
 sourceSets {
@@ -121,14 +122,50 @@ tasks {
     }
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("sdk") {
-            groupId = "com.enchainte.sdk"
-            artifactId = "sdk"
-            version = "0.1"
 
-            from(components["java"])
+val MAVEN_UPLOAD_USER: String by project
+val MAVEN_UPLOAD_PWD: String by project
+publishing {
+    repositories {
+        maven {
+            name = "MavenCentral"
+            val releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            val snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+            url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
+            credentials {
+                username = MAVEN_UPLOAD_USER
+                password = MAVEN_UPLOAD_PWD
+            }
         }
     }
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+
+            pom {
+                name.set("Enchainté SDK")
+                description.set("Enchainté SDK for Java / Kotlin")
+                url.set("https://www.enchainte.com")
+                licenses {
+                    license {
+                        name.set("Licence Name")
+                        url.set("http://link.to/full/license/text")
+                    }
+                }
+                scm {
+                    connection.set("scm:git:https://github.com/enchainte/enchainte-sdk-kotlin.git")
+                    developerConnection.set("scm:git:https://github.com/enchainte/enchainte-sdk-kotlin.git")
+                    url.set("https://www.enchainte.com")
+                }
+
+            }
+        }
+    }
+}
+
+signing {
+    val PGP_SIGNING_KEY: String? by project
+    val PGP_SIGNING_PASSWORD: String? by project
+    useInMemoryPgpKeys(PGP_SIGNING_KEY, PGP_SIGNING_PASSWORD)
+    sign(publishing.publications["mavenJava"])
 }
