@@ -29,7 +29,7 @@ class E2ETest: AutoCloseKoinTest() {
 
             var valid = false
             val startTime = System.currentTimeMillis()
-            val waitTime: Long = 90000
+            val waitTime: Long = 120000
             val endTime = startTime + waitTime
             while (!valid && System.currentTimeMillis() < endTime) {
                 valid = client.verifyMessages(listOf(message)).blockingGet()
