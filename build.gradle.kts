@@ -123,8 +123,8 @@ tasks {
 }
 
 
-val MAVEN_UPLOAD_USER: String by project
-val MAVEN_UPLOAD_PWD: String by project
+val MAVEN_UPLOAD_USER: String? by project
+val MAVEN_UPLOAD_PWD: String? by project
 publishing {
     repositories {
         maven {
