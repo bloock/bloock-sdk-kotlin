@@ -4,18 +4,16 @@
  * This generated file contains a sample Kotlin library project to get you started.
  */
 object Library {
-    const val BINTRAY_REPO = ""
-    const val BINTRAY_NAME = ""
-
-    const val LIBRARY_NAME = ""
+    const val LIBRARY_NAME = "Enchainté SDK"
     const val GROUP_ID = "com.enchainte.sdk"
     const val ARTIFACT_NAME = "enchainte-sdk"
     const val VERSION = "0.1.0"
 
-    const val DESCRIPTION = ""
-    const val SITE_URL = ""
-    const val GIT_URL = ""
-    const val LICENSE = ""
+    const val DESCRIPTION = "Enchainté SDK for Java / Kotlin"
+    const val SITE_URL = "https://www.enchainte.com"
+    const val GIT_URL = "scm:git:https://github.com/enchainte/enchainte-sdk-kotlin.git"
+    const val LICENSE = "MIT License"
+    const val LICENSE_URL = "https://raw.githubusercontent.com/enchainte/enchainte-sdk-kotlin/master/LICENSE"
 }
 
 object DependencyVersions {
@@ -129,8 +127,8 @@ publishing {
     repositories {
         maven {
             name = "MavenCentral"
-            val releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
-            val snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+            val releasesRepoUrl = "https://s01.oss.sonatype.org/content/repositories/releases"
+            val snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots"
             url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
             credentials {
                 username = MAVEN_UPLOAD_USER
@@ -142,20 +140,24 @@ publishing {
         create<MavenPublication>("mavenJava") {
             from(components["java"])
 
+            groupId = Library.GROUP_ID
+            artifactId = Library.ARTIFACT_NAME
+            version = Library.VERSION
+
             pom {
-                name.set("Enchainté SDK")
-                description.set("Enchainté SDK for Java / Kotlin")
-                url.set("https://www.enchainte.com")
+                name.set(Library.LIBRARY_NAME)
+                description.set(Library.DESCRIPTION)
+                url.set(Library.SITE_URL)
                 licenses {
                     license {
-                        name.set("Licence Name")
-                        url.set("http://link.to/full/license/text")
+                        name.set(Library.LICENSE)
+                        url.set(Library.LICENSE_URL)
                     }
                 }
                 scm {
-                    connection.set("scm:git:https://github.com/enchainte/enchainte-sdk-kotlin.git")
-                    developerConnection.set("scm:git:https://github.com/enchainte/enchainte-sdk-kotlin.git")
-                    url.set("https://www.enchainte.com")
+                    connection.set(Library.GIT_URL)
+                    developerConnection.set(Library.GIT_URL)
+                    url.set(Library.SITE_URL)
                 }
 
             }
@@ -166,6 +168,7 @@ publishing {
 signing {
     val PGP_SIGNING_KEY: String? by project
     val PGP_SIGNING_PASSWORD: String? by project
+
     useInMemoryPgpKeys(PGP_SIGNING_KEY, PGP_SIGNING_PASSWORD)
     sign(publishing.publications["mavenJava"])
 }
