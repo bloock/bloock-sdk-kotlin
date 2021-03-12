@@ -7,7 +7,7 @@ object Library {
     const val LIBRARY_NAME = "Enchainté SDK"
     const val GROUP_ID = "com.enchainte.sdk"
     const val ARTIFACT_NAME = "enchainte-sdk"
-    const val VERSION = "0.1.0"
+    const val VERSION = "0.1.2"
 
     const val DESCRIPTION = "Enchainté SDK for Java / Kotlin"
     const val SITE_URL = "https://www.enchainte.com"
