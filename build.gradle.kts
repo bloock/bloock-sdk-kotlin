@@ -85,10 +85,10 @@ dependencies {
     implementation("com.rfksystems:blake2b:${DependencyVersions.BLAKE2B_VERSION}")
 
     // Utils
-    implementation("io.insert-koin:koin-core:${DependencyVersions.KOIN_VERSION}")
+    api("io.insert-koin:koin-core:${DependencyVersions.KOIN_VERSION}")
 
     implementation("commons-codec:commons-codec:${DependencyVersions.APACHE_COMMONS_VERSION}")
-    implementation("io.reactivex.rxjava3:rxjava:${DependencyVersions.RXJAVA_VERSION}")
+    api("io.reactivex.rxjava3:rxjava:${DependencyVersions.RXJAVA_VERSION}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx3:${DependencyVersions.KT_COROUTINES_RX_VERSION}")
 
     // Networking
