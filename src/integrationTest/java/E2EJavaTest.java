@@ -30,7 +30,7 @@ public class E2EJavaTest extends AutoCloseKoinTest {
 
         boolean valid = false;
         long start_time = System.currentTimeMillis();
-        long wait_time = 60000;
+        long wait_time = 90000;
         long end_time = start_time + wait_time;
         while (!valid && System.currentTimeMillis() < end_time) {
             valid = client.verifyMessages(Collections.singletonList(message)).blockingGet();
