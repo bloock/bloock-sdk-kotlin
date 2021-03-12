@@ -1,15 +1,12 @@
 package com.enchainte.sdk.infrastructure.blockchain.contract
 
 import io.reactivex.Flowable
-import io.reactivex.functions.Function
 import org.web3j.abi.EventEncoder
 import org.web3j.abi.TypeReference
-import org.web3j.abi.datatypes.Address
 import org.web3j.abi.datatypes.Bool
 import org.web3j.abi.datatypes.Event
 import org.web3j.abi.datatypes.Type
 import org.web3j.abi.datatypes.generated.Bytes32
-import org.web3j.abi.datatypes.generated.Uint256
 import org.web3j.crypto.Credentials
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameter
@@ -17,7 +14,6 @@ import org.web3j.protocol.core.RemoteCall
 import org.web3j.protocol.core.RemoteFunctionCall
 import org.web3j.protocol.core.methods.request.EthFilter
 import org.web3j.protocol.core.methods.response.BaseEventResponse
-import org.web3j.protocol.core.methods.response.Log
 import org.web3j.protocol.core.methods.response.TransactionReceipt
 import org.web3j.tx.Contract
 import org.web3j.tx.TransactionManager
@@ -40,7 +36,7 @@ import java.util.*
  */
 internal class CheckpointContract : Contract {
     @Deprecated("")
-    protected constructor(
+    private constructor(
         contractAddress: String?,
         web3j: Web3j?,
         credentials: Credentials?,
@@ -48,11 +44,10 @@ internal class CheckpointContract : Contract {
         gasLimit: BigInteger?
     ) : super(
         BINARY, contractAddress, web3j, credentials, gasPrice, gasLimit
-    ) {
-    }
+    )
 
     @Deprecated("")
-    protected constructor(
+    private constructor(
         contractAddress: String?,
         web3j: Web3j?,
         transactionManager: TransactionManager?,
@@ -60,18 +55,16 @@ internal class CheckpointContract : Contract {
         gasLimit: BigInteger?
     ) : super(
         BINARY, contractAddress, web3j, transactionManager, gasPrice, gasLimit
-    ) {
-    }
+    )
 
-    protected constructor(
+    private constructor(
         contractAddress: String?,
         web3j: Web3j?,
         transactionManager: TransactionManager?,
         contractGasProvider: ContractGasProvider?
     ) : super(
         BINARY, contractAddress, web3j, transactionManager, contractGasProvider
-    ) {
-    }
+    )
 
     fun getNewCheckpointEvents(transactionReceipt: TransactionReceipt?): List<NewCheckpointEventResponse> {
         val valueList = extractEventParametersWithLog(NEWCHECKPOINT_EVENT, transactionReceipt)
@@ -79,22 +72,20 @@ internal class CheckpointContract : Contract {
         for (eventValues in valueList) {
             val typedResponse = NewCheckpointEventResponse()
             typedResponse.log = eventValues.log
-            typedResponse._checkpoint = eventValues.indexedValues[0].value as ByteArray
+            typedResponse.checkpoint = eventValues.indexedValues[0].value as ByteArray
             responses.add(typedResponse)
         }
         return responses
     }
 
     fun newCheckpointEventFlowable(filter: EthFilter?): Flowable<NewCheckpointEventResponse> {
-        return web3j.ethLogFlowable(filter).map(object : Function<Log?, NewCheckpointEventResponse> {
-            override fun apply(t: Log): NewCheckpointEventResponse? {
-                val eventValues = extractEventParametersWithLog(NEWCHECKPOINT_EVENT, t)
-                val typedResponse = NewCheckpointEventResponse()
-                typedResponse.log = t
-                typedResponse._checkpoint = eventValues.indexedValues[0].value as ByteArray
-                return typedResponse
-            }
-        })
+        return web3j.ethLogFlowable(filter).map { t ->
+            val eventValues = extractEventParametersWithLog(NEWCHECKPOINT_EVENT, t)
+            val typedResponse = NewCheckpointEventResponse()
+            typedResponse.log = t
+            typedResponse.checkpoint = eventValues.indexedValues[0].value as ByteArray
+            typedResponse
+        }
     }
 
     fun newCheckpointEventFlowable(
@@ -109,7 +100,7 @@ internal class CheckpointContract : Contract {
     fun addCheckpoint(_checkpoint: ByteArray?): RemoteFunctionCall<TransactionReceipt> {
         val function = org.web3j.abi.datatypes.Function(
             FUNC_ADDCHECKPOINT,
-            Arrays.asList<Type<*>>(Bytes32(_checkpoint)), emptyList()
+            listOf<Type<*>>(Bytes32(_checkpoint)), emptyList()
         )
         return executeRemoteCallTransaction(function)
     }
@@ -117,14 +108,14 @@ internal class CheckpointContract : Contract {
     fun getCheckpoint(_checkpoint: ByteArray?): RemoteFunctionCall<Boolean> {
         val function = org.web3j.abi.datatypes.Function(
             FUNC_GETCHECKPOINT,
-            Arrays.asList<Type<*>>(Bytes32(_checkpoint)),
-            Arrays.asList<TypeReference<*>>(object : TypeReference<Bool?>() {})
+            listOf<Type<*>>(Bytes32(_checkpoint)),
+            listOf<TypeReference<*>>(object : TypeReference<Bool?>() {})
         )
         return executeRemoteCallSingleValueReturn(function, Boolean::class.javaObjectType)
     }
 
     class NewCheckpointEventResponse : BaseEventResponse() {
-        lateinit var _checkpoint: ByteArray
+        lateinit var checkpoint: ByteArray
     }
 
     companion object {
@@ -134,7 +125,7 @@ internal class CheckpointContract : Contract {
         const val FUNC_GETCHECKPOINT = "getCheckpoint"
         val NEWCHECKPOINT_EVENT = Event(
             "NewCheckpoint",
-            Arrays.asList<TypeReference<*>>(object : TypeReference<Bytes32?>(true) {})
+            listOf<TypeReference<*>>(object : TypeReference<Bytes32?>(true) {})
         )
 
         @Deprecated("")

@@ -2,21 +2,14 @@ package com.enchainte.sdk.config
 
 import com.enchainte.sdk.config.entity.ConfigEnvironment
 import com.enchainte.sdk.config.entity.Configuration
-import com.enchainte.sdk.config.entity.dto.ConfigItemResponse
 import com.enchainte.sdk.config.repository.ConfigRepository
 import com.enchainte.sdk.config.service.ConfigService
-import com.enchainte.sdk.infrastructure.HttpClient
-import com.enchainte.sdk.infrastructure.http.HttpClientData
 import com.enchainte.sdk.shared.ConfigModule
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.times
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.features.json.*
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
-import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.get
 import org.koin.test.junit5.KoinTestExtension

@@ -1,4 +1,3 @@
 package com.enchainte.sdk.proof
 
-class ProofServiceTest {
-}
+class ProofServiceTest

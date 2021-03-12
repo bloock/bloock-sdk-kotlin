@@ -22,9 +22,7 @@ internal class ConfigRepositoryImpl(private val httpClient: HttpClient, private 
         val url = "https://${configData.endpoint}$path"
 
         val response = httpClient.getAzure<List<ConfigItemResponse>>(url, getHeaders("GET", path))
-        if (response == null) {
-            throw FetchConfigurationException("Response is invalid")
-        }
+            ?: throw FetchConfigurationException("Response is invalid")
 
         val resultMap = HashMap<String, String>()
         for (item in response) {

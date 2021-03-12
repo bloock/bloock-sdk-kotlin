@@ -2,7 +2,10 @@ $dokka.format:gfm-v1
 $dokka.linkExtension:md
 
 com.enchainte.sdk
-com.enchainte.sdk.message.domain
-com.enchainte.sdk.message.domain.exception
+com.enchainte.sdk.config.entity
+com.enchainte.sdk.config.entity.dto.exception
+com.enchainte.sdk.infrastructure.http.dto.exception
+com.enchainte.sdk.message.entity
+com.enchainte.sdk.message.entity.exception
 com.enchainte.sdk.proof.entity
 

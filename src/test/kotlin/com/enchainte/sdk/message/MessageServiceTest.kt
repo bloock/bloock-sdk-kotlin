@@ -1,10 +1,6 @@
 package com.enchainte.sdk.message
 
-import com.enchainte.sdk.config.entity.ConfigEnvironment
-import com.enchainte.sdk.config.entity.Configuration
-import com.enchainte.sdk.config.repository.ConfigRepository
 import com.enchainte.sdk.message.entity.Message
-import com.enchainte.sdk.message.entity.MessageReceipt
 import com.enchainte.sdk.message.entity.dto.MessageRetrieveResponse
 import com.enchainte.sdk.message.entity.dto.MessageWriteResponse
 import com.enchainte.sdk.message.entity.exception.InvalidMessageException
@@ -17,7 +13,6 @@ import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.times
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.RegisterExtension
 import org.koin.test.KoinTest
 import org.koin.test.get

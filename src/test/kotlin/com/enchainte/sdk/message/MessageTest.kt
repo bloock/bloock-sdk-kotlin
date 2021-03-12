@@ -8,7 +8,7 @@ import kotlin.test.assertTrue
 class MessageTest {
     @Test
     fun testIsValid() {
-        val message = Message.fromHash("123456789abcdef123456789abcdef123456789abcdef123456789abcdef1234");
+        val message = Message.fromHash("123456789abcdef123456789abcdef123456789abcdef123456789abcdef1234")
         assertTrue(
             Message.isValid(message)
         )
@@ -16,7 +16,7 @@ class MessageTest {
 
     @Test
     fun testIsNotValid() {
-        val message = "123456789abcdef123456789abcdef123456789abcdef123456789abcdef1234";
+        val message = "123456789abcdef123456789abcdef123456789abcdef123456789abcdef1234"
         assertFalse(
             Message.isValid(message)
         )
@@ -24,7 +24,7 @@ class MessageTest {
 
     @Test
     fun testIsValidErrorLenght() {
-        val message = "123456789abcdef123456789abcdef123456789abcdef123456789abcdef123456789abcdef";
+        val message = "123456789abcdef123456789abcdef123456789abcdef123456789abcdef123456789abcdef"
         assertFalse(
             Message.isValid(message)
         )
@@ -32,7 +32,7 @@ class MessageTest {
 
     @Test
     fun testIsValidErrorHex() {
-        val message = "123456789abcdef123456789abcdef123456789abcdef123456789abcdef123g";
+        val message = "123456789abcdef123456789abcdef123456789abcdef123456789abcdef123g"
         assertFalse(
             Message.isValid(message)
         )

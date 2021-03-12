@@ -20,26 +20,11 @@ import com.enchainte.sdk.proof.service.ProofService
 import com.enchainte.sdk.proof.service.ProofServiceImpl
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
-import io.ktor.client.features.auth.*
 import io.ktor.client.features.json.*
-import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
-import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
-internal object EnchainteKoinContext {
-    lateinit var koinApp : KoinApplication
-}
-
 internal fun setUpDependencyInjection() {
-//    val koinApp = koinApplication {
-//        modules(InfrastructureModule)
-//        modules(ConfigModule)
-//        modules(MessageModule)
-//        modules(ProofModule)
-//    }
-//
-//    EnchainteKoinContext.koinApp = koinApp
     startKoin {
         modules(InfrastructureModule)
         modules(ConfigModule)

@@ -1,16 +1,12 @@
 package com.enchainte.sdk.infrastructure.http
 
 import com.enchainte.sdk.common.fullUrl
-import com.enchainte.sdk.config.entity.dto.ConfigItemResponse
 import com.enchainte.sdk.infrastructure.HttpClient
 import com.enchainte.sdk.infrastructure.get
 import com.enchainte.sdk.infrastructure.getAzure
 import com.enchainte.sdk.infrastructure.post
-import com.nhaarman.mockitokotlin2.given
 import io.ktor.client.engine.mock.*
 import io.ktor.client.features.json.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test

@@ -3,9 +3,7 @@ package com.enchainte.sdk.config
 import com.enchainte.sdk.config.entity.ConfigEnvironment
 import com.enchainte.sdk.config.entity.dto.ConfigItemResponse
 import com.enchainte.sdk.config.repository.ConfigRepository
-import com.enchainte.sdk.config.service.ConfigService
 import com.enchainte.sdk.infrastructure.HttpClient
-import com.enchainte.sdk.infrastructure.getAzure
 import com.enchainte.sdk.infrastructure.http.HttpClientData
 import com.enchainte.sdk.infrastructure.http.HttpClientImpl
 import com.enchainte.sdk.shared.ConfigModule

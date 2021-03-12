@@ -1,26 +1,32 @@
 //[docs](../../index.md)/[com.enchainte.sdk](../index.md)/[EnchainteClient](index.md)/[sendMessage](send-message.md)
 
-# sendMessage
 
+
+# sendMessage  
 [jvm]  
 Content  
-fun [sendMessage](send-message.md)(message: [Message](../../com.enchainte.sdk.message.domain/-message/index.md)):
-Single<[Message](../../com.enchainte.sdk.message.domain/-message/index.md)>  
-More info
+fun [sendMessage](send-message.md)(messages: [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)<[Message](../../com.enchainte.sdk.message.entity/-message/index.md)>): Single<[List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)<[MessageReceipt](../../com.enchainte.sdk.message.entity/-message-receipt/index.md)>>  
+More info  
 
-Sends a [Message](../../com.enchainte.sdk.message.domain/-message/index.md) to Enchainté
 
-#### Return
+Sends a list of [Message](../../com.enchainte.sdk.message.entity/-message/index.md) to Enchainté
 
-RxJava Single that will return a [Message](../../com.enchainte.sdk.message.domain/-message/index.md)
 
-## Parameters
 
-jvm
+#### Return  
 
+
+RxJava Single that will return a list of [MessageReceipt](../../com.enchainte.sdk.message.entity/-message-receipt/index.md)
+
+
+
+## Parameters  
+  
+jvm  
+  
 |  Name|  Summary| 
 |---|---|
-| <a name="com.enchainte.sdk/EnchainteClient/sendMessage/#com.enchainte.sdk.message.domain.Message/PointingToDeclaration/"></a>message| <a name="com.enchainte.sdk/EnchainteClient/sendMessage/#com.enchainte.sdk.message.domain.Message/PointingToDeclaration/"></a><br><br>[Message](../../com.enchainte.sdk.message.domain/-message/index.md) to send<br><br>
+| <a name="com.enchainte.sdk/EnchainteClient/sendMessage/#kotlin.collections.List[com.enchainte.sdk.message.entity.Message]/PointingToDeclaration/"></a>messages| <a name="com.enchainte.sdk/EnchainteClient/sendMessage/#kotlin.collections.List[com.enchainte.sdk.message.entity.Message]/PointingToDeclaration/"></a><br><br>list of [Message](../../com.enchainte.sdk.message.entity/-message/index.md) to send<br><br>
   
   
 

@@ -5,11 +5,9 @@ import com.enchainte.sdk.infrastructure.HttpClient
 import com.enchainte.sdk.infrastructure.http.dto.*
 import com.enchainte.sdk.infrastructure.http.dto.exception.ApiErrorException
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import io.ktor.client.request.*
 import io.ktor.http.*
 import java.lang.reflect.Type
-import kotlin.reflect.KClass
 import io.ktor.client.HttpClient as KtorHttpClient
 
 

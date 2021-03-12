@@ -8,18 +8,14 @@ import com.enchainte.sdk.message.entity.MessageReceipt
 import com.enchainte.sdk.message.service.MessageService
 import com.enchainte.sdk.proof.entity.Proof
 import com.enchainte.sdk.proof.service.ProofService
-import com.enchainte.sdk.shared.*
-import io.ktor.client.*
+import com.enchainte.sdk.shared.setUpDependencyInjection
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.rxMaybe
 import kotlinx.coroutines.rx3.rxSingle
-import org.koin.core.Koin
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
-import org.koin.core.component.inject
-import org.koin.core.context.startKoin
 
 /**
  * Entry-point to the Enchainté SDK
@@ -65,7 +61,7 @@ class EnchainteClient(private val apiKey: String, private val environment: Confi
     /**
      * Sends a list of [Message] to Enchainté
      *
-     * @param message list of [Message] to send
+     * @param messages list of [Message] to send
      * @return RxJava [Single] that will return a list of [MessageReceipt]
      */
     fun sendMessage(messages: List<Message>): Single<List<MessageReceipt>> {

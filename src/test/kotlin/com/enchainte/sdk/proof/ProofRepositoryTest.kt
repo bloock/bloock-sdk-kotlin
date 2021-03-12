@@ -1,6 +1,5 @@
 package com.enchainte.sdk.proof
 
-import com.enchainte.sdk.config.service.ConfigService
 import com.enchainte.sdk.proof.entity.Proof
 import com.enchainte.sdk.proof.repository.ProofRepository
 import com.enchainte.sdk.shared.ConfigModule
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
 import org.koin.test.KoinTest
 import org.koin.test.get
-import org.koin.test.inject
 import org.koin.test.junit5.KoinTestExtension
 import org.koin.test.junit5.mock.MockProviderExtension
 import org.mockito.Mockito
