@@ -71,7 +71,6 @@ internal class ProofRepositoryImpl(
             }
             return Message.fromHash(Utils.bytesToHex(stack[0].first))
         } catch (e: Throwable) {
-            println(e.message)
             return null
         }
     }

@@ -13,23 +13,18 @@ internal class ProofServiceImpl(private val proofRepository: ProofRepository) : 
 
     override suspend fun verifyMessages(messages: List<Message>): Boolean {
         val proof = retrieveProof(messages) ?: return false
-        println(proof)
         return verifyProof(proof)
     }
 
     override fun verifyProof(proof: Proof): Boolean {
         if (!Proof.isValid(proof)) {
-            println("Invalid")
             return false
         }
 
         return try {
-            println(proof.leaves)
             val root = proofRepository.verifyProof(proof) ?: return false
-            println(root)
             proofRepository.validateRoot(root)
         } catch (err: Throwable) {
-            println(err.message)
             false
         }
     }

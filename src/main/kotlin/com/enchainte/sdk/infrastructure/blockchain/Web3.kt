@@ -19,7 +19,6 @@ internal class Web3(private val config: ConfigService) : BlockchainClient {
             DefaultGasProvider()
         )
 
-        println("Checkpoint: ${config.getConfiguration().CONTRACT_ADDRESS}")
         return contract.getCheckpoint(Utils.hexToBytes(root)).send() ?: false
     }
 }
