@@ -1,12 +1,11 @@
 import com.enchainte.sdk.EnchainteClient
-import com.enchainte.sdk.message.domain.Message
-import io.reactivex.observers.TestObserver
-import kotlinx.coroutines.runBlocking
+import com.enchainte.sdk.message.entity.Message
 import org.junit.jupiter.api.Test
+import org.koin.test.junit5.AutoCloseKoinTest
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import kotlin.test.assertNotNull
 
-class FunctionalTest {
+class FunctionalTest: AutoCloseKoinTest() {
     @Test
     fun testSendMessage() {
         val apiKey = System.getenv("API_KEY")!!
@@ -14,7 +13,8 @@ class FunctionalTest {
         val client = EnchainteClient(apiKey)
 
         val message = Message.fromString("Example Data")
-        client.sendMessage(message).test().assertComplete()
+        val receipts = client.sendMessage(listOf(message)).blockingGet()
+        assertNotNull(receipts)
     }
 
     @Test
@@ -29,11 +29,10 @@ class FunctionalTest {
             Message.fromString("Example Data 3")
         )
 
-        for (message in messages) {
-            client.sendMessage(message).subscribe()
-        }
+        client.sendMessage(messages).blockingSubscribe()
 
-        client.waitMessageReceipts(messages).test().assertComplete()
+        val receipts = client.waitMessageReceipts(messages).blockingGet()
+        assertNotNull(receipts)
     }
 
     @Test
@@ -48,9 +47,7 @@ class FunctionalTest {
             Message.fromString("Example Data 3")
         )
 
-        for (message in messages) {
-            client.sendMessage(message).subscribe()
-        }
+        client.sendMessage(messages).blockingSubscribe()
 
         client.waitMessageReceipts(messages).blockingSubscribe()
 

@@ -1,20 +1,19 @@
 //[docs](../../index.md)/[com.enchainte.sdk.message.domain](../index.md)/[Message](index.md)
 
+# Message
 
+[jvm] class [Message](index.md)(**
+hash**: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)) : [Comparable](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-comparable/index.html)<[Message](
+index.md)>
 
-# Message  
- [jvm] class [Message](index.md)(**hash**: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)) : [Comparable](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-comparable/index.html)<[Message](index.md)>    
+## Types
 
-
-## Types  
-  
 |  Name|  Summary| 
 |---|---|
 | <a name="com.enchainte.sdk.message.domain/Message.Companion///PointingToDeclaration/"></a>[Companion](-companion/index.md)| <a name="com.enchainte.sdk.message.domain/Message.Companion///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>object [Companion](-companion/index.md)  <br><br><br>
 
+## Functions
 
-## Functions  
-  
 |  Name|  Summary| 
 |---|---|
 | <a name="com.enchainte.sdk.message.domain/Message/compareTo/#com.enchainte.sdk.message.domain.Message/PointingToDeclaration/"></a>[compareTo](compare-to.md)| <a name="com.enchainte.sdk.message.domain/Message/compareTo/#com.enchainte.sdk.message.domain.Message/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open operator override fun [compareTo](compare-to.md)(other: [Message](index.md)): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)  <br><br><br>

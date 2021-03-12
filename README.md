@@ -1,11 +1,11 @@
-# Enchainté SDK -  Kotlin / Java
+# Enchainté SDK - Kotlin / Java
 
 This SDK offers all the features available in the Enchainté Toolset:
+
 - Write messages
 - Get messages proof
 - Validate proof
 - Get messages details
-
 
 ## Usage
 
@@ -59,9 +59,9 @@ val apiKey = System.getenv("API_KEY")!!
 val client = EnchainteClient(apiKey)
 
 val messages = listOf(
-        Message.fromString('Example Data 1'),
-        Message.fromString('Example Data 2'),
-        Message.fromString('Example Data 3')
+    Message.fromString('Example Data 1'),
+    Message.fromString('Example Data 2'),
+    Message.fromString('Example Data 3')
 )
 
 val messageReceipts = client.getMessages(messages).blockingSubscribe()
@@ -85,7 +85,6 @@ client.sendMessage(message).blockingSubscribe()
 
 client.waitMessageReceipts(listOf(message)).blockingSubscribe()
 ```
-
 
 ### Get and validate messages proof
 

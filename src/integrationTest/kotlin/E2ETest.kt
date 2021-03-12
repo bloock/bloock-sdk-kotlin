@@ -1,24 +1,25 @@
 import com.enchainte.sdk.EnchainteClient
-import com.enchainte.sdk.message.domain.Message
+import com.enchainte.sdk.message.entity.Message
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
+import org.koin.test.junit5.AutoCloseKoinTest
 import kotlin.test.assertTrue
 
-class E2ETest {
+class E2ETest: AutoCloseKoinTest() {
     @Test
     fun e2eTest() {
-        val charPool : List<Char> = ('a'..'f') + ('0'..'9')
+        val charPool: List<Char> = ('a'..'f') + ('0'..'9')
         val randomHex = (1..16)
-            .map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }
+            .map { kotlin.random.Random.nextInt(0, charPool.size) }
             .map(charPool::get)
-            .joinToString("");
+            .joinToString("")
 
         val message = Message.fromHex(randomHex)
 
         val apiKey = System.getenv("API_KEY")
         val client = EnchainteClient(apiKey)
         println("SENDING MESSAGE: ${message.getHash()}")
-        client.sendMessage(message).blockingSubscribe()
+        client.sendMessage(listOf(message)).blockingSubscribe()
 
         runBlocking {
             println("WAITING MESSAGE")

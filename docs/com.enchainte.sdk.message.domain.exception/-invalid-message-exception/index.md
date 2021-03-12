@@ -1,13 +1,12 @@
 //[docs](../../index.md)/[com.enchainte.sdk.message.domain.exception](../index.md)/[InvalidMessageException](index.md)
 
+# InvalidMessageException
 
+[jvm]
+class [InvalidMessageException](index.md) : [Exception](https://docs.oracle.com/javase/8/docs/api/java/lang/Exception.html)
 
-# InvalidMessageException  
- [jvm] class [InvalidMessageException](index.md) : [Exception](https://docs.oracle.com/javase/8/docs/api/java/lang/Exception.html)   
+## Functions
 
-
-## Functions  
-  
 |  Name|  Summary| 
 |---|---|
 | <a name="kotlin/Throwable/addSuppressed/#kotlin.Throwable/PointingToDeclaration/"></a>[addSuppressed](index.md#%5Bkotlin%2FThrowable%2FaddSuppressed%2F%23kotlin.Throwable%2FPointingToDeclaration%2F%5D%2FFunctions%2F-995256689)| <a name="kotlin/Throwable/addSuppressed/#kotlin.Throwable/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>fun [addSuppressed](index.md#%5Bkotlin%2FThrowable%2FaddSuppressed%2F%23kotlin.Throwable%2FPointingToDeclaration%2F%5D%2FFunctions%2F-995256689)(p0: [Throwable](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html))  <br><br><br>
@@ -22,9 +21,8 @@
 | <a name="kotlin/Throwable/setStackTrace/#kotlin.Array[java.lang.StackTraceElement]/PointingToDeclaration/"></a>[setStackTrace](index.md#%5Bkotlin%2FThrowable%2FsetStackTrace%2F%23kotlin.Array%5Bjava.lang.StackTraceElement%5D%2FPointingToDeclaration%2F%5D%2FFunctions%2F-995256689)| <a name="kotlin/Throwable/setStackTrace/#kotlin.Array[java.lang.StackTraceElement]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open fun [setStackTrace](index.md#%5Bkotlin%2FThrowable%2FsetStackTrace%2F%23kotlin.Array%5Bjava.lang.StackTraceElement%5D%2FPointingToDeclaration%2F%5D%2FFunctions%2F-995256689)(p0: [Array](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html)<[StackTraceElement](https://docs.oracle.com/javase/8/docs/api/java/lang/StackTraceElement.html)>)  <br><br><br>
 | <a name="kotlin/Any/toString/#/PointingToDeclaration/"></a>[toString](../../com.enchainte.sdk.proof.domain/-proof/-companion/index.md#%5Bkotlin%2FAny%2FtoString%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F-995256689)| <a name="kotlin/Any/toString/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open fun [toString](../../com.enchainte.sdk.proof.domain/-proof/-companion/index.md#%5Bkotlin%2FAny%2FtoString%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F-995256689)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)  <br><br><br>
 
+## Properties
 
-## Properties  
-  
 |  Name|  Summary| 
 |---|---|
 | <a name="com.enchainte.sdk.message.domain.exception/InvalidMessageException/cause/#/PointingToDeclaration/"></a>[cause](index.md#%5Bcom.enchainte.sdk.message.domain.exception%2FInvalidMessageException%2Fcause%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F-995256689)| <a name="com.enchainte.sdk.message.domain.exception/InvalidMessageException/cause/#/PointingToDeclaration/"></a> [jvm] open val [cause](index.md#%5Bcom.enchainte.sdk.message.domain.exception%2FInvalidMessageException%2Fcause%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F-995256689): [Throwable](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html)?   <br>

@@ -1,13 +1,16 @@
 import com.enchainte.sdk.EnchainteClient;
-import com.enchainte.sdk.message.domain.Message;
+import com.enchainte.sdk.message.entity.Message;
 import org.junit.jupiter.api.Test;
+import org.koin.test.junit5.AutoCloseKoinTest;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class E2EJavaTest {
+public class E2EJavaTest extends AutoCloseKoinTest {
     @Test
     public void e2eJavaTest() throws Exception {
         Message message = Message.fromHex(getRandomHexString());
@@ -16,7 +19,9 @@ public class E2EJavaTest {
         EnchainteClient client = new EnchainteClient(apiKey);
 
         System.out.println("SENDING MESSAGE: " + message.getHash());
-        client.sendMessage(message).blockingSubscribe();
+        List<Message> messages = new ArrayList<>();
+        messages.add(message);
+        client.sendMessage(messages).blockingSubscribe();
 
         System.out.println("WAITING MESSAGE");
         client.waitMessageReceipts(Collections.singletonList(message)).blockingSubscribe();
@@ -35,10 +40,10 @@ public class E2EJavaTest {
         assertTrue(valid);
     }
 
-    private String getRandomHexString(){
+    private String getRandomHexString() {
         Random r = new Random();
         StringBuilder sb = new StringBuilder();
-        while(sb.length() < 32){
+        while (sb.length() < 32) {
             sb.append(Integer.toHexString(r.nextInt()));
         }
 

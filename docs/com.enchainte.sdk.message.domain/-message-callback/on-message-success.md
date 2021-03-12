@@ -1,8 +1,8 @@
-//[docs](../../index.md)/[com.enchainte.sdk.message.domain](../index.md)/[MessageCallback](index.md)/[onMessageSuccess](on-message-success.md)
+//[docs](../../index.md)/[com.enchainte.sdk.message.domain](../index.md)/[MessageCallback](index.md)
+/[onMessageSuccess](on-message-success.md)
 
+# onMessageSuccess
 
-
-# onMessageSuccess  
 [jvm]  
 Content  
 abstract fun [onMessageSuccess](on-message-success.md)()  

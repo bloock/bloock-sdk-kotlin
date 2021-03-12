@@ -1,17 +1,25 @@
 package com.enchainte.sdk
 
-import com.enchainte.sdk.config.application.ConfigService
-import com.enchainte.sdk.message.domain.Message
-import com.enchainte.sdk.message.domain.MessageReceipt
-import com.enchainte.sdk.proof.domain.Proof
-import com.enchainte.sdk.shared.Factory
-import com.enchainte.sdk.shared.infrastructure.http.setApiKey
+import com.enchainte.sdk.config.entity.ConfigEnvironment
+import com.enchainte.sdk.config.service.ConfigService
+import com.enchainte.sdk.infrastructure.HttpClient
+import com.enchainte.sdk.message.entity.Message
+import com.enchainte.sdk.message.entity.MessageReceipt
+import com.enchainte.sdk.message.service.MessageService
+import com.enchainte.sdk.proof.entity.Proof
+import com.enchainte.sdk.proof.service.ProofService
+import com.enchainte.sdk.shared.*
 import io.ktor.client.*
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.rxMaybe
 import kotlinx.coroutines.rx3.rxSingle
+import org.koin.core.Koin
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import org.koin.core.component.inject
+import org.koin.core.context.startKoin
 
 /**
  * Entry-point to the Enchainté SDK
@@ -26,41 +34,44 @@ import kotlinx.coroutines.rx3.rxSingle
  * Constructor with API Key that enables accessing to Enchainté's functionalities
  *
  * @param apiKey client API Key
+ * @param environment (optional) defines the Enchainté's environment to use. By default: production
  */
-class EnchainteClient(apiKey: String) {
-    private val config: ConfigService = Factory.getConfig()
-    private val httpClient: HttpClient = Factory.getHttpClient()
+class EnchainteClient(private val apiKey: String, private val environment: ConfigEnvironment) : KoinComponent {
+    // override fun getKoin(): Koin = EnchainteKoinContext.koinApp.koin
+
+    constructor(apiKey: String) : this(apiKey, ConfigEnvironment.TEST)
+
+    private var configService: ConfigService
+    private var messageService: MessageService
+    private var proofService: ProofService
+
+    private var httpClient: HttpClient
 
     init {
+        setUpDependencyInjection()
+
+        configService = get()
+        messageService = get()
+        proofService = get()
+        httpClient = get()
+
         httpClient.setApiKey(apiKey)
 
         runBlocking {
-            config.loadConfiguration()
-            config.setTestEnvironment(true)
+            configService.setupEnvironment(environment)
         }
     }
 
     /**
-     * Moves the current context to the Test environment
+     * Sends a list of [Message] to Enchainté
      *
-     * @param isTest
+     * @param message list of [Message] to send
+     * @return RxJava [Single] that will return a list of [MessageReceipt]
      */
-    fun setTestEnvironment(isTest: Boolean) {
-        this.config.setTestEnvironment(isTest)
-    }
-
-    /**
-     * Sends a [Message] to Enchainté
-     *
-     * @param message [Message] to send
-     * @return RxJava [Single] that will return a [Message]
-     */
-    fun sendMessage(message: Message): Single<Message> {
-        if (!Message.isValid(message)) {
-            return Single.error(Error("Invalid message"))
+    fun sendMessage(messages: List<Message>): Single<List<MessageReceipt>> {
+        return rxSingle {
+            messageService.sendMessages(messages)
         }
-        val messageWriteService = Factory.getMessageWriteService()
-        return messageWriteService.writeMessages(message)
     }
 
     /**
@@ -71,8 +82,7 @@ class EnchainteClient(apiKey: String) {
      */
     fun getMessages(messages: List<Message>): Single<List<MessageReceipt>> {
         return rxSingle {
-            val messageFindService = Factory.getMessageFindService()
-            messageFindService.getMessages(messages)
+            messageService.getMessages(messages)
         }
     }
 
@@ -84,8 +94,7 @@ class EnchainteClient(apiKey: String) {
      */
     fun waitMessageReceipts(messages: List<Message>): Single<List<MessageReceipt>> {
         return rxSingle {
-            val messageWaitService = Factory.getMessageWaitService()
-            messageWaitService.waitMessages(messages)
+            messageService.waitMessages(messages)
         }
     }
 
@@ -97,10 +106,7 @@ class EnchainteClient(apiKey: String) {
      */
     fun getProof(messages: List<Message>): Maybe<Proof> {
         return rxMaybe {
-            val sorted = Message.sort(messages)
-
-            val proofService = Factory.getProofService()
-            proofService.getProof(sorted)
+            proofService.retrieveProof(messages)
         }
     }
 
@@ -112,19 +118,7 @@ class EnchainteClient(apiKey: String) {
      * @return a [Boolean] that returns true if valid, false if not
      */
     fun verifyProof(proof: Proof): Boolean {
-        if (!Proof.isValid(proof)) {
-            return false
-        }
-
-        return try {
-            val verifyService = Factory.getVerifyService()
-            val root = verifyService.verify(proof) ?: return false
-
-            val blockchainClient = Factory.getBlockchainClient()
-            blockchainClient.validateRoot(root.getHash())
-        } catch (err: Throwable) {
-            false
-        }
+        return proofService.verifyProof(proof)
     }
 
     /**
@@ -135,14 +129,8 @@ class EnchainteClient(apiKey: String) {
      * @return a [Single] that will return true if valid, false if not.
      */
     fun verifyMessages(messages: List<Message>): Single<Boolean> {
-        return this.getProof(messages)
-            .toSingle()
-            .map {
-                if (it != null) {
-                    this.verifyProof(it)
-                } else {
-                    false
-                }
-            }
+        return rxSingle {
+            proofService.verifyMessages(messages)
+        }
     }
 }

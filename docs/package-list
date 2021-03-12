@@ -4,5 +4,5 @@ $dokka.linkExtension:md
 com.enchainte.sdk
 com.enchainte.sdk.message.domain
 com.enchainte.sdk.message.domain.exception
-com.enchainte.sdk.proof.domain
+com.enchainte.sdk.proof.entity
 
