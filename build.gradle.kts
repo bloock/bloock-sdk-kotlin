@@ -7,11 +7,16 @@ object Library {
     const val LIBRARY_NAME = "Enchainté SDK"
     const val GROUP_ID = "com.enchainte.sdk"
     const val ARTIFACT_NAME = "enchainte-sdk"
-    const val VERSION = "0.1.2"
+    const val VERSION = "0.1.5"
 
     const val DESCRIPTION = "Enchainté SDK for Java / Kotlin"
     const val SITE_URL = "https://www.enchainte.com"
     const val GIT_URL = "scm:git:https://github.com/enchainte/enchainte-sdk-kotlin.git"
+
+    const val DEVELOPER_ID = "mbaque_enchainte"
+    const val DEVELOPER_NAME = "Marc Baqué"
+    const val DEVELOPER_EMAIL = "mbaque@enchainte.com"
+
     const val LICENSE = "MIT License"
     const val LICENSE_URL = "https://raw.githubusercontent.com/enchainte/enchainte-sdk-kotlin/master/LICENSE"
 }
@@ -61,6 +66,20 @@ task<Test>("integrationTest") {
     classpath = sourceSets["integrationTest"].runtimeClasspath
     outputs.upToDateWhen { false }
     mustRunAfter(tasks["test"])
+    useJUnitPlatform()
+}
+
+tasks.register<Jar>("sourcesJar") {
+    archiveClassifier.set("sources")
+    from(sourceSets.main.get().allJava)
+}
+
+tasks.register<Jar>("javadocJar") {
+    archiveClassifier.set("javadoc")
+    from(tasks.javadoc.get().destinationDir)
+}
+
+tasks.test.configure {
     useJUnitPlatform()
 }
 
@@ -114,12 +133,6 @@ dependencies {
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:${DependencyVersions.MOCKITO}")
 }
 
-tasks {
-    "test"(Test::class) {
-        useJUnitPlatform()
-    }
-}
-
 
 val MAVEN_UPLOAD_USER: String? by project
 val MAVEN_UPLOAD_PWD: String? by project
@@ -139,6 +152,8 @@ publishing {
     publications {
         create<MavenPublication>("mavenJava") {
             from(components["java"])
+            artifact(tasks["sourcesJar"])
+            artifact(tasks["javadocJar"])
 
             groupId = Library.GROUP_ID
             artifactId = Library.ARTIFACT_NAME
@@ -152,6 +167,13 @@ publishing {
                     license {
                         name.set(Library.LICENSE)
                         url.set(Library.LICENSE_URL)
+                    }
+                }
+                developers {
+                    developer {
+                        id.set(Library.DEVELOPER_ID)
+                        name.set(Library.DEVELOPER_NAME)
+                        email.set(Library.DEVELOPER_EMAIL)
                     }
                 }
                 scm {
