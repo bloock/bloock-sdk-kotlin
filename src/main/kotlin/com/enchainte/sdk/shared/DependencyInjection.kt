@@ -1,5 +1,9 @@
 package com.enchainte.sdk.shared
 
+import com.enchainte.sdk.anchor.repository.AnchorRepository
+import com.enchainte.sdk.anchor.repository.AnchorRepositoryImpl
+import com.enchainte.sdk.anchor.service.AnchorService
+import com.enchainte.sdk.anchor.service.AnchorServiceImpl
 import com.enchainte.sdk.config.data.ConfigData
 import com.enchainte.sdk.config.repository.ConfigRepository
 import com.enchainte.sdk.config.repository.ConfigRepositoryImpl
@@ -27,6 +31,7 @@ import org.koin.dsl.module
 internal fun setUpDependencyInjection() {
     startKoin {
         modules(InfrastructureModule)
+        modules(AnchorModule)
         modules(ConfigModule)
         modules(MessageModule)
         modules(ProofModule)
@@ -46,6 +51,11 @@ internal val InfrastructureModule = module {
     single { Web3(get()) as BlockchainClient }
 }
 
+internal val AnchorModule = module {
+    single { AnchorServiceImpl(get(), get()) as AnchorService }
+    single { AnchorRepositoryImpl(get(), get()) as AnchorRepository }
+}
+
 internal val ConfigModule = module {
     single { ConfigServiceImpl(get()) as ConfigService }
     single { ConfigRepositoryImpl(get(), get()) as ConfigRepository }
@@ -53,7 +63,7 @@ internal val ConfigModule = module {
 }
 
 internal val MessageModule = module {
-    single { MessageServiceImpl(get(), get()) as MessageService }
+    single { MessageServiceImpl(get()) as MessageService }
     single { MessageRepositoryImpl(get(), get()) as MessageRepository }
 }
 

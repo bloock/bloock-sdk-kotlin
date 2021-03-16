@@ -1,5 +1,7 @@
 package com.enchainte.sdk
 
+import com.enchainte.sdk.anchor.entity.Anchor
+import com.enchainte.sdk.anchor.service.AnchorService
 import com.enchainte.sdk.config.entity.ConfigEnvironment
 import com.enchainte.sdk.config.service.ConfigService
 import com.enchainte.sdk.infrastructure.HttpClient
@@ -37,6 +39,7 @@ class EnchainteClient(private val apiKey: String, private val environment: Confi
 
     constructor(apiKey: String) : this(apiKey, ConfigEnvironment.TEST)
 
+    private var anchorService: AnchorService
     private var configService: ConfigService
     private var messageService: MessageService
     private var proofService: ProofService
@@ -46,6 +49,7 @@ class EnchainteClient(private val apiKey: String, private val environment: Confi
     init {
         setUpDependencyInjection()
 
+        anchorService = get()
         configService = get()
         messageService = get()
         proofService = get()
@@ -59,9 +63,9 @@ class EnchainteClient(private val apiKey: String, private val environment: Confi
     }
 
     /**
-     * Sends a list of [Message] to Enchainté
+     * Sends a list of [Anchor] to Enchainté
      *
-     * @param messages list of [Message] to send
+     * @param messages list of [Anchor] to send
      * @return RxJava [Single] that will return a list of [MessageReceipt]
      */
     fun sendMessage(messages: List<Message>): Single<List<MessageReceipt>> {
@@ -71,7 +75,7 @@ class EnchainteClient(private val apiKey: String, private val environment: Confi
     }
 
     /**
-     * Retrieves the [MessageReceipt]s for the specified [Message]s
+     * Retrieves the [MessageReceipt]s for the specified [Anchor]s
      *
      * @param messages to fetch
      * @return a [Single] that will return a list of [MessageReceipt]
@@ -83,19 +87,31 @@ class EnchainteClient(private val apiKey: String, private val environment: Confi
     }
 
     /**
-     * Waits until all specified messages are confirmed in Enchainté
+     * Gets an specific anchor id details
      *
-     * @param messages to wait for
-     * @return a [Single] that will return a list of [MessageReceipt]
+     * @param anchor to look for
+     * @return a [Single] that will return a [Anchor] object
      */
-    fun waitMessageReceipts(messages: List<Message>): Single<List<MessageReceipt>> {
+    fun getAnchor(anchor: Int): Single<Anchor> {
         return rxSingle {
-            messageService.waitMessages(messages)
+            anchorService.getAnchor(anchor)
         }
     }
 
     /**
-     * Retrieves an integrity [Proof] for the specified list of [Message]
+     * Waits until the anchor specified is confirmed in Enchainté
+     *
+     * @param anchor to wait for
+     * @return a [Single] that will return a [Anchor]
+     */
+    fun waitAnchor(anchor: Int): Single<Anchor> {
+        return rxSingle {
+            anchorService.waitAnchor(anchor)
+        }
+    }
+
+    /**
+     * Retrieves an integrity [Proof] for the specified list of [Anchor]
      *
      * @param messages to validate
      * @return a [Maybe] that will return a [Proof]
@@ -118,7 +134,7 @@ class EnchainteClient(private val apiKey: String, private val environment: Confi
     }
 
     /**
-     * It retrieves a proof for the specified list of [Message] using [getProof] and
+     * It retrieves a proof for the specified list of [Anchor] using [getProof] and
      * verifies it using [verifyProof].
      *
      * @param messages to verify

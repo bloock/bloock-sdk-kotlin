@@ -36,6 +36,7 @@ internal class ConfigRepositoryImpl(private val httpClient: HttpClient, private 
                 WRITE_ENDPOINT = resultMap["SDK_WRITE_ENDPOINT"]!!,
                 PROOF_ENDPOINT = resultMap["SDK_PROOF_ENDPOINT"]!!,
                 FETCH_ENDPOINT = resultMap["SDK_FETCH_ENDPOINT"]!!,
+                FETCH_ANCHOR_ENDPOINT = resultMap["SDK_FETCH_ANCHOR_ENDPOINT"]!!,
                 CONTRACT_ADDRESS = resultMap["SDK_CONTRACT_ADDRESS"]!!,
                 CONTRACT_ABI = resultMap["SDK_CONTRACT_ABI"]!!,
                 PROVIDER = resultMap["SDK_PROVIDER"]!!,

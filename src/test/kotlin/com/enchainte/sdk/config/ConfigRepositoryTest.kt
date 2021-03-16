@@ -71,6 +71,7 @@ class ConfigRepositoryTest : KoinTest {
                         ConfigItemResponse("SDK_WRITE_ENDPOINT", "SDK_WRITE_ENDPOINT"),
                         ConfigItemResponse("SDK_PROOF_ENDPOINT", "SDK_PROOF_ENDPOINT"),
                         ConfigItemResponse("SDK_FETCH_ENDPOINT", "SDK_FETCH_ENDPOINT"),
+                        ConfigItemResponse("SDK_FETCH_ANCHOR_ENDPOINT", "SDK_FETCH_ANCHOR_ENDPOINT"),
                         ConfigItemResponse("SDK_CONTRACT_ADDRESS", "SDK_CONTRACT_ADDRESS"),
                         ConfigItemResponse("SDK_CONTRACT_ABI", "SDK_CONTRACT_ABI"),
                         ConfigItemResponse("SDK_PROVIDER", "SDK_PROVIDER"),

@@ -8,8 +8,7 @@ import com.enchainte.sdk.message.repository.MessageRepository
 import com.enchainte.sdk.shared.Utils
 
 internal class MessageServiceImpl internal constructor(
-    private val messageRepository: MessageRepository,
-    private val configRepository: ConfigRepository
+    private val messageRepository: MessageRepository
 ) : MessageService {
 
     override suspend fun sendMessages(messages: List<Message>): List<MessageReceipt> {
@@ -29,10 +28,10 @@ internal class MessageServiceImpl internal constructor(
         for (message in messages) {
             result.add(
                 MessageReceipt(
-                    response?.anchor,
-                    response?.client,
+                    response?.anchor ?: 0,
+                    response?.client ?: "",
                     message.getHash(),
-                    response?.status
+                    response?.status ?: ""
                 )
             )
         }
@@ -53,31 +52,4 @@ internal class MessageServiceImpl internal constructor(
         }
     }
 
-    override suspend fun waitMessages(messages: List<Message>): List<MessageReceipt> {
-        var completed: Boolean
-        var attempts = 0
-        var messageReceipts: List<MessageReceipt>
-
-        do {
-            val response = messageRepository.fetchMessages(messages) ?: emptyList()
-
-            messageReceipts = response.map {
-                MessageReceipt(it.anchor, it.client, it.message, it.status)
-            }
-
-            completed = messageReceipts.size >= messages.size && messageReceipts.all { receipt ->
-                (receipt.status == "Success") || (receipt.status == "Error")
-            }
-
-            if (completed) break
-
-            Utils.sleep(
-                configRepository.getConfiguration().WAIT_MESSAGE_INTERVAL_DEFAULT +
-                        attempts * configRepository.getConfiguration().WAIT_MESSAGE_INTERVAL_FACTOR
-            )
-            attempts += 1
-        } while (!completed)
-
-        return messageReceipts
-    }
 }

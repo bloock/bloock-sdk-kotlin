@@ -127,41 +127,4 @@ class MessageServiceTest: KoinTest {
             Mockito.verify(messageRepository, times(1)).fetchMessages(messages)
         }
     }
-
-    @Test
-    fun `wait message two tries`() {
-        val messages: List<Message> = listOf(
-            Message.fromString("Example Data 2"),
-            Message.fromHash("some_invalid_hash")
-        )
-        val messageRepository = declareMock<MessageRepository> {
-            runBlocking {
-                given(fetchMessages(messages))
-                    .will {
-                        listOf(
-                            MessageRetrieveResponse(1, "client", messages[0].getHash(), "Pending"),
-                            MessageRetrieveResponse(1, "client", messages[1].getHash(), "Pending")
-                        )
-                    }
-                    .will {
-                        listOf(
-                            MessageRetrieveResponse(1, "client", messages[0].getHash(), "Success"),
-                            MessageRetrieveResponse(1, "client", messages[1].getHash(), "Success")
-                        )
-                    }
-            }
-        }
-
-        val messageService: MessageService = get()
-
-        runBlocking {
-            val response = messageService.waitMessages(messages)
-
-            assertEquals(2, response.size)
-            assertEquals(messages[0].getHash(), response[0].message)
-            assertEquals(messages[1].getHash(), response[1].message)
-
-            Mockito.verify(messageRepository, times(2)).fetchMessages(messages)
-        }
-    }
 }

@@ -1,5 +1,6 @@
 import com.enchainte.sdk.EnchainteClient;
 import com.enchainte.sdk.message.entity.Message;
+import com.enchainte.sdk.message.entity.MessageReceipt;
 import org.junit.jupiter.api.Test;
 import org.koin.test.junit5.AutoCloseKoinTest;
 
@@ -21,22 +22,14 @@ public class E2EJavaTest extends AutoCloseKoinTest {
         System.out.println("SENDING MESSAGE: " + message.getHash());
         List<Message> messages = new ArrayList<>();
         messages.add(message);
-        client.sendMessage(messages).blockingSubscribe();
+        List<MessageReceipt> writeResponse = client.sendMessage(messages).blockingGet();
 
         System.out.println("WAITING MESSAGE");
-        client.waitMessageReceipts(Collections.singletonList(message)).blockingSubscribe();
+        client.waitAnchor(writeResponse.get(0).getAnchor()).blockingSubscribe();
 
         System.out.println("VALIDATING MESSAGE");
 
-        boolean valid = false;
-        long start_time = System.currentTimeMillis();
-        long wait_time = 120000;
-        long end_time = start_time + wait_time;
-        while (!valid && System.currentTimeMillis() < end_time) {
-            valid = client.verifyMessages(Collections.singletonList(message)).blockingGet();
-            Thread.sleep(500);
-        }
-
+        boolean valid = client.verifyMessages(Collections.singletonList(message)).blockingGet();
         assertTrue(valid);
     }
 

@@ -7,6 +7,32 @@ This SDK offers all the features available in the Enchainté Toolset:
 - Validate proof
 - Get messages details
 
+## Installation
+
+### Requirements
+
+- Java 1.8 or later
+
+### Gradle users
+
+Add this dependency to your project's build file:
+
+```groovy
+implementation 'com.enchainte.sdk:enchainte-sdk:0.1.4'
+```
+
+### Maven users
+
+Add this dependency to your project's POM:
+
+```xml
+<dependency>
+    <groupId>com.enchainte.sdk</groupId>
+    <artifactId>enchainte-sdk</artifactId>
+    <version>0.1.4</version>
+</dependency>
+```
+
 ## Usage
 
 The following examples summarize how to access the different functionalities available:

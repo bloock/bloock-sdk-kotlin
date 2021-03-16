@@ -6,6 +6,7 @@ internal class Configuration(
     val WRITE_ENDPOINT: String = "",
     val PROOF_ENDPOINT: String = "",
     val FETCH_ENDPOINT: String = "",
+    val FETCH_ANCHOR_ENDPOINT: String = "",
     val CONTRACT_ADDRESS: String = "",
     val CONTRACT_ABI: String = "",
     val PROVIDER: String = "",

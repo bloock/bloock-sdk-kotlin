@@ -7,6 +7,7 @@ import com.enchainte.sdk.infrastructure.HttpClient
 import com.enchainte.sdk.shared.ConfigModule
 import com.enchainte.sdk.shared.InfrastructureModule
 import com.nhaarman.mockitokotlin2.given
+import com.nhaarman.mockitokotlin2.times
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
@@ -15,6 +16,7 @@ import org.koin.test.junit5.KoinTestExtension
 import org.koin.test.junit5.mock.MockProviderExtension
 import org.koin.test.mock.declareMock
 import org.mockito.Mockito
+import kotlin.test.assertNotNull
 
 class EnchainteClientTest: AutoCloseKoinTest() {
 
@@ -33,35 +35,6 @@ class EnchainteClientTest: AutoCloseKoinTest() {
         Mockito.mock(clazz.java)
     }
 
-    @Test
-    fun `should initialize`() {
-        val apiKey = "test_api_key"
-
-        val httpClient = declareMock<HttpClient> {
-            runBlocking {
-                given(setApiKey(apiKey)).will {}
-            }
-        }
-
-        val configService = declareMock<ConfigService> {
-            runBlocking {
-                given(setupEnvironment(ConfigEnvironment.TEST)).will {
-                    Configuration(
-                        API_VERSION = "api_version"
-                    )
-                }
-            }
-        }
-
-        /*val client = EnchainteClient(apiKey)
-
-        Mockito.verify(httpClient, times(1)).setApiKey(apiKey)
-        runBlocking {
-            Mockito.verify(configService, times(1)).setupEnvironment(ConfigEnvironment.TEST)
-        }
-
-        assertNotNull(client)*/
-    }
 
     @Test
     fun testSendMessageMethod() {

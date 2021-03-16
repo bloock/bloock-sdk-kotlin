@@ -6,5 +6,4 @@ import com.enchainte.sdk.message.entity.MessageReceipt
 internal interface MessageService {
     suspend fun sendMessages(messages: List<Message>): List<MessageReceipt>
     suspend fun getMessages(messages: List<Message>): List<MessageReceipt>
-    suspend fun waitMessages(messages: List<Message>): List<MessageReceipt>
 }
