@@ -18,7 +18,7 @@ This SDK offers all the features available in the Enchainté Toolset:
 Add this dependency to your project's build file:
 
 ```groovy
-implementation 'com.enchainte.sdk:enchainte-sdk:0.1.5'
+implementation 'com.enchainte.sdk:enchainte-sdk:0.2.0'
 ```
 
 ### Maven users
@@ -29,7 +29,7 @@ Add this dependency to your project's POM:
 <dependency>
     <groupId>com.enchainte.sdk</groupId>
     <artifactId>enchainte-sdk</artifactId>
-    <version>0.1.5</version>
+    <version>0.2.0</version>
 </dependency>
 ```
 

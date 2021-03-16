@@ -146,6 +146,6 @@ class EnchainteClient(private val apiKey: String, private val environment: Confi
     }
 
     companion object {
-        const val VERSION: String = "0.1.5"
+        const val VERSION: String = "0.2.0"
     }
 }
