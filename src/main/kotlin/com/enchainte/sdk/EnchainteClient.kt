@@ -35,7 +35,6 @@ import org.koin.core.component.get
  * @param environment (optional) defines the Enchainté's environment to use. By default: production
  */
 class EnchainteClient(private val apiKey: String, private val environment: ConfigEnvironment) : KoinComponent {
-    // override fun getKoin(): Koin = EnchainteKoinContext.koinApp.koin
 
     constructor(apiKey: String) : this(apiKey, ConfigEnvironment.TEST)
 
@@ -144,5 +143,10 @@ class EnchainteClient(private val apiKey: String, private val environment: Confi
         return rxSingle {
             proofService.verifyMessages(messages)
         }
+    }
+
+    companion object {
+        @JvmField
+        val VERSION: String = "0.1.5"
     }
 }

@@ -1,6 +1,5 @@
 import com.enchainte.sdk.EnchainteClient
 import com.enchainte.sdk.message.entity.Message
-import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.koin.test.junit5.AutoCloseKoinTest
 import kotlin.test.assertTrue
@@ -19,15 +18,13 @@ class E2ETest: AutoCloseKoinTest() {
         val apiKey = System.getenv("API_KEY")
         val client = EnchainteClient(apiKey)
         println("SENDING MESSAGE: ${message.getHash()}")
-        val writeResult = client.sendMessage(listOf(message)).blockingGet()
+        val writeResult = client.sendMessage(listOf(message)).blockingGet().first()
 
-        runBlocking {
-            println("WAITING MESSAGE")
-            client.waitAnchor(writeResult[0].anchor).blockingSubscribe()
+        println("WAITING MESSAGE")
+        client.waitAnchor(writeResult.anchor).blockingSubscribe()
 
-            println("VALIDATING MESSAGE")
-            val valid = client.verifyMessages(listOf(message)).blockingGet()
-            assertTrue(valid)
-        }
+        println("VALIDATING MESSAGE")
+        val valid = client.verifyMessages(listOf(message)).blockingGet()
+        assertTrue(valid)
     }
 }

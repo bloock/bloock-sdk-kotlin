@@ -29,9 +29,9 @@ class FunctionalTest: AutoCloseKoinTest() {
             Message.fromString("Example Data 3")
         )
 
-        val result = client.sendMessage(messages).blockingGet()
+        val result = client.sendMessage(messages).blockingGet().first()
 
-        val receipts = client.waitAnchor(result[0].anchor).blockingGet()
+        val receipts = client.waitAnchor(result.anchor).blockingGet()
         assertNotNull(receipts)
     }
 
@@ -47,13 +47,29 @@ class FunctionalTest: AutoCloseKoinTest() {
             Message.fromString("Example Data 3")
         )
 
-        val result = client.sendMessage(messages).blockingGet()
+        val result = client.sendMessage(messages).blockingGet().first()
 
-        client.waitAnchor(result[0].anchor).blockingSubscribe()
+        client.waitAnchor(result.anchor).blockingSubscribe()
 
         val messageReceipts = client.getMessages(messages).blockingGet()
         for (messageReceipt in messageReceipts) {
             assertEquals("Success", messageReceipt.status)
         }
+    }
+
+    @Test
+    fun testGetProof() {
+        val apiKey = System.getenv("API_KEY")!!
+
+        val client = EnchainteClient(apiKey)
+
+        val messages = listOf(
+            Message.fromString("Example Data 1"),
+            Message.fromString("Example Data 2"),
+            Message.fromString("Example Data 3")
+        )
+
+        val proof = client.getProof(messages).blockingGet()
+        assertNotNull(proof)
     }
 }
