@@ -36,7 +36,7 @@ object DependencyVersions {
 
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin.
-    id("org.jetbrains.kotlin.jvm") version "1.3.70"
+    id("org.jetbrains.kotlin.jvm") version "1.4.30"
     id("org.unbroken-dome.test-sets") version "3.0.1"
     id("com.jfrog.bintray") version "1.8.5"
     id("org.jetbrains.dokka") version "1.4.20"
@@ -188,7 +188,7 @@ publishing {
 }
 
 signing {
-    val PGP_SIGNING_KEY: String? by project
+    val      PGP_SIGNING_KEY: String? by project
     val PGP_SIGNING_PASSWORD: String? by project
 
     useInMemoryPgpKeys(PGP_SIGNING_KEY, PGP_SIGNING_PASSWORD)

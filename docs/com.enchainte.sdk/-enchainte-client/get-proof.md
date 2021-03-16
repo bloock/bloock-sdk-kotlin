@@ -9,7 +9,7 @@ fun [getProof](get-proof.md)(messages: [List](https://kotlinlang.org/api/latest/
 More info  
 
 
-Retrieves an integrity [Proof](../../com.enchainte.sdk.proof.entity/-proof/index.md) for the specified list of [Message](../../com.enchainte.sdk.message.entity/-message/index.md)
+Retrieves an integrity [Proof](../../com.enchainte.sdk.proof.entity/-proof/index.md) for the specified list of [Anchor](../../com.enchainte.sdk.anchor.entity/-anchor/index.md)
 
 
 

@@ -9,7 +9,7 @@ fun [verifyMessages](verify-messages.md)(messages: [List](https://kotlinlang.org
 More info  
 
 
-It retrieves a proof for the specified list of [Message](../../com.enchainte.sdk.message.entity/-message/index.md) using [getProof](get-proof.md) and verifies it using [verifyProof](verify-proof.md).
+It retrieves a proof for the specified list of [Anchor](../../com.enchainte.sdk.anchor.entity/-anchor/index.md) using [getProof](get-proof.md) and verifies it using [verifyProof](verify-proof.md).
 
 
 

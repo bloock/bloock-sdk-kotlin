@@ -9,7 +9,7 @@ fun [sendMessage](send-message.md)(messages: [List](https://kotlinlang.org/api/l
 More info  
 
 
-Sends a list of [Message](../../com.enchainte.sdk.message.entity/-message/index.md) to Enchainté
+Sends a list of [Anchor](../../com.enchainte.sdk.anchor.entity/-anchor/index.md) to Enchainté
 
 
 
@@ -26,7 +26,7 @@ jvm
   
 |  Name|  Summary| 
 |---|---|
-| <a name="com.enchainte.sdk/EnchainteClient/sendMessage/#kotlin.collections.List[com.enchainte.sdk.message.entity.Message]/PointingToDeclaration/"></a>messages| <a name="com.enchainte.sdk/EnchainteClient/sendMessage/#kotlin.collections.List[com.enchainte.sdk.message.entity.Message]/PointingToDeclaration/"></a><br><br>list of [Message](../../com.enchainte.sdk.message.entity/-message/index.md) to send<br><br>
+| <a name="com.enchainte.sdk/EnchainteClient/sendMessage/#kotlin.collections.List[com.enchainte.sdk.message.entity.Message]/PointingToDeclaration/"></a>messages| <a name="com.enchainte.sdk/EnchainteClient/sendMessage/#kotlin.collections.List[com.enchainte.sdk.message.entity.Message]/PointingToDeclaration/"></a><br><br>list of [Anchor](../../com.enchainte.sdk.anchor.entity/-anchor/index.md) to send<br><br>
   
   
 

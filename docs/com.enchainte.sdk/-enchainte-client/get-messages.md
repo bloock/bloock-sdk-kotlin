@@ -9,7 +9,7 @@ fun [getMessages](get-messages.md)(messages: [List](https://kotlinlang.org/api/l
 More info  
 
 
-Retrieves the [MessageReceipt](../../com.enchainte.sdk.message.entity/-message-receipt/index.md)s for the specified [Message](../../com.enchainte.sdk.message.entity/-message/index.md)s
+Retrieves the [MessageReceipt](../../com.enchainte.sdk.message.entity/-message-receipt/index.md)s for the specified [Anchor](../../com.enchainte.sdk.anchor.entity/-anchor/index.md)s
 
 
 

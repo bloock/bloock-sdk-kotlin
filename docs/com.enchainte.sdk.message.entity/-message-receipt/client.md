@@ -5,7 +5,7 @@
 # client  
 [jvm]  
 Content  
-val [client](client.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)?  
+val [client](client.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)  
 
 
 
