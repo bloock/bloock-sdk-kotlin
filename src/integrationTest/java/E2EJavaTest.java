@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class E2EJavaTest extends AutoCloseKoinTest {
     @Test
-    public void e2eJavaTest() throws Exception {
+    public void e2eJavaTest() {
         Message message = Message.fromHex(getRandomHexString());
 
         String apiKey = System.getenv("API_KEY");

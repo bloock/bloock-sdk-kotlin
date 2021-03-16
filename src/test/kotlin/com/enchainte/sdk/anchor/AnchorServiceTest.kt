@@ -1,4 +1,4 @@
-package com.enchainte.sdk.message
+package com.enchainte.sdk.anchor
 
 import com.enchainte.sdk.anchor.entity.Anchor
 import com.enchainte.sdk.anchor.entity.dto.AnchorRetrieveResponse

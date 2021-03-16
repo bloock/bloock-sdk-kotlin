@@ -1,3 +1,3 @@
-package com.enchainte.sdk.message
+package com.enchainte.sdk.anchor
 
 class AnchorRepositoryTest

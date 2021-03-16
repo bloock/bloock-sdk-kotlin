@@ -35,27 +35,6 @@ import java.util.*
  * Generated with web3j version 4.7.0.
  */
 internal class CheckpointContract : Contract {
-    @Deprecated("")
-    private constructor(
-        contractAddress: String?,
-        web3j: Web3j?,
-        credentials: Credentials?,
-        gasPrice: BigInteger?,
-        gasLimit: BigInteger?
-    ) : super(
-        BINARY, contractAddress, web3j, credentials, gasPrice, gasLimit
-    )
-
-    @Deprecated("")
-    private constructor(
-        contractAddress: String?,
-        web3j: Web3j?,
-        transactionManager: TransactionManager?,
-        gasPrice: BigInteger?,
-        gasLimit: BigInteger?
-    ) : super(
-        BINARY, contractAddress, web3j, transactionManager, gasPrice, gasLimit
-    )
 
     private constructor(
         contractAddress: String?,
@@ -128,28 +107,6 @@ internal class CheckpointContract : Contract {
             listOf<TypeReference<*>>(object : TypeReference<Bytes32?>(true) {})
         )
 
-        @Deprecated("")
-        fun load(
-            contractAddress: String?,
-            web3j: Web3j?,
-            credentials: Credentials?,
-            gasPrice: BigInteger?,
-            gasLimit: BigInteger?
-        ): CheckpointContract {
-            return CheckpointContract(contractAddress, web3j, credentials, gasPrice, gasLimit)
-        }
-
-        @Deprecated("")
-        fun load(
-            contractAddress: String?,
-            web3j: Web3j?,
-            transactionManager: TransactionManager?,
-            gasPrice: BigInteger?,
-            gasLimit: BigInteger?
-        ): CheckpointContract {
-            return CheckpointContract(contractAddress, web3j, transactionManager, gasPrice, gasLimit)
-        }
-
         fun load(
             contractAddress: String?,
             web3j: Web3j?,
@@ -174,32 +131,5 @@ internal class CheckpointContract : Contract {
             )
         }
 
-        @Deprecated("")
-        fun deploy(
-            web3j: Web3j?,
-            credentials: Credentials?,
-            gasPrice: BigInteger?,
-            gasLimit: BigInteger?
-        ): RemoteCall<CheckpointContract> {
-            return deployRemoteCall(CheckpointContract::class.java, web3j, credentials, gasPrice, gasLimit, BINARY, "")
-        }
-
-        @Deprecated("")
-        fun deploy(
-            web3j: Web3j?,
-            transactionManager: TransactionManager?,
-            gasPrice: BigInteger?,
-            gasLimit: BigInteger?
-        ): RemoteCall<CheckpointContract> {
-            return deployRemoteCall(
-                CheckpointContract::class.java,
-                web3j,
-                transactionManager,
-                gasPrice,
-                gasLimit,
-                BINARY,
-                ""
-            )
-        }
     }
 }
