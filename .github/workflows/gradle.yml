@@ -14,10 +14,10 @@ jobs:
       fail-fast: false
       matrix:
         java-version:
-          - "1.8"
-          - "11.0"
-          - "13.0"
-          - "15.0"
+          - "8"
+          - "11"
+          - "13"
+          - "15"
 
     steps:
       - uses: actions/checkout@v2
@@ -43,6 +43,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
-          java-version: 15
+          distribution: 'zulu'
+          java-version: '15'
       - name: Publish
         run: ./gradlew -PMAVEN_UPLOAD_USER=${{ secrets.MAVEN_UPLOAD_USER }} -PMAVEN_UPLOAD_PWD=${{ secrets.MAVEN_UPLOAD_PWD }}  -PPGP_SIGNING_KEY="${{ secrets.PGP_SIGNING_KEY }}" -PPGP_SIGNING_PASSWORD="${{ secrets.PGP_SIGNING_PASSWORD }}" publish
