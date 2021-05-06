@@ -6,125 +6,87 @@ import com.enchainte.sdk.message.entity.dto.MessageWriteResponse
 import com.enchainte.sdk.message.entity.exception.InvalidMessageException
 import com.enchainte.sdk.message.repository.MessageRepository
 import com.enchainte.sdk.message.service.MessageService
-import com.enchainte.sdk.shared.ConfigModule
-import com.enchainte.sdk.shared.InfrastructureModule
-import com.enchainte.sdk.shared.MessageModule
-import com.nhaarman.mockitokotlin2.given
-import com.nhaarman.mockitokotlin2.times
+import com.enchainte.sdk.message.service.MessageServiceImpl
+import io.mockk.coEvery
+import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.RegisterExtension
-import org.koin.test.KoinTest
-import org.koin.test.get
-import org.koin.test.junit5.KoinTestExtension
-import org.koin.test.junit5.mock.MockProviderExtension
-import org.koin.test.mock.declareMock
-import org.mockito.Mockito
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
-class MessageServiceTest: KoinTest {
-    @JvmField
-    @RegisterExtension
-    val koinTestExtension = KoinTestExtension.create {
-        modules(
-            InfrastructureModule,
-            ConfigModule,
-            MessageModule
-        )
-    }
-
-    @JvmField
-    @RegisterExtension
-    val mockProvider = MockProviderExtension.create { clazz ->
-        Mockito.mock(clazz.java)
-    }
-
+class MessageServiceTest {
     @Test
-    fun `send message valid`() {
-        val messages: List<Message> = listOf(
-            Message.fromString("Example Data 1"),
-            Message.fromString("Example Data 2"),
-            Message.fromString("Example Data 3")
+    fun test_send_messages_okay() {
+        val messageRepository = mockk<MessageRepository>()
+        coEvery { messageRepository.sendMessages(any()) } returns MessageWriteResponse(
+            anchor = 80,
+            client = "ce10c769-022b-405e-8e7c-3b52eeb2a4ea",
+            messages = listOf("02aae7e86eb50f61a62083a320475d9d60cbd52749dbf08fa942b1b97f50aee5"),
+            status = "Pending"
         )
-        val messageRepository = declareMock<MessageRepository> {
-            runBlocking {
-                given(sendMessages(messages)).will {
-                    MessageWriteResponse(1, "client", messages.map { it.getHash() }, "Pending")
-                }
-            }
-        }
 
-        val messageService: MessageService = get()
+        val messageService: MessageService = MessageServiceImpl(messageRepository)
 
         runBlocking {
-            val result = messageService.sendMessages(messages)
-            Mockito.verify(messageRepository, times(1)).sendMessages(messages)
-            assertEquals(3, result.size)
+            val result = messageService.sendMessages(listOf(
+                Message.fromHash("02aae7e86eb50f61a62083a320475d9d60cbd52749dbf08fa942b1b97f50aee5")
+            ))
+
+            assertEquals(result[0].anchor, 80)
+            assertEquals(result[0].client, "ce10c769-022b-405e-8e7c-3b52eeb2a4ea")
+            assertEquals(result[0].message, "02aae7e86eb50f61a62083a320475d9d60cbd52749dbf08fa942b1b97f50aee5")
+            assertEquals(result[0].status, "Pending")
         }
     }
 
     @Test
-    fun `send message with empty list`() {
-        val messages: List<Message> = emptyList()
-        val messageRepository = declareMock<MessageRepository> {}
-
-        val messageService: MessageService = get()
-
-        runBlocking {
-            val result = messageService.sendMessages(messages)
-            Mockito.verify(messageRepository, times(0)).sendMessages(messages)
-            assertEquals(0, result.size)
-        }
-    }
-
-    @Test
-    fun `send message with invalid message`() {
-        val messages: List<Message> = listOf(
-            Message.fromString("Example Data 2"),
-            Message.fromHash("some_invalid_hash")
+    fun test_send_messages_some_invalid_message_error() {
+        val messageRepository = mockk<MessageRepository>()
+        coEvery { messageRepository.sendMessages(any()) } returns MessageWriteResponse(
+            anchor = 80,
+            client = "ce10c769-022b-405e-8e7c-3b52eeb2a4ea",
+            messages = listOf(
+                "02aae7e86eb50f61a62083a320475d9d60cbd52749dbf08fa942b1b97f50aee5",
+                "message2",
+                ""
+            ),
+            status = "Pending"
         )
-        val messageRepository = declareMock<MessageRepository> {}
 
-        val messageService: MessageService = get()
+        val messageService: MessageService = MessageServiceImpl(messageRepository)
 
         runBlocking {
-            try {
-                messageService.sendMessages(messages)
-                assert(false)
-            } catch (e: InvalidMessageException) {
-                assert(true)
-                Mockito.verify(messageRepository, times(0)).sendMessages(messages)
+            assertFailsWith<InvalidMessageException> {
+                messageService.sendMessages(listOf(
+                    Message.fromHash("message")
+                ))
             }
         }
     }
 
     @Test
-    fun `get message valid`() {
-        val messages: List<Message> = listOf(
-            Message.fromString("Example Data 2"),
-            Message.fromHash("some_invalid_hash")
+    fun test_get_messages_okay() {
+        val messageRepository = mockk<MessageRepository>()
+        coEvery { messageRepository.fetchMessages(any()) } returns listOf(
+            MessageRetrieveResponse(
+                anchor = 80,
+                client = "ce10c769-022b-405e-8e7c-3b52eeb2a4ea",
+                message = "02aae7e86eb50f61a62083a320475d9d60cbd52749dbf08fa942b1b97f50aee5",
+                status = "Pending"
+            )
         )
-        val messageRepository = declareMock<MessageRepository> {
-            runBlocking {
-                given(fetchMessages(messages)).will {
-                    listOf(
-                        MessageRetrieveResponse(1, "client", messages[0].getHash(), "Pending"),
-                        MessageRetrieveResponse(1, "client", messages[1].getHash(), "Pending")
-                    )
-                }
-            }
-        }
 
-        val messageService: MessageService = get()
+        val messageService: MessageService = MessageServiceImpl(messageRepository)
 
         runBlocking {
-            val response = messageService.getMessages(messages)
+            val result = messageService.getMessages(listOf(
+                Message.fromString("message")
+            ))
 
-            assertEquals(2, response.size)
-            assertEquals(messages[0].getHash(), response[0].message)
-            assertEquals(messages[1].getHash(), response[1].message)
-
-            Mockito.verify(messageRepository, times(1)).fetchMessages(messages)
+            assertEquals(result[0].anchor, 80)
+            assertEquals(result[0].client, "ce10c769-022b-405e-8e7c-3b52eeb2a4ea")
+            assertEquals(result[0].message, "02aae7e86eb50f61a62083a320475d9d60cbd52749dbf08fa942b1b97f50aee5")
+            assertEquals(result[0].status, "Pending")
         }
     }
 }

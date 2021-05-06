@@ -28,6 +28,53 @@ import io.ktor.client.features.json.*
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 
+internal object DependencyInjection {
+    var http = HttpClient(CIO) {
+        install(JsonFeature) {
+            serializer = GsonSerializer()
+        }
+    }
+    var httpClientData = HttpClientData()
+    var httpClient: HttpClient = HttpClientImpl(http, httpClientData)
+
+    var configData: ConfigData = ConfigData()
+    var configRepository: ConfigRepository = ConfigRepositoryImpl(configData)
+    var configService: ConfigService = ConfigServiceImpl(configRepository)
+
+    var blockchainClient: BlockchainClient = Web3(configService)
+
+    var anchorRepository: AnchorRepository = AnchorRepositoryImpl(httpClient, configService)
+    var anchorService: AnchorService = AnchorServiceImpl(anchorRepository, configService)
+
+    var messageRepository: MessageRepository = MessageRepositoryImpl(httpClient, configService)
+    var messageService: MessageService = MessageServiceImpl(messageRepository)
+
+    var proofRepository: ProofRepository = ProofRepositoryImpl(httpClient, blockchainClient, configService)
+    var proofService: ProofService = ProofServiceImpl(proofRepository)
+
+    internal fun getHttpClient(): HttpClient {
+        return httpClient
+    }
+
+    internal fun getConfigService(): ConfigService {
+        return configService
+    }
+
+    internal fun getAnchorService(): AnchorService {
+        return anchorService
+    }
+
+    internal fun getMessageService(): MessageService {
+        return messageService
+    }
+
+    internal fun getProofService(): ProofService {
+        return proofService
+    }
+
+}
+
+
 internal fun setUpDependencyInjection() {
     startKoin {
         modules(InfrastructureModule)
@@ -58,7 +105,7 @@ internal val AnchorModule = module {
 
 internal val ConfigModule = module {
     single { ConfigServiceImpl(get()) as ConfigService }
-    single { ConfigRepositoryImpl(get(), get()) as ConfigRepository }
+    single { ConfigRepositoryImpl(get()) as ConfigRepository }
     single { ConfigData() }
 }
 

@@ -22,16 +22,15 @@ object Library {
 }
 
 object DependencyVersions {
-    const val KOIN_VERSION = "3.0.1-beta-1"
     const val APACHE_COMMONS_VERSION = "1.14"
     const val KT_COROUTINES_RX_VERSION = "1.4.2"
     const val KTOR_VERSION = "1.5.0"
     const val WEB3_VERSION = "4.7.0"
-    const val BLAKE2B_VERSION = "1.0.0"
+    const val BOUNCY_CASTLE_VERSION = "1.46"
     const val RXJAVA_VERSION = "3.0.9"
 
     const val JUNIT_VERSION = "5.7.0"
-    const val MOCKITO = "2.2.0"
+    const val MOCKK_VERSION = "1.10.6"
 }
 
 plugins {
@@ -45,6 +44,7 @@ plugins {
     `java-library`
     `maven-publish`
     signing
+    idea
 }
 
 sourceSets {
@@ -101,11 +101,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     // Hashing
-    implementation("com.rfksystems:blake2b:${DependencyVersions.BLAKE2B_VERSION}")
 
     // Utils
-    api("io.insert-koin:koin-core:${DependencyVersions.KOIN_VERSION}")
-
     implementation("commons-codec:commons-codec:${DependencyVersions.APACHE_COMMONS_VERSION}")
     api("io.reactivex.rxjava3:rxjava:${DependencyVersions.RXJAVA_VERSION}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx3:${DependencyVersions.KT_COROUTINES_RX_VERSION}")
@@ -115,7 +112,6 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:${DependencyVersions.KTOR_VERSION}")
     implementation("io.ktor:ktor-client-gson:${DependencyVersions.KTOR_VERSION}")
     implementation("io.ktor:ktor-client-logging:${DependencyVersions.KTOR_VERSION}")
-    implementation("io.ktor:ktor-client-auth:${DependencyVersions.KTOR_VERSION}")
 
     // Blockchain
     implementation("org.web3j:core:${DependencyVersions.WEB3_VERSION}")
@@ -123,14 +119,12 @@ dependencies {
     // Testing
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
-    testImplementation("io.insert-koin:koin-test:${DependencyVersions.KOIN_VERSION}")
-    testImplementation("io.insert-koin:koin-test-junit5:${DependencyVersions.KOIN_VERSION}")
     testImplementation("io.ktor:ktor-client-mock:${DependencyVersions.KTOR_VERSION}")
     testImplementation("org.web3j:web3j-unit:${DependencyVersions.WEB3_VERSION}")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:${DependencyVersions.JUNIT_VERSION}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${DependencyVersions.JUNIT_VERSION}")
     testImplementation("org.junit.jupiter:junit-jupiter-params:${DependencyVersions.JUNIT_VERSION}")
-    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:${DependencyVersions.MOCKITO}")
+    testImplementation("io.mockk:mockk:${DependencyVersions.MOCKK_VERSION}")
 }
 
 

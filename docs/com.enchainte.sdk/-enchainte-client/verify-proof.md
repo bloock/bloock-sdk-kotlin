@@ -5,7 +5,7 @@
 # verifyProof  
 [jvm]  
 Content  
-fun [verifyProof](verify-proof.md)(proof: [Proof](../../com.enchainte.sdk.proof.entity/-proof/index.md)): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)  
+fun [verifyProof](verify-proof.md)(proof: [Proof](../../com.enchainte.sdk.proof.entity/-proof/index.md)): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)  
 More info  
 
 

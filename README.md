@@ -141,6 +141,7 @@ val messages = listOf(
 )
 
 val proof = client.getProof(messages).blockingGet()
+val valid = client.verifyProof(proof).blockingGet()
 ```
 
 ### Full example

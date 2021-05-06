@@ -10,14 +10,12 @@ import com.enchainte.sdk.message.entity.MessageReceipt
 import com.enchainte.sdk.message.service.MessageService
 import com.enchainte.sdk.proof.entity.Proof
 import com.enchainte.sdk.proof.service.ProofService
-import com.enchainte.sdk.shared.setUpDependencyInjection
+import com.enchainte.sdk.shared.DependencyInjection
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.rxMaybe
 import kotlinx.coroutines.rx3.rxSingle
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 
 /**
  * Entry-point to the Enchainté SDK
@@ -34,40 +32,31 @@ import org.koin.core.component.get
  * @param apiKey client API Key
  * @param environment (optional) defines the Enchainté's environment to use. By default: production
  */
-class EnchainteClient(private val apiKey: String, private val environment: ConfigEnvironment) : KoinComponent {
+class EnchainteClient(private val apiKey: String, private val environment: ConfigEnvironment) {
 
-    constructor(apiKey: String) : this(apiKey, ConfigEnvironment.TEST)
+    constructor(apiKey: String) : this(apiKey, ConfigEnvironment.PROD)
 
-    private var anchorService: AnchorService
-    private var configService: ConfigService
-    private var messageService: MessageService
-    private var proofService: ProofService
+    private var anchorService: AnchorService = DependencyInjection.getAnchorService()
+    private var configService: ConfigService = DependencyInjection.getConfigService()
+    private var messageService: MessageService = DependencyInjection.getMessageService()
+    private var proofService: ProofService = DependencyInjection.getProofService()
 
-    private var httpClient: HttpClient
+    private var httpClient: HttpClient = DependencyInjection.getHttpClient()
 
     init {
-        setUpDependencyInjection()
-
-        anchorService = get()
-        configService = get()
-        messageService = get()
-        proofService = get()
-        httpClient = get()
-
         httpClient.setApiKey(apiKey)
-
-        runBlocking {
-            configService.setupEnvironment(environment)
-        }
+        configService.setupEnvironment(environment)
     }
 
     /**
-     * Sends a list of [Anchor] to Enchainté
+     * Sends a list of [Message] to Enchainté
      *
-     * @param messages list of [Anchor] to send
+     * @param messages list of [Message] to send
      * @return RxJava [Single] that will return a list of [MessageReceipt]
+     * @throws [InvalidMessageException] At least one of the messages sent was not well formed.
+     * @throws [HttpRequestException] Error return by Enchainté's API.
      */
-    fun sendMessage(messages: List<Message>): Single<List<MessageReceipt>> {
+    fun sendMessages(messages: List<Message>): Single<List<MessageReceipt>> {
         return rxSingle {
             messageService.sendMessages(messages)
         }
@@ -103,9 +92,10 @@ class EnchainteClient(private val apiKey: String, private val environment: Confi
      * @param anchor to wait for
      * @return a [Single] that will return a [Anchor]
      */
-    fun waitAnchor(anchor: Int): Single<Anchor> {
+    @JvmOverloads
+    fun waitAnchor(anchor: Int, timeout: Int = 120000): Single<Anchor> {
         return rxSingle {
-            anchorService.waitAnchor(anchor)
+            anchorService.waitAnchor(anchor, timeout)
         }
     }
 
@@ -128,7 +118,7 @@ class EnchainteClient(private val apiKey: String, private val environment: Confi
      * @param proof to validate
      * @return a [Boolean] that returns true if valid, false if not
      */
-    fun verifyProof(proof: Proof): Boolean {
+    fun verifyProof(proof: Proof): Int {
         return proofService.verifyProof(proof)
     }
 
@@ -139,7 +129,7 @@ class EnchainteClient(private val apiKey: String, private val environment: Confi
      * @param messages to verify
      * @return a [Single] that will return true if valid, false if not.
      */
-    fun verifyMessages(messages: List<Message>): Single<Boolean> {
+    fun verifyMessages(messages: List<Message>): Single<Int> {
         return rxSingle {
             proofService.verifyMessages(messages)
         }

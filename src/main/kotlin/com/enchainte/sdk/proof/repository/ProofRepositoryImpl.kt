@@ -6,40 +6,41 @@ import com.enchainte.sdk.infrastructure.HttpClient
 import com.enchainte.sdk.infrastructure.post
 import com.enchainte.sdk.message.entity.Message
 import com.enchainte.sdk.proof.entity.Proof
-import com.enchainte.sdk.proof.entity.dto.RetrieveProofRequest
-import com.enchainte.sdk.proof.entity.dto.RetrieveProofResponse
+import com.enchainte.sdk.proof.entity.dto.ProofRetrieveRequest
+import com.enchainte.sdk.proof.entity.dto.ProofRetrieveResponse
+import com.enchainte.sdk.proof.entity.exception.InvalidProofException
 import com.enchainte.sdk.shared.Utils
 import java.util.*
 
 internal class ProofRepositoryImpl(
     private val httpClient: HttpClient,
     private val blockchainClient: BlockchainClient,
-    private val config: ConfigService
+    private val configService: ConfigService
 ) : ProofRepository {
 
-    override suspend fun retrieveProof(messages: List<Message>): Proof? {
-        return try {
-            val url =
-                "${config.getConfiguration().HOST}${config.getConfiguration().API_VERSION}${config.getConfiguration().PROOF_ENDPOINT}"
-            val requestBody = RetrieveProofRequest(messages.map { it.getHash() })
-            val response: RetrieveProofResponse = httpClient.post(url, requestBody) ?: return null
+    override suspend fun retrieveProof(messages: List<Message>): Proof {
+        val url = "${this.configService.getApiBaseUrl()}/messages/proof";
+        val requestBody = ProofRetrieveRequest(messages.map { it.getHash() })
+        val response: ProofRetrieveResponse = httpClient.post(url, requestBody)
 
-            Proof(requestBody.messages, response.nodes, response.depth, response.bitmap)
-        } catch (t: Throwable) {
-            null
-        }
+        return Proof(
+            leaves = response.leaves ?: emptyList(),
+            nodes = response.nodes ?: emptyList(),
+            depth = response.depth ?: "",
+            bitmap = response.bitmap ?: "",
+        )
     }
 
-    override fun verifyProof(proof: Proof): Message? {
+    override fun verifyProof(proof: Proof): Message {
         try {
-            val leaves = proof.leaves.map { Message(it).getByteArrayHash() }.toTypedArray()
+            val leaves = proof.leaves.map { Message.fromHash(it).getByteArrayHash() }.toTypedArray()
             val hashes = proof.nodes.map { Utils.hexToBytes(it) }.toTypedArray()
-            val depth = Utils.hexToBytes(proof.depth)
+            val depth = Utils.hexToUint16(proof.depth)
             val bitmap = Utils.hexToBytes(proof.bitmap)
 
             var itLeaves = 0
             var itHashes = 0
-            val stack = Stack<Pair<ByteArray, Byte>>()
+            val stack = Stack<Pair<ByteArray, Int>>()
 
             while (itHashes < hashes.size || itLeaves < leaves.size) {
                 var actDepth = depth[itHashes + itLeaves]
@@ -63,7 +64,7 @@ internal class ProofRepositoryImpl(
                         actHash = Utils.merge(lastHash.first, actHash)
                         actDepth = actDepth.dec()
                     } catch (e: EmptyStackException) {
-                        return null
+                        throw InvalidProofException()
                     }
                 }
 
@@ -71,11 +72,11 @@ internal class ProofRepositoryImpl(
             }
             return Message.fromHash(Utils.bytesToHex(stack[0].first))
         } catch (e: Throwable) {
-            return null
+            throw InvalidProofException()
         }
     }
 
-    override fun validateRoot(root: Message): Boolean {
+    override fun validateRoot(root: Message): Int {
         return blockchainClient.validateRoot(root.getHash())
     }
 }

@@ -4,6 +4,7 @@ import com.enchainte.sdk.config.entity.ConfigEnvironment
 import com.enchainte.sdk.config.entity.Configuration
 
 internal interface ConfigService {
-    suspend fun setupEnvironment(environment: ConfigEnvironment): Configuration
+    fun setupEnvironment(environment: ConfigEnvironment): Configuration
     fun getConfiguration(): Configuration
+    fun getApiBaseUrl(): String
 }

@@ -1,63 +1,54 @@
 package com.enchainte.sdk.anchor.service
 
 import com.enchainte.sdk.anchor.entity.Anchor
-import com.enchainte.sdk.anchor.entity.exception.AnchorNotFoundException
+import com.enchainte.sdk.anchor.entity.exception.WaitAnchorTimeoutException
 import com.enchainte.sdk.anchor.repository.AnchorRepository
-import com.enchainte.sdk.config.repository.ConfigRepository
-import com.enchainte.sdk.message.entity.MessageReceipt
+import com.enchainte.sdk.config.service.ConfigService
 import com.enchainte.sdk.shared.Utils
+import java.util.*
 
 internal class AnchorServiceImpl internal constructor(
     private val anchorRepository: AnchorRepository,
-    private val configRepository: ConfigRepository
+    private val configService: ConfigService
 ): AnchorService {
-    override suspend fun getAnchor(anchor_id: Int): Anchor {
-        val anchor = anchorRepository.getAnchor(anchor_id) ?: throw AnchorNotFoundException()
-
-        return Anchor(
-            anchor.id ?: 0,
-            anchor.blockRoots ?: emptyList(),
-            anchor.networks ?: emptyList(),
-            anchor.root ?: "",
-            anchor.status ?: ""
-        )
+    override suspend fun getAnchor(id: Int): Anchor {
+        return anchorRepository.getAnchor(id)
     }
 
-    override suspend fun waitAnchor(anchor_id: Int): Anchor {
+    override suspend fun waitAnchor(id: Int, timeout: Int): Anchor {
         var attempts = 0
-        var anchor: Anchor? = null
+        var anchor: Anchor?
+        val start = Date().time
+        var nextTry = start + this.configService.getConfiguration().WAIT_MESSAGE_INTERVAL_DEFAULT
+        val timeoutTime = start + timeout
 
-        do {
+        while (true) {
             try {
-                val response = anchorRepository.getAnchor(anchor_id)
-                if (response != null) {
-                    val tempAnchor = Anchor(
-                        response.id ?: 0,
-                        response.blockRoots ?: emptyList(),
-                        response.networks ?: emptyList(),
-                        response.root ?: "",
-                        response.status ?: ""
-                    )
-
-                    if (tempAnchor.status == "Success") {
-                        anchor = tempAnchor
-                        break
-                    }
+                anchor = this.anchorRepository.getAnchor(id)
+                if (anchor.status == "Success") {
+                    return anchor
                 }
-            } catch (e: AnchorNotFoundException) {}
 
-            Utils.sleep(
-                configRepository.getConfiguration().WAIT_MESSAGE_INTERVAL_DEFAULT +
-                        attempts * configRepository.getConfiguration().WAIT_MESSAGE_INTERVAL_FACTOR
-            )
+                val currentTime = Date().time
 
-            attempts += 1
-        } while (anchor == null)
+                if (currentTime > timeoutTime) {
+                    throw WaitAnchorTimeoutException()
+                }
 
-        if (anchor == null) {
-            throw AnchorNotFoundException()
+                Utils.sleep(1000)
+            } catch (t: Throwable) {
+                var currentTime = Date().time
+                while (currentTime < nextTry && currentTime < timeoutTime) {
+                    Utils.sleep(200)
+                    currentTime = Date().time
+                }
+                nextTry += attempts * this.configService.getConfiguration().WAIT_MESSAGE_INTERVAL_FACTOR + this.configService.getConfiguration().WAIT_MESSAGE_INTERVAL_DEFAULT
+                ++attempts
+
+                if (currentTime >= timeoutTime) {
+                    throw WaitAnchorTimeoutException()
+                }
+            }
         }
-
-        return anchor
     }
 }

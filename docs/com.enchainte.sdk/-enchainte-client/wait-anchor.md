@@ -5,7 +5,9 @@
 # waitAnchor  
 [jvm]  
 Content  
-fun [waitAnchor](wait-anchor.md)(anchor: [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)): Single<[Anchor](../../com.enchainte.sdk.anchor.entity/-anchor/index.md)>  
+@[JvmOverloads](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-overloads/index.html)()  
+  
+fun [waitAnchor](wait-anchor.md)(anchor: [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html), timeout: [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) = 120000): Single<[Anchor](../../com.enchainte.sdk.anchor.entity/-anchor/index.md)>  
 More info  
 
 
@@ -26,7 +28,7 @@ jvm
   
 |  Name|  Summary| 
 |---|---|
-| <a name="com.enchainte.sdk/EnchainteClient/waitAnchor/#kotlin.Int/PointingToDeclaration/"></a>anchor| <a name="com.enchainte.sdk/EnchainteClient/waitAnchor/#kotlin.Int/PointingToDeclaration/"></a><br><br>to wait for<br><br>
+| <a name="com.enchainte.sdk/EnchainteClient/waitAnchor/#kotlin.Int#kotlin.Int/PointingToDeclaration/"></a>anchor| <a name="com.enchainte.sdk/EnchainteClient/waitAnchor/#kotlin.Int#kotlin.Int/PointingToDeclaration/"></a><br><br>to wait for<br><br>
   
   
 

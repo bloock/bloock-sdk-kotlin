@@ -2,13 +2,14 @@ package com.enchainte.sdk.message.entity
 
 import com.enchainte.sdk.infrastructure.HashAlgorithm
 import com.enchainte.sdk.infrastructure.hashing.Blake2b
+import com.enchainte.sdk.infrastructure.hashing.Keccak
 import com.enchainte.sdk.shared.Utils
 
 class Message(private val hash: String) : Comparable<Message> {
 
     companion object {
 
-        private val hashingAlgorithm: HashAlgorithm = Blake2b()
+        private val hashingAlgorithm: HashAlgorithm = Keccak()
 
         @JvmStatic
         fun fromHash(hash: String): Message {
@@ -28,7 +29,7 @@ class Message(private val hash: String) : Comparable<Message> {
         }
 
         @JvmStatic
-        fun fromUint8Array(_uint8Array: ByteArray): Message {
+        fun fromByteArray(_uint8Array: ByteArray): Message {
             return Message(hashingAlgorithm.generateHash(_uint8Array))
         }
 

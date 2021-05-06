@@ -1,3 +1,3 @@
 package com.enchainte.sdk.anchor.entity.exception
 
-class AnchorNotFoundException : Exception("anchor not found")
+class AnchorNotFoundException : Exception("Anchor not found")

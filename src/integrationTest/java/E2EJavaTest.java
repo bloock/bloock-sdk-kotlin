@@ -1,36 +1,41 @@
 import com.enchainte.sdk.EnchainteClient;
+import com.enchainte.sdk.config.entity.ConfigEnvironment;
 import com.enchainte.sdk.message.entity.Message;
 import com.enchainte.sdk.message.entity.MessageReceipt;
+import com.enchainte.sdk.proof.entity.Proof;
 import org.junit.jupiter.api.Test;
-import org.koin.test.junit5.AutoCloseKoinTest;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class E2EJavaTest extends AutoCloseKoinTest {
+public class E2EJavaTest {
+
     @Test
     public void e2eJavaTest() {
+        EnchainteClient client = getSdk();
+
         Message message = Message.fromHex(getRandomHexString());
-
-        String apiKey = System.getenv("API_KEY");
-        EnchainteClient client = new EnchainteClient(apiKey);
-
-        System.out.println("SENDING MESSAGE: " + message.getHash());
         List<Message> messages = new ArrayList<>();
         messages.add(message);
-        List<MessageReceipt> writeResponse = client.sendMessage(messages).blockingGet();
 
-        System.out.println("WAITING MESSAGE");
-        client.waitAnchor(writeResponse.get(0).getAnchor()).blockingSubscribe();
+        List<MessageReceipt> receipts = client.sendMessages(messages).blockingGet();
+        assertNotNull(receipts);
 
-        System.out.println("VALIDATING MESSAGE");
+        client.waitAnchor(receipts.get(0).getAnchor()).blockingSubscribe();
 
-        boolean valid = client.verifyMessages(Collections.singletonList(message)).blockingGet();
-        assertTrue(valid);
+        Proof proof = client.getProof(messages).blockingGet();
+        int timestamp = client.verifyProof(proof);
+
+        assertTrue(timestamp > 0);
+    }
+
+    private EnchainteClient getSdk() {
+        String apiKey = System.getenv("API_KEY");
+        return new EnchainteClient(apiKey, ConfigEnvironment.TEST);
     }
 
     private String getRandomHexString() {

@@ -5,7 +5,7 @@
 # verifyMessages  
 [jvm]  
 Content  
-fun [verifyMessages](verify-messages.md)(messages: [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)<[Message](../../com.enchainte.sdk.message.entity/-message/index.md)>): Single<[Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)>  
+fun [verifyMessages](verify-messages.md)(messages: [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)<[Message](../../com.enchainte.sdk.message.entity/-message/index.md)>): Single<[Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)>  
 More info  
 
 

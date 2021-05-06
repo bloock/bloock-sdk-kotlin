@@ -4,54 +4,51 @@ import com.enchainte.sdk.config.entity.ConfigEnvironment
 import com.enchainte.sdk.config.entity.Configuration
 import com.enchainte.sdk.config.repository.ConfigRepository
 import com.enchainte.sdk.config.service.ConfigService
-import com.enchainte.sdk.shared.ConfigModule
-import com.nhaarman.mockitokotlin2.given
-import com.nhaarman.mockitokotlin2.times
-import kotlinx.coroutines.runBlocking
+import com.enchainte.sdk.config.service.ConfigServiceImpl
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.RegisterExtension
-import org.koin.test.KoinTest
-import org.koin.test.get
-import org.koin.test.junit5.KoinTestExtension
-import org.koin.test.junit5.mock.MockProviderExtension
-import org.koin.test.mock.declareMock
-import org.mockito.Mockito
 import kotlin.test.assertEquals
 
-class ConfigServiceTest: KoinTest {
-    @JvmField
-    @RegisterExtension
-    val koinTestExtension = KoinTestExtension.create {
-        modules(
-            ConfigModule
-        )
-    }
+class ConfigServiceTest {
 
-    @JvmField
-    @RegisterExtension
-    val mockProvider = MockProviderExtension.create { clazz ->
-        Mockito.mock(clazz.java)
+    @Test
+    internal fun test_setup_environment() {
+        val configRepository = mockk<ConfigRepository>()
+        every { configRepository.fetchConfiguration(ConfigEnvironment.TEST) } returns Configuration()
+
+        val configService: ConfigService = ConfigServiceImpl(configRepository)
+        configService.setupEnvironment(ConfigEnvironment.TEST)
+
+        verify(exactly = 1) { configRepository.fetchConfiguration(ConfigEnvironment.TEST) }
     }
 
     @Test
-    fun `should fetch configuration`() {
-        val apiVersion = "/v1"
-        val configRepository = declareMock<ConfigRepository> {
-            runBlocking {
-                given(fetchConfiguration(ConfigEnvironment.TEST)).will {
-                    Configuration(
-                        API_VERSION = apiVersion
-                    )
-                }
-            }
-        }
+    internal fun test_get_configuration() {
+        val configRepository = mockk<ConfigRepository>()
+        every { configRepository.getConfiguration() } returns Configuration()
 
-        val configService: ConfigService = get()
-        runBlocking {
-            val config = configService.setupEnvironment(ConfigEnvironment.TEST)
+        val configService: ConfigService = ConfigServiceImpl(configRepository)
 
-            Mockito.verify(configRepository, times(1)).fetchConfiguration(ConfigEnvironment.TEST)
-            assertEquals(config.API_VERSION, apiVersion)
-        }
+        configService.getConfiguration()
+
+        verify(exactly = 1) { configRepository.getConfiguration() }
+    }
+
+    @Test
+    internal fun test_get_base_url() {
+        val configuration = Configuration()
+        configuration.HOST = "test"
+        configuration.API_VERSION = "ing"
+
+        val configRepository = mockk<ConfigRepository>()
+        every { configRepository.getConfiguration() } returns configuration
+
+        val configService: ConfigService = ConfigServiceImpl(configRepository)
+
+        val apiUrl = configService.getApiBaseUrl()
+
+        assertEquals(apiUrl, "testing")
     }
 }

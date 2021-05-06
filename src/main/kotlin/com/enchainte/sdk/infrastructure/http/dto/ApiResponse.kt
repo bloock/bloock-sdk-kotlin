@@ -1,13 +1,16 @@
 package com.enchainte.sdk.infrastructure.http.dto
 
 internal data class ApiResponse<T>(
-    val success: Boolean,
+    val success: Boolean?,
     val data: T?,
     val error: ApiError?
 )
 
-internal fun <T> ApiResponse<T>.isError(): Boolean {
-    return !this.success
+internal fun <T> ApiResponse<T>.isSuccess(): Boolean {
+    if (this.success != null) {
+        return this.success
+    }
+    return true
 }
 
 internal fun <T> ApiResponse<T>.getData(): T? {

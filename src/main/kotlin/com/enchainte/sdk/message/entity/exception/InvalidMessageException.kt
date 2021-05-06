@@ -1,3 +1,3 @@
 package com.enchainte.sdk.message.entity.exception
 
-class InvalidMessageException : Exception("invalid argument provided: only byte array accepted")
+class InvalidMessageException : Exception("Message not valid")
