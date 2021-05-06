@@ -8,6 +8,15 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class FunctionalTest {
+    fun randHex(): String {
+        val charPool: List<Char> = ('a'..'f') + ('0'..'9')
+
+        return (1..16)
+            .map { kotlin.random.Random.nextInt(0, charPool.size) }
+            .map(charPool::get)
+            .joinToString("")
+    }
+
     fun getSdk(): EnchainteClient {
         val apiKey = System.getenv("API_KEY")
         return EnchainteClient(apiKey, ConfigEnvironment.TEST)
@@ -18,7 +27,7 @@ class FunctionalTest {
         val client = getSdk()
 
         val messages = listOf(
-            Message.fromString("Example Data")
+            Message.fromString(randHex())
         )
 
         val receipts = client.sendMessages(messages).blockingGet()
@@ -34,9 +43,9 @@ class FunctionalTest {
         val client = getSdk()
 
         val messages = listOf(
-            Message.fromString("Example Data 1"),
-            Message.fromString("Example Data 2"),
-            Message.fromString("Example Data 3")
+            Message.fromString(randHex()),
+            Message.fromString(randHex()),
+            Message.fromString(randHex())
         )
 
         val sendReceipt = client.sendMessages(messages).blockingGet()
@@ -56,9 +65,9 @@ class FunctionalTest {
         val client = getSdk()
 
         val messages = listOf(
-            Message.fromString("Example Data 1"),
-            Message.fromString("Example Data 2"),
-            Message.fromString("Example Data 3")
+            Message.fromString(randHex()),
+            Message.fromString(randHex()),
+            Message.fromString(randHex())
         )
 
         val sendReceipt = client.sendMessages(messages).blockingGet()
@@ -77,9 +86,9 @@ class FunctionalTest {
         val client = getSdk()
 
         val messages = listOf(
-            Message.fromString("Example Data 1"),
-            Message.fromString("Example Data 2"),
-            Message.fromString("Example Data 3")
+            Message.fromString(randHex()),
+            Message.fromString(randHex()),
+            Message.fromString(randHex())
         )
 
         val proof = client.getProof(messages).blockingGet()
@@ -91,9 +100,9 @@ class FunctionalTest {
         val client = getSdk()
 
         val messages = listOf(
-            Message.fromString("Example Data 1"),
-            Message.fromString("Example Data 2"),
-            Message.fromString("Example Data 3")
+            Message.fromString(randHex()),
+            Message.fromString(randHex()),
+            Message.fromString(randHex())
         )
 
         val proof = client.getProof(messages).blockingGet()
