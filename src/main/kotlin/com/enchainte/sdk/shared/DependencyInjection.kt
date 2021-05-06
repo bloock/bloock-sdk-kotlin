@@ -25,8 +25,6 @@ import com.enchainte.sdk.proof.service.ProofServiceImpl
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.features.json.*
-import org.koin.core.context.startKoin
-import org.koin.dsl.module
 
 internal object DependencyInjection {
     var http = HttpClient(CIO) {
@@ -72,49 +70,4 @@ internal object DependencyInjection {
         return proofService
     }
 
-}
-
-
-internal fun setUpDependencyInjection() {
-    startKoin {
-        modules(InfrastructureModule)
-        modules(AnchorModule)
-        modules(ConfigModule)
-        modules(MessageModule)
-        modules(ProofModule)
-    }
-}
-
-internal val InfrastructureModule = module {
-    single {
-        HttpClient(CIO) {
-            install(JsonFeature) {
-                serializer = GsonSerializer()
-            }
-        }
-    }
-    single { HttpClientData() }
-    single { HttpClientImpl(get(), get()) as HttpClient }
-    single { Web3(get()) as BlockchainClient }
-}
-
-internal val AnchorModule = module {
-    single { AnchorServiceImpl(get(), get()) as AnchorService }
-    single { AnchorRepositoryImpl(get(), get()) as AnchorRepository }
-}
-
-internal val ConfigModule = module {
-    single { ConfigServiceImpl(get()) as ConfigService }
-    single { ConfigRepositoryImpl(get()) as ConfigRepository }
-    single { ConfigData() }
-}
-
-internal val MessageModule = module {
-    single { MessageServiceImpl(get()) as MessageService }
-    single { MessageRepositoryImpl(get(), get()) as MessageRepository }
-}
-
-internal val ProofModule = module {
-    single { ProofServiceImpl(get()) as ProofService }
-    single { ProofRepositoryImpl(get(), get(), get()) as ProofRepository }
 }
