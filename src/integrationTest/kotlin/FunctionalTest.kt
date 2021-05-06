@@ -91,6 +91,11 @@ class FunctionalTest {
             Message.fromString(randHex())
         )
 
+        val sendReceipt = client.sendMessages(messages).blockingGet()
+        assertNotNull(sendReceipt)
+
+        client.waitAnchor(sendReceipt[0].anchor).blockingSubscribe()
+
         val proof = client.getProof(messages).blockingGet()
         assertNotNull(proof)
     }
@@ -104,6 +109,11 @@ class FunctionalTest {
             Message.fromString(randHex()),
             Message.fromString(randHex())
         )
+
+        val sendReceipt = client.sendMessages(messages).blockingGet()
+        assertNotNull(sendReceipt)
+
+        client.waitAnchor(sendReceipt[0].anchor).blockingSubscribe()
 
         val proof = client.getProof(messages).blockingGet()
         assertNotNull(proof)
