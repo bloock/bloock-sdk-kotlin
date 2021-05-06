@@ -24,8 +24,8 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@master
         with:
+          distribution: 'zulu'
           java-version: ${{ matrix.java-version }}
-          architecture: x64
       - name: Display version
         run: ./gradlew --version
       - name: Build artifacts

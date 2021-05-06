@@ -26,7 +26,7 @@ import java.util.*
  *
  * Generated with web3j version 1.4.1.
  */
-class EnchainteState protected constructor(
+internal class EnchainteState protected constructor(
     contractAddress: String?,
     web3j: Web3j?,
     transactionManager: TransactionManager?,

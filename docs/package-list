@@ -5,7 +5,6 @@ com.enchainte.sdk
 com.enchainte.sdk.anchor.entity
 com.enchainte.sdk.anchor.entity.exception
 com.enchainte.sdk.config.entity
-com.enchainte.sdk.infrastructure.blockchain.contract
 com.enchainte.sdk.infrastructure.http.exception
 com.enchainte.sdk.message.entity
 com.enchainte.sdk.message.entity.exception

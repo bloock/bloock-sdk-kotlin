@@ -18,7 +18,7 @@ This SDK offers all the features available in the Enchainté Toolset:
 Add this dependency to your project's build file:
 
 ```groovy
-implementation 'com.enchainte.sdk:enchainte-sdk:0.2.0'
+implementation 'com.enchainte.sdk:enchainte-sdk:1.0.0'
 ```
 
 ### Maven users
@@ -29,7 +29,7 @@ Add this dependency to your project's POM:
 <dependency>
     <groupId>com.enchainte.sdk</groupId>
     <artifactId>enchainte-sdk</artifactId>
-    <version>0.2.0</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 
@@ -44,7 +44,7 @@ In order to interact with the SDK, the data should be processed through the Mess
 There are several ways to generate a Message:
 
 ```kotlin
-import com.enchainte.sdk.message.domain.Message
+import com.enchainte.sdk.message.entity.Message
 
 // From a hash string (hex encoded 64-chars long string)
 val message = Message.fromHash("5ac706bdef87529b22c08646b74cb98baf310a46bd21ee420814b04c71fa42b1")
@@ -62,14 +62,17 @@ This example shows how to send data to Enchainté
 
 ```kotlin
 import com.enchainte.sdk.EnchainteClient
-import com.enchainte.sdk.message.domain.Message
+import com.enchainte.sdk.message.entity.Message
 
 val apiKey = System.getenv("API_KEY")!!
 
 val client = EnchainteClient(apiKey)
 
-val message = Message.fromString("Example Data")
-val receipts = client.sendMessage(listOf(message)).blockingGet()
+val messages = listOf(
+    Message.fromString("Example Data")
+)
+
+val receipts = client.sendMessages(messages).blockingGet()
 ```
 
 ### Get messages status
@@ -78,7 +81,7 @@ This example shows how to get all the details and status of messages:
 
 ```kotlin
 import com.enchainte.sdk.EnchainteClient
-import com.enchainte.sdk.message.domain.Message
+import com.enchainte.sdk.message.entity.Message
 
 val apiKey = System.getenv("API_KEY")!!
 
@@ -90,9 +93,9 @@ val messages = listOf(
     Message.fromString("Example Data 3")
 )
 
-val result = client.sendMessage(messages).blockingGet().first()
+val sendReceipt = client.sendMessages(messages).blockingGet().first()
 
-client.waitAnchor(result.anchor).blockingSubscribe()
+client.waitAnchor(sendReceipt.anchor).blockingSubscribe()
 
 val messageReceipts = client.getMessages(messages).blockingGet()
 ```
@@ -103,7 +106,7 @@ This example shows how to wait for a message to be processed by Enchainté after
 
 ```kotlin
 import com.enchainte.sdk.EnchainteClient
-import com.enchainte.sdk.message.domain.Message
+import com.enchainte.sdk.message.entity.Message
 
 val apiKey = System.getenv("API_KEY")!!
 
@@ -115,9 +118,9 @@ val messages = listOf(
     Message.fromString("Example Data 3")
 )
 
-val result = client.sendMessage(messages).blockingGet().first()
+val sendReceipt = client.sendMessages(messages).blockingGet().first()
 
-val receipts = client.waitAnchor(result.anchor).blockingGet()
+val receipt = client.waitAnchor(sendReceipt.anchor).blockingGet()
 ```
 
 ### Get and validate messages proof
@@ -126,7 +129,7 @@ This example shows how to get a proof for an array of messages and validate it:
 
 ```kotlin
 import com.enchainte.sdk.EnchainteClient
-import com.enchainte.sdk.message.domain.Message
+import com.enchainte.sdk.message.entity.Message
 
 val apiKey = System.getenv("API_KEY")!!
 
@@ -150,7 +153,7 @@ This snippet shows a complete data cycle including: write, message status pollin
 
 ```kotlin
 import com.enchainte.sdk.EnchainteClient
-import com.enchainte.sdk.message.domain.Message
+import com.enchainte.sdk.message.entity.Message
 
 val charPool: List<Char> = ('a'..'f') + ('0'..'9')
 val randomHex = (1..16)
@@ -158,17 +161,23 @@ val randomHex = (1..16)
     .map(charPool::get)
     .joinToString("")
 
-val message = Message.fromHex(randomHex)
-
-val apiKey = System.getenv("API_KEY")
+val apiKey: String = System.getenv("API_KEY")
 val client = EnchainteClient(apiKey)
-println("SENDING MESSAGE: ${message.getHash()}")
-val writeResult = client.sendMessage(listOf(message)).blockingGet().first()
+
+val messages = listOf(
+    Message.fromString(randomHex)
+)
+
+println("SENDING MESSAGE: ${messages[0].getHash()}")
+val receipts = client.sendMessages(messages).blockingGet()
+assertNotNull(receipts)
 
 println("WAITING MESSAGE")
-client.waitAnchor(writeResult.anchor).blockingSubscribe()
+client.waitAnchor(receipts[0].anchor).blockingGet()
 
 println("VALIDATING MESSAGE")
-val valid = client.verifyMessages(listOf(message)).blockingGet()
-assertTrue(valid)
+val proof = client.getProof(messages).blockingGet()
+val timestamp = client.verifyProof(proof)
+
+assertTrue(timestamp > 0)
 ```

@@ -13,7 +13,6 @@ import com.enchainte.sdk.proof.service.ProofService
 import com.enchainte.sdk.shared.DependencyInjection
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.rxMaybe
 import kotlinx.coroutines.rx3.rxSingle
 
@@ -54,7 +53,7 @@ class EnchainteClient(private val apiKey: String, private val environment: Confi
      * @param messages list of [Message] to send
      * @return RxJava [Single] that will return a list of [MessageReceipt]
      * @throws [InvalidMessageException] At least one of the messages sent was not well formed.
-     * @throws [HttpRequestException] Error return by Enchainté's API.
+     * @throws [HttpRequestException] Error returned by Enchainté's API.
      */
     fun sendMessages(messages: List<Message>): Single<List<MessageReceipt>> {
         return rxSingle {
@@ -63,10 +62,12 @@ class EnchainteClient(private val apiKey: String, private val environment: Confi
     }
 
     /**
-     * Retrieves the [MessageReceipt]s for the specified [Anchor]s
+     * Retrieves all [MessageReceipt]s for the specified [Anchor]s
      *
      * @param messages to fetch
      * @return a [Single] that will return a list of [MessageReceipt]
+     * @throws [InvalidMessageException] At least one of the messages sent was not well formed.
+     * @throws [HttpRequestException] Error returned by Enchainté's API.
      */
     fun getMessages(messages: List<Message>): Single<List<MessageReceipt>> {
         return rxSingle {
@@ -79,6 +80,8 @@ class EnchainteClient(private val apiKey: String, private val environment: Confi
      *
      * @param anchor to look for
      * @return a [Single] that will return a [Anchor] object
+     * @throws [InvalidArgumentException] Informs that the input is not a number.
+     * @throws [HttpRequestException] Error return by Enchainté's API.
      */
     fun getAnchor(anchor: Int): Single<Anchor> {
         return rxSingle {
@@ -89,8 +92,13 @@ class EnchainteClient(private val apiKey: String, private val environment: Confi
     /**
      * Waits until the anchor specified is confirmed in Enchainté
      *
-     * @param anchor to wait for
+     * @param anchor ID to wait for
+     * @param timeout time in miliseconds. After exceeding this time returns an exception. Default = 120000
      * @return a [Single] that will return a [Anchor]
+     * @throws [InvalidArgumentException] Informs that the input is not a number.
+     * @throws [AnchorNotFoundException] The anchor provided could not be found.
+     * @throws [WaitAnchorTimeoutException] Returned when the function has exceeded the timeout.
+     * @throws [HttpRequestException] Error return by Enchainté's API.
      */
     @JvmOverloads
     fun waitAnchor(anchor: Int, timeout: Int = 120000): Single<Anchor> {
@@ -100,10 +108,12 @@ class EnchainteClient(private val apiKey: String, private val environment: Confi
     }
 
     /**
-     * Retrieves an integrity [Proof] for the specified list of [Anchor]
+     * Retrieves an integrity [Proof] for the specified list of [Message]
      *
      * @param messages to validate
      * @return a [Maybe] that will return a [Proof]
+     * @throws [InvalidMessageException] At least one of the messages sent was not well formed.
+     * @throws [HttpRequestException] Error returned by Enchainté's API.
      */
     fun getProof(messages: List<Message>): Maybe<Proof> {
         return rxMaybe {
@@ -117,6 +127,7 @@ class EnchainteClient(private val apiKey: String, private val environment: Confi
      *
      * @param proof to validate
      * @return a [Boolean] that returns true if valid, false if not
+     * @throws [Web3Exception] Error connecting to blockchain.
      */
     fun verifyProof(proof: Proof): Int {
         return proofService.verifyProof(proof)
@@ -128,6 +139,9 @@ class EnchainteClient(private val apiKey: String, private val environment: Confi
      *
      * @param messages to verify
      * @return a [Single] that will return true if valid, false if not.
+     * @throws [InvalidMessageException] At least one of the messages sent was not well formed.
+     * @throws [HttpRequestException] Error returned by Enchainté's API.
+     * @throws [Web3Exception] Error connecting to blockchain.
      */
     fun verifyMessages(messages: List<Message>): Single<Int> {
         return rxSingle {
@@ -136,6 +150,6 @@ class EnchainteClient(private val apiKey: String, private val environment: Confi
     }
 
     companion object {
-        const val VERSION: String = "0.2.0"
+        const val VERSION: String = "1.0.0"
     }
 }
