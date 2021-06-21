@@ -27,11 +27,11 @@ internal class HttpClientTest {
                 when (request.url.fullUrl) {
                     "https://api.enchainte.com/" -> {
                         val responseHeaders = headersOf("Content-Type" to listOf(ContentType.Application.Json.toString()))
-                        respond("{'success': true, 'data': '${request.headers["Authorization"]}'}", headers = responseHeaders)
+                        respond("'${request.headers["X-Api-Key"]}'", headers = responseHeaders)
                     }
                     "https://api.enchainte.com/error" -> {
                         val responseHeaders = headersOf("Content-Type" to listOf(ContentType.Application.Json.toString()))
-                        respond("{'success': false, 'error': { 'message': '${request.headers["Authorization"]}'}}", HttpStatusCode.BadRequest, headers = responseHeaders)
+                        respond("{'message': '${request.headers["X-Api-Key"]}'}", HttpStatusCode.BadRequest, headers = responseHeaders)
                     }
                     else -> error("Unhandled ${request.url.fullUrl}")
                 }

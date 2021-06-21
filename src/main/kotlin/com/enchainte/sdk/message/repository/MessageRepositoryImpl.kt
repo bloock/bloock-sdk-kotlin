@@ -12,12 +12,12 @@ import com.enchainte.sdk.message.entity.dto.MessageWriteResponse
 internal class MessageRepositoryImpl internal constructor(val httpClient: HttpClient, val configService: ConfigService) :
     MessageRepository {
     override suspend fun sendMessages(messages: List<Message>): MessageWriteResponse {
-        val url = "${this.configService.getApiBaseUrl()}/messages";
+        val url = "${this.configService.getApiBaseUrl()}/core/messages";
         return httpClient.post(url, MessageWriteRequest(messages = messages.map { message -> message.getHash() }))
     }
 
     override suspend fun fetchMessages(messages: List<Message>): List<MessageRetrieveResponse> {
-        val url = "${this.configService.getApiBaseUrl()}/messages/fetch";
+        val url = "${this.configService.getApiBaseUrl()}/core/messages/fetch";
         return httpClient.post(url, MessageRetrieveRequest(messages = messages.map { it.getHash() }))
     }
 }

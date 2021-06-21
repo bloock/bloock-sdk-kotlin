@@ -14,6 +14,6 @@ internal class ConfigServiceImpl(private val configRepository: ConfigRepository)
     }
 
     override fun getApiBaseUrl(): String {
-        return "${this.configRepository.getConfiguration().HOST}${this.configRepository.getConfiguration().API_VERSION}"
+        return this.configRepository.getConfiguration().HOST
     }
 }

@@ -2,7 +2,6 @@ package com.enchainte.sdk.config.entity
 
 internal class Configuration(
     var HOST: String = "",
-    var API_VERSION: String = "",
     var WRITE_ENDPOINT: String = "",
     var PROOF_ENDPOINT: String = "",
     var FETCH_ENDPOINT: String = "",

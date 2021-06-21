@@ -21,48 +21,17 @@ internal class HttpClientImpl(private val client: KtorHttpClient, private val ht
     }
 
     override suspend fun <T: Any> get(url: String, headers: HashMap<String, String>, type: Type): T {
-        var data: ApiResponse<T>
-        try {
-            val response = client.get<ApiResponse<Any>> {
-                url(url)
-                contentType(ContentType.Application.Json)
-
-                if (!headers.containsKey("Authorization")) {
-                    header("Authorization", getAuthenticationHeader())
-                }
-
-                for (header in headers) {
-                    header(header.key, header.value)
-                }
-            }
-
-            val rawData = Gson().toJson(response.getData())
-            data = ApiResponse(
-                success = response.success,
-                data = Gson().fromJson(rawData, type),
-                error = response.error
-            )
-        } catch (t: ResponseException) {
-            val errorText = t.response.readText(Charset.defaultCharset())
-            data = Gson().fromJson(errorText, object : TypeToken<ApiResponse<T>?>() {}.getType())
-        } catch (t: Throwable) {
-            throw HttpRequestException(t.message)
-        }
-
-        val success = data.isSuccess()
-        val result = data.getData()
-
-        if (success && result != null) {
-            return result
-        }
-
-        throw HttpRequestException(data.getError()?.message)
+        return this.request(HttpMethod.Get, url, null, headers, type)
     }
 
     override suspend fun <T: Any> post(url: String, _body: Any?, headers: HashMap<String, String>, type: Type): T {
-        var data: ApiResponse<T>
-        try {
-            val response = client.post<ApiResponse<Any>> {
+        return this.request(HttpMethod.Post, url, _body, headers, type)
+    }
+
+    private suspend fun <T: Any> request(_method: HttpMethod, url: String, _body: Any?, headers: HashMap<String, String>, type: Type): T {
+            try {
+            val response = client.request<String> {
+                method = _method
                 url(url)
                 contentType(ContentType.Application.Json)
 
@@ -70,36 +39,22 @@ internal class HttpClientImpl(private val client: KtorHttpClient, private val ht
                     body = _body
                 }
 
-                if (!headers.containsKey("Authorization")) {
-                    header("Authorization", getAuthenticationHeader())
+                if (!headers.containsKey("X-Api-Key")) {
+                    header("X-Api-Key", getAuthenticationHeader())
                 }
 
                 for (header in headers) {
                     header(header.key, header.value)
                 }
             }
-
-            val rawData = Gson().toJson(response.getData())
-            data = ApiResponse(
-                success = response.success,
-                data = Gson().fromJson(rawData, type),
-                error = response.error
-            )
+            return Gson().fromJson(response, type)
         } catch (t: ResponseException) {
             val errorText = t.response.readText(Charset.defaultCharset())
-            data = Gson().fromJson(errorText, object : TypeToken<ApiResponse<T>?>() {}.getType())
+            val error: ApiError = Gson().fromJson(errorText, object : TypeToken<ApiError>() {}.type)
+            throw HttpRequestException(error.message)
         } catch (t: Throwable) {
             throw HttpRequestException(t.message)
         }
-
-        val success = data.isSuccess()
-        val result = data.getData()
-
-        if (success && result != null) {
-            return result
-        }
-
-        throw HttpRequestException(data.getError()?.message)
     }
 
     private fun getAuthenticationHeader(): String {

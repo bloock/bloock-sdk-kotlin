@@ -8,7 +8,7 @@ import com.enchainte.sdk.infrastructure.get
 
 internal class AnchorRepositoryImpl(val httpClient: HttpClient, val configService: ConfigService): AnchorRepository {
     override suspend fun getAnchor(anchor: Int): Anchor {
-        val url = "${this.configService.getApiBaseUrl()}/anchors/${anchor}"
+        val url = "${this.configService.getApiBaseUrl()}/core/anchor/${anchor}"
         val response =  httpClient.get<AnchorRetrieveResponse>(url)
         return Anchor(
             response.id,

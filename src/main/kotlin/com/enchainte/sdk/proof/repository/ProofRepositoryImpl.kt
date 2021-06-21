@@ -19,7 +19,7 @@ internal class ProofRepositoryImpl(
 ) : ProofRepository {
 
     override suspend fun retrieveProof(messages: List<Message>): Proof {
-        val url = "${this.configService.getApiBaseUrl()}/messages/proof";
+        val url = "${this.configService.getApiBaseUrl()}/core/proof";
         val requestBody = ProofRetrieveRequest(messages.map { it.getHash() })
         val response: ProofRetrieveResponse = httpClient.post(url, requestBody)
 

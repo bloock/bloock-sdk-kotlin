@@ -40,7 +40,6 @@ class ConfigServiceTest {
     internal fun test_get_base_url() {
         val configuration = Configuration()
         configuration.HOST = "test"
-        configuration.API_VERSION = "ing"
 
         val configRepository = mockk<ConfigRepository>()
         every { configRepository.getConfiguration() } returns configuration
@@ -49,6 +48,6 @@ class ConfigServiceTest {
 
         val apiUrl = configService.getApiBaseUrl()
 
-        assertEquals(apiUrl, "testing")
+        assertEquals(apiUrl, "test")
     }
 }
