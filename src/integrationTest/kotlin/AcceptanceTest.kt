@@ -1,10 +1,9 @@
-import com.enchainte.sdk.EnchainteClient
-import com.enchainte.sdk.anchor.entity.exception.WaitAnchorTimeoutException
-import com.enchainte.sdk.config.entity.ConfigEnvironment
-import com.enchainte.sdk.infrastructure.http.exception.HttpRequestException
-import com.enchainte.sdk.message.entity.Message
-import com.enchainte.sdk.message.entity.exception.InvalidMessageException
-import com.enchainte.sdk.shared.entity.exception.InvalidArgumentException
+import com.bloock.sdk.BloockClient
+import com.bloock.sdk.anchor.entity.exception.WaitAnchorTimeoutException
+import com.bloock.sdk.infrastructure.http.exception.HttpRequestException
+import com.bloock.sdk.record.entity.Record
+import com.bloock.sdk.record.entity.exception.InvalidRecordException
+import com.bloock.sdk.shared.entity.exception.InvalidArgumentException
 import org.junit.jupiter.api.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -20,126 +19,130 @@ class AcceptanceTest {
             .joinToString("")
     }
 
-    fun getSdk(): EnchainteClient {
+    fun getSdk(): BloockClient {
         val apiKey = System.getenv("API_KEY")
-        return EnchainteClient(apiKey, ConfigEnvironment.TEST)
+        val apiHost = System.getenv("API_HOST")
+
+        val client = BloockClient(apiKey)
+        client.setApiHost(apiHost)
+        return client
     }
 
     @Test
     fun test_basic_e2e() {
         val client = getSdk()
 
-        val messages = listOf(
-            Message.fromString(randHex())
+        val records = listOf(
+            Record.fromString(randHex())
         )
 
-        val receipts = client.sendMessages(messages).blockingGet()
+        val receipts = client.sendRecords(records).blockingGet()
         assertNotNull(receipts)
 
         client.waitAnchor(receipts[0].anchor).blockingGet()
 
-        val proof = client.getProof(messages).blockingGet()
+        val proof = client.getProof(records).blockingGet()
         val timestamp = client.verifyProof(proof)
 
         assertTrue(timestamp > 0)
     }
 
     @Test
-    fun test_send_messages_invalid_message_input_wrong_char() {
+    fun test_send_records_invalid_record_input_wrong_char() {
         val client = getSdk()
 
-        val messages = listOf(
-            Message.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994aG")
+        val records = listOf(
+            Record.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994aG")
         )
 
-        client.sendMessages(messages)
+        client.sendRecords(records)
             .test()
             .await()
-            .assertFailure(InvalidMessageException::class.java)
+            .assertFailure(InvalidRecordException::class.java)
     }
 
     @Test
-    fun test_send_messages_invalid_message_input_missing_chars() {
+    fun test_send_records_invalid_record_input_missing_chars() {
         val client = getSdk()
 
-        val messages = listOf(
-            Message.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994aa"),
-            Message.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994")
+        val records = listOf(
+            Record.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994aa"),
+            Record.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994")
         )
 
-        client.sendMessages(messages)
+        client.sendRecords(records)
             .test()
             .await()
-            .assertFailure(InvalidMessageException::class.java)
+            .assertFailure(InvalidRecordException::class.java)
     }
 
     @Test
-    fun test_send_messages_invalid_message_input_wrong_start() {
+    fun test_send_records_invalid_record_input_wrong_start() {
         val client = getSdk()
 
-        val messages = listOf(
-            Message.fromHash("0xe016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994aa"),
-            Message.fromHash("0xe016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994bb")
+        val records = listOf(
+            Record.fromHash("0xe016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994aa"),
+            Record.fromHash("0xe016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994bb")
         )
 
-        client.sendMessages(messages)
+        client.sendRecords(records)
             .test()
             .await()
-            .assertFailure(InvalidMessageException::class.java)
+            .assertFailure(InvalidRecordException::class.java)
     }
 
     @Test
-    fun test_send_messages_empty_message_input() {
+    fun test_send_records_empty_record_input() {
         val client = getSdk()
 
-        client.sendMessages(emptyList())
+        client.sendRecords(emptyList())
             .test()
             .await()
             .assertResult(emptyList())
     }
 
     @Test
-    fun test_get_messages_invalid_message_input_wrong_char() {
+    fun test_get_records_invalid_record_input_wrong_char() {
         val client = getSdk()
 
-        val messages = listOf(
-            Message.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994aG")
+        val records = listOf(
+            Record.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994aG")
         )
 
-        client.getMessages(messages)
+        client.getRecords(records)
             .test()
             .await()
-            .assertFailure(InvalidMessageException::class.java)
+            .assertFailure(InvalidRecordException::class.java)
     }
 
     @Test
-    fun test_get_messages_invalid_message_input_missing_chars() {
+    fun test_get_records_invalid_record_input_missing_chars() {
         val client = getSdk()
 
-        val messages = listOf(
-            Message.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994aa"),
-            Message.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994")
+        val records = listOf(
+            Record.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994aa"),
+            Record.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994")
         )
 
-        client.getMessages(messages)
+        client.getRecords(records)
             .test()
             .await()
-            .assertFailure(InvalidMessageException::class.java)
+            .assertFailure(InvalidRecordException::class.java)
     }
 
     @Test
-    fun test_get_messages_invalid_message_input_wrong_start() {
+    fun test_get_records_invalid_record_input_wrong_start() {
         val client = getSdk()
 
-        val messages = listOf(
-            Message.fromHash("0xe016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994aa"),
-            Message.fromHash("0xe016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994bb")
+        val records = listOf(
+            Record.fromHash("0xe016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994aa"),
+            Record.fromHash("0xe016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994bb")
         )
 
-        client.getMessages(messages)
+        client.getRecords(records)
             .test()
             .await()
-            .assertFailure(InvalidMessageException::class.java)
+            .assertFailure(InvalidRecordException::class.java)
     }
 
     @Test
@@ -151,7 +154,7 @@ class AcceptanceTest {
             .await()
             .assertFailure(HttpRequestException::class.java)
 
-        // assertEquals(exception.message, "Anchor not found")
+        // assertEquals(exception.record, "Anchor not found")
     }
 
     @Test
@@ -165,51 +168,51 @@ class AcceptanceTest {
     }
 
     @Test
-    fun test_get_proof_invalid_message_input_wrong_char() {
+    fun test_get_proof_invalid_record_input_wrong_char() {
         val client = getSdk()
 
-        val messages = listOf(
-            Message.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994aG")
+        val records = listOf(
+            Record.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994aG")
         )
 
-        client.getProof(messages)
+        client.getProof(records)
             .test()
             .await()
-            .assertFailure(InvalidMessageException::class.java)
+            .assertFailure(InvalidRecordException::class.java)
     }
 
     @Test
-    fun test_get_proof_invalid_message_input_missing_chars() {
+    fun test_get_proof_invalid_record_input_missing_chars() {
         val client = getSdk()
 
-        val messages = listOf(
-            Message.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994aa"),
-            Message.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994")
+        val records = listOf(
+            Record.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994aa"),
+            Record.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994")
         )
 
-        client.getProof(messages)
+        client.getProof(records)
             .test()
             .await()
-            .assertFailure(InvalidMessageException::class.java)
+            .assertFailure(InvalidRecordException::class.java)
     }
 
     @Test
-    fun test_get_proof_invalid_message_input_wrong_start() {
+    fun test_get_proof_invalid_record_input_wrong_start() {
         val client = getSdk()
 
-        val messages = listOf(
-            Message.fromHash("0xe016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994aa"),
-            Message.fromHash("0xe016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994bb")
+        val records = listOf(
+            Record.fromHash("0xe016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994aa"),
+            Record.fromHash("0xe016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994bb")
         )
 
-        client.getProof(messages)
+        client.getProof(records)
             .test()
             .await()
-            .assertFailure(InvalidMessageException::class.java)
+            .assertFailure(InvalidRecordException::class.java)
     }
 
     @Test
-    fun test_get_proof_empty_message_input() {
+    fun test_get_proof_empty_record_input() {
         val client = getSdk()
 
         client.getProof(emptyList())
@@ -222,85 +225,85 @@ class AcceptanceTest {
     fun test_get_proof_none_existing_leaf() {
         val client = getSdk()
 
-        val messages = listOf(
-            Message.fromHash("0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef")
+        val records = listOf(
+            Record.fromHash("0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef")
         )
 
-        client.getProof(messages)
+        client.getProof(records)
             .test()
             .await()
             .assertFailure(HttpRequestException::class.java)
 
-        // assertEquals(exception.message, "Message '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef' not found.")
+        // assertEquals(exception.record, "Record '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef' not found.")
     }
 
     @Test
-    fun test_verify_messages_invalid_message_input_wrong_char() {
+    fun test_verify_records_invalid_record_input_wrong_char() {
         val client = getSdk()
 
-        val messages = listOf(
-            Message.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994aG")
+        val records = listOf(
+            Record.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994aG")
         )
 
-        client.verifyMessages(messages)
+        client.verifyRecords(records)
             .test()
             .await()
-            .assertFailure(InvalidMessageException::class.java)
+            .assertFailure(InvalidRecordException::class.java)
     }
 
     @Test
-    fun test_verify_messages_invalid_message_input_missing_chars() {
+    fun test_verify_records_invalid_record_input_missing_chars() {
         val client = getSdk()
 
-        val messages = listOf(
-            Message.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994aa"),
-            Message.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994")
+        val records = listOf(
+            Record.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994aa"),
+            Record.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994")
         )
 
-        client.verifyMessages(messages)
+        client.verifyRecords(records)
             .test()
             .await()
-            .assertFailure(InvalidMessageException::class.java)
+            .assertFailure(InvalidRecordException::class.java)
     }
 
     @Test
-    fun test_verify_messages_invalid_message_input_wrong_start() {
+    fun test_verify_records_invalid_record_input_wrong_start() {
         val client = getSdk()
 
-        val messages = listOf(
-            Message.fromHash("0xe016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994aa"),
-            Message.fromHash("0xe016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994bb")
+        val records = listOf(
+            Record.fromHash("0xe016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994aa"),
+            Record.fromHash("0xe016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994bb")
         )
 
-        client.verifyMessages(messages)
+        client.verifyRecords(records)
             .test()
             .await()
-            .assertFailure(InvalidMessageException::class.java)
+            .assertFailure(InvalidRecordException::class.java)
     }
 
     @Test
-    fun test_verify_messages_empty_message_input() {
+    fun test_verify_records_empty_record_input() {
         val client = getSdk()
 
-        client.verifyMessages(emptyList())
+        client.verifyRecords(emptyList())
             .test()
             .await()
             .assertFailure(InvalidArgumentException::class.java)
     }
 
     @Test
-    fun test_verify_messages_none_existing_leaf() {
+    fun test_verify_records_none_existing_leaf() {
         val client = getSdk()
 
-        val messages = listOf(
-            Message.fromHash("0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef")
+        val records = listOf(
+            Record.fromHash("0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef")
         )
 
-        client.verifyMessages(messages)
+        client.verifyRecords(records)
             .test()
             .await()
             .assertFailure(HttpRequestException::class.java)
 
-        // assertEquals(exception.message, "Message '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef' not found.")
+        // assertEquals(exception.record, "Record '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef' not found.")
     }
 }

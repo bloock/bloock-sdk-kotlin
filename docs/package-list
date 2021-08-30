@@ -1,14 +1,13 @@
 $dokka.format:gfm-v1
 $dokka.linkExtension:md
 
-com.enchainte.sdk
-com.enchainte.sdk.anchor.entity
-com.enchainte.sdk.anchor.entity.exception
-com.enchainte.sdk.config.entity
-com.enchainte.sdk.infrastructure.http.exception
-com.enchainte.sdk.message.entity
-com.enchainte.sdk.message.entity.exception
-com.enchainte.sdk.proof.entity
-com.enchainte.sdk.proof.entity.exception
-com.enchainte.sdk.shared.entity.exception
+com.bloock.sdk
+com.bloock.sdk.anchor.entity
+com.bloock.sdk.anchor.entity.exception
+com.bloock.sdk.infrastructure.http.exception
+com.bloock.sdk.proof.entity
+com.bloock.sdk.proof.entity.exception
+com.bloock.sdk.record.entity
+com.bloock.sdk.record.entity.exception
+com.bloock.sdk.shared.entity.exception
 

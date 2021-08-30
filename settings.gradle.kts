@@ -14,4 +14,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "enchainte-sdk-java"
+rootProject.name = "bloock-sdk-java"

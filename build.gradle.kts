@@ -4,21 +4,21 @@
  * This generated file contains a sample Kotlin library project to get you started.
  */
 object Library {
-    const val LIBRARY_NAME = "Enchainté SDK"
-    const val GROUP_ID = "com.enchainte.sdk"
-    const val ARTIFACT_NAME = "enchainte-sdk"
-    const val VERSION = "1.1.0"
+    const val LIBRARY_NAME = "Bloock SDK"
+    const val GROUP_ID = "com.bloock.sdk"
+    const val ARTIFACT_NAME = "bloock-sdk"
+    const val VERSION = "1.3.0"
 
-    const val DESCRIPTION = "Enchainté SDK for Java / Kotlin"
-    const val SITE_URL = "https://www.enchainte.com"
-    const val GIT_URL = "scm:git:https://github.com/enchainte/enchainte-sdk-kotlin.git"
+    const val DESCRIPTION = "Bloock SDK for Java / Kotlin"
+    const val SITE_URL = "https://www.bloock.com"
+    const val GIT_URL = "scm:git:https://github.com/bloock/bloock-sdk-kotlin.git"
 
-    const val DEVELOPER_ID = "mbaque_enchainte"
+    const val DEVELOPER_ID = "mbaque_bloock"
     const val DEVELOPER_NAME = "Marc Baqué"
-    const val DEVELOPER_EMAIL = "mbaque@enchainte.com"
+    const val DEVELOPER_EMAIL = "mbaque@bloock.com"
 
     const val LICENSE = "MIT License"
-    const val LICENSE_URL = "https://raw.githubusercontent.com/enchainte/enchainte-sdk-kotlin/master/LICENSE"
+    const val LICENSE_URL = "https://raw.githubusercontent.com/bloock/bloock-sdk-kotlin/master/LICENSE"
 }
 
 object DependencyVersions {

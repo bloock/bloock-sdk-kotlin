@@ -1,11 +1,11 @@
-# Enchainté SDK - Kotlin / Java
+# Bloock SDK - Kotlin / Java
 
-This SDK offers all the features available in the Enchainté Toolset:
+This SDK offers all the features available in the Bloock Toolset:
 
-- Write messages
-- Get messages proof
+- Write records
+- Get records proof
 - Validate proof
-- Get messages details
+- Get records details
 
 ## Installation
 
@@ -18,7 +18,7 @@ This SDK offers all the features available in the Enchainté Toolset:
 Add this dependency to your project's build file:
 
 ```groovy
-implementation 'com.enchainte.sdk:enchainte-sdk:1.1.0'
+implementation 'com.bloock.sdk:bloock-sdk:1.3.0'
 ```
 
 ### Maven users
@@ -27,9 +27,9 @@ Add this dependency to your project's POM:
 
 ```xml
 <dependency>
-    <groupId>com.enchainte.sdk</groupId>
-    <artifactId>enchainte-sdk</artifactId>
-    <version>1.1.0</version>
+    <groupId>com.bloock.sdk</groupId>
+    <artifactId>bloock-sdk</artifactId>
+    <version>1.3.0</version>
 </dependency>
 ```
 
@@ -39,121 +39,121 @@ The following examples summarize how to access the different functionalities ava
 
 ### Prepare data
 
-In order to interact with the SDK, the data should be processed through the Message module.
+In order to interact with the SDK, the data should be processed through the Record module.
 
-There are several ways to generate a Message:
+There are several ways to generate a Record:
 
 ```kotlin
-import com.enchainte.sdk.message.entity.Message
+import com.bloock.sdk.record.entity.Record
 
 // From a hash string (hex encoded 64-chars long string)
-val message = Message.fromHash("5ac706bdef87529b22c08646b74cb98baf310a46bd21ee420814b04c71fa42b1")
+val record = Record.fromHash("5ac706bdef87529b22c08646b74cb98baf310a46bd21ee420814b04c71fa42b1")
 
 // From a hex encoded string
-val message = Message.fromHex("123456789abcdef")
+val record = Record.fromHex("123456789abcdef")
 
 // From a string
-val message = Message.fromString("Example Data")
+val record = Record.fromString("Example Data")
 ```
 
-### Send messages
+### Send records
 
-This example shows how to send data to Enchainté
+This example shows how to send data to Bloock
 
 ```kotlin
-import com.enchainte.sdk.EnchainteClient
-import com.enchainte.sdk.message.entity.Message
+import com.bloock.sdk.BloockClient
+import com.bloock.sdk.record.entity.Record
 
 val apiKey = System.getenv("API_KEY")!!
 
-val client = EnchainteClient(apiKey)
+val client = BloockClient(apiKey)
 
-val messages = listOf(
-    Message.fromString("Example Data")
+val records = listOf(
+    Record.fromString("Example Data")
 )
 
-val receipts = client.sendMessages(messages).blockingGet()
+val receipts = client.sendRecords(records).blockingGet()
 ```
 
-### Get messages status
+### Get records status
 
-This example shows how to get all the details and status of messages:
+This example shows how to get all the details and status of records:
 
 ```kotlin
-import com.enchainte.sdk.EnchainteClient
-import com.enchainte.sdk.message.entity.Message
+import com.bloock.sdk.BloockClient
+import com.bloock.sdk.record.entity.Record
 
 val apiKey = System.getenv("API_KEY")!!
 
-val client = EnchainteClient(apiKey)
+val client = BloockClient(apiKey)
 
-val messages = listOf(
-    Message.fromString("Example Data 1"),
-    Message.fromString("Example Data 2"),
-    Message.fromString("Example Data 3")
+val records = listOf(
+    Record.fromString("Example Data 1"),
+    Record.fromString("Example Data 2"),
+    Record.fromString("Example Data 3")
 )
 
-val sendReceipt = client.sendMessages(messages).blockingGet().first()
+val sendReceipt = client.sendRecords(records).blockingGet().first()
 
 client.waitAnchor(sendReceipt.anchor).blockingSubscribe()
 
-val messageReceipts = client.getMessages(messages).blockingGet()
+val recordReceipts = client.getRecords(records).blockingGet()
 ```
 
-### Wait for messages to process
+### Wait for records to process
 
-This example shows how to wait for a message to be processed by Enchainté after sending it.
+This example shows how to wait for a record to be processed by Bloock after sending it.
 
 ```kotlin
-import com.enchainte.sdk.EnchainteClient
-import com.enchainte.sdk.message.entity.Message
+import com.bloock.sdk.BloockClient
+import com.bloock.sdk.record.entity.Record
 
 val apiKey = System.getenv("API_KEY")!!
 
-val client = EnchainteClient(apiKey)
+val client = BloockClient(apiKey)
 
-val messages = listOf(
-    Message.fromString("Example Data 1"),
-    Message.fromString("Example Data 2"),
-    Message.fromString("Example Data 3")
+val records = listOf(
+    Record.fromString("Example Data 1"),
+    Record.fromString("Example Data 2"),
+    Record.fromString("Example Data 3")
 )
 
-val sendReceipt = client.sendMessages(messages).blockingGet().first()
+val sendReceipt = client.sendRecords(records).blockingGet().first()
 
 val receipt = client.waitAnchor(sendReceipt.anchor).blockingGet()
 ```
 
-### Get and validate messages proof
+### Get and validate records proof
 
-This example shows how to get a proof for an array of messages and validate it:
+This example shows how to get a proof for an array of records and validate it:
 
 ```kotlin
-import com.enchainte.sdk.EnchainteClient
-import com.enchainte.sdk.message.entity.Message
+import com.bloock.sdk.BloockClient
+import com.bloock.sdk.record.entity.Record
 
 val apiKey = System.getenv("API_KEY")!!
 
-val client = EnchainteClient(apiKey)
+val client = BloockClient(apiKey)
 
-val message = Message.fromString('Example Data 1')
+val record = Record.fromString('Example Data 1')
 
-val messages = listOf(
-    Message.fromString('Example Data 1'),
-    Message.fromString('Example Data 2'),
-    Message.fromString('Example Data 3')
+val records = listOf(
+    Record.fromString('Example Data 1'),
+    Record.fromString('Example Data 2'),
+    Record.fromString('Example Data 3')
 )
 
-val proof = client.getProof(messages).blockingGet()
+val proof = client.getProof(records).blockingGet()
 val valid = client.verifyProof(proof).blockingGet()
 ```
 
 ### Full example
 
-This snippet shows a complete data cycle including: write, message status polling and proof retrieval and validation.
+This snippet shows a complete data cycle including: write, record status polling and proof retrieval and validation.
 
 ```kotlin
-import com.enchainte.sdk.EnchainteClient
-import com.enchainte.sdk.message.entity.Message
+import com.bloock.sdk.BloockClient
+import com.bloock.sdk.record.entity.Record
 
 val charPool: List<Char> = ('a'..'f') + ('0'..'9')
 val randomHex = (1..16)
@@ -162,21 +162,21 @@ val randomHex = (1..16)
     .joinToString("")
 
 val apiKey: String = System.getenv("API_KEY")
-val client = EnchainteClient(apiKey)
+val client = BloockClient(apiKey)
 
-val messages = listOf(
-    Message.fromString(randomHex)
+val records = listOf(
+    Record.fromString(randomHex)
 )
 
-println("SENDING MESSAGE: ${messages[0].getHash()}")
-val receipts = client.sendMessages(messages).blockingGet()
+println("SENDING MESSAGE: ${records[0].getHash()}")
+val receipts = client.sendRecords(records).blockingGet()
 assertNotNull(receipts)
 
 println("WAITING MESSAGE")
 client.waitAnchor(receipts[0].anchor).blockingGet()
 
 println("VALIDATING MESSAGE")
-val proof = client.getProof(messages).blockingGet()
+val proof = client.getProof(records).blockingGet()
 val timestamp = client.verifyProof(proof)
 
 assertTrue(timestamp > 0)

@@ -1,7 +1,5 @@
-import com.enchainte.sdk.EnchainteClient
-import com.enchainte.sdk.config.entity.ConfigEnvironment
-import com.enchainte.sdk.message.entity.Message
-import com.enchainte.sdk.message.entity.exception.InvalidMessageException
+import com.bloock.sdk.BloockClient
+import com.bloock.sdk.record.entity.Record
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -17,24 +15,28 @@ class FunctionalTest {
             .joinToString("")
     }
 
-    fun getSdk(): EnchainteClient {
+    fun getSdk(): BloockClient {
         val apiKey = System.getenv("API_KEY")
-        return EnchainteClient(apiKey, ConfigEnvironment.TEST)
+        val apiHost = System.getenv("API_HOST")
+
+        val client = BloockClient(apiKey)
+        client.setApiHost(apiHost)
+        return client
     }
 
     @Test
-    fun testSendMessage() {
+    fun testSendRecord() {
         val client = getSdk()
 
-        val messages = listOf(
-            Message.fromString(randHex())
+        val records = listOf(
+            Record.fromString(randHex())
         )
 
-        val receipts = client.sendMessages(messages).blockingGet()
+        val receipts = client.sendRecords(records).blockingGet()
         assertNotNull(receipts)
         assertTrue(receipts[0].anchor > 0)
         assertTrue(receipts[0].client.isNotEmpty())
-        assertEquals(receipts[0].message, messages[0].getHash())
+        assertEquals(receipts[0].record, records[0].getHash())
         assertEquals(receipts[0].status, "Pending")
     }
 
@@ -42,13 +44,13 @@ class FunctionalTest {
     fun testWaitAnchor() {
         val client = getSdk()
 
-        val messages = listOf(
-            Message.fromString(randHex()),
-            Message.fromString(randHex()),
-            Message.fromString(randHex())
+        val records = listOf(
+            Record.fromString(randHex()),
+            Record.fromString(randHex()),
+            Record.fromString(randHex())
         )
 
-        val sendReceipt = client.sendMessages(messages).blockingGet()
+        val sendReceipt = client.sendRecords(records).blockingGet()
         assertNotNull(sendReceipt)
 
         val receipt = client.waitAnchor(sendReceipt[0].anchor).blockingGet()
@@ -61,23 +63,23 @@ class FunctionalTest {
     }
 
     @Test
-    fun testFetchMessages() {
+    fun testFetchRecords() {
         val client = getSdk()
 
-        val messages = listOf(
-            Message.fromString(randHex()),
-            Message.fromString(randHex()),
-            Message.fromString(randHex())
+        val records = listOf(
+            Record.fromString(randHex()),
+            Record.fromString(randHex()),
+            Record.fromString(randHex())
         )
 
-        val sendReceipt = client.sendMessages(messages).blockingGet()
+        val sendReceipt = client.sendRecords(records).blockingGet()
         assertNotNull(sendReceipt)
 
         client.waitAnchor(sendReceipt[0].anchor).blockingSubscribe()
 
-        val messageReceipts = client.getMessages(messages).blockingGet()
-        for (messageReceipt in messageReceipts) {
-            assertEquals(messageReceipt.status, "Success")
+        val recordReceipts = client.getRecords(records).blockingGet()
+        for (recordReceipt in recordReceipts) {
+            assertEquals(recordReceipt.status, "Success")
         }
     }
 
@@ -85,18 +87,18 @@ class FunctionalTest {
     fun testGetProof() {
         val client = getSdk()
 
-        val messages = listOf(
-            Message.fromString(randHex()),
-            Message.fromString(randHex()),
-            Message.fromString(randHex())
+        val records = listOf(
+            Record.fromString(randHex()),
+            Record.fromString(randHex()),
+            Record.fromString(randHex())
         )
 
-        val sendReceipt = client.sendMessages(messages).blockingGet()
+        val sendReceipt = client.sendRecords(records).blockingGet()
         assertNotNull(sendReceipt)
 
         client.waitAnchor(sendReceipt[0].anchor).blockingSubscribe()
 
-        val proof = client.getProof(messages).blockingGet()
+        val proof = client.getProof(records).blockingGet()
         assertNotNull(proof)
     }
 
@@ -104,18 +106,18 @@ class FunctionalTest {
     fun testVerifyProof() {
         val client = getSdk()
 
-        val messages = listOf(
-            Message.fromString(randHex()),
-            Message.fromString(randHex()),
-            Message.fromString(randHex())
+        val records = listOf(
+            Record.fromString(randHex()),
+            Record.fromString(randHex()),
+            Record.fromString(randHex())
         )
 
-        val sendReceipt = client.sendMessages(messages).blockingGet()
+        val sendReceipt = client.sendRecords(records).blockingGet()
         assertNotNull(sendReceipt)
 
         client.waitAnchor(sendReceipt[0].anchor).blockingSubscribe()
 
-        val proof = client.getProof(messages).blockingGet()
+        val proof = client.getProof(records).blockingGet()
         assertNotNull(proof)
 
         val timestamp = client.verifyProof(proof)

@@ -1,8 +1,7 @@
-import com.enchainte.sdk.EnchainteClient;
-import com.enchainte.sdk.config.entity.ConfigEnvironment;
-import com.enchainte.sdk.message.entity.Message;
-import com.enchainte.sdk.message.entity.MessageReceipt;
-import com.enchainte.sdk.proof.entity.Proof;
+import com.bloock.sdk.BloockClient;
+import com.bloock.sdk.record.entity.Record;
+import com.bloock.sdk.record.entity.RecordReceipt;
+import com.bloock.sdk.proof.entity.Proof;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -15,27 +14,30 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class E2EJavaTest {
 
     @Test
-    public void e2eJavaTest() {
-        EnchainteClient client = getSdk();
+    public void BloockTest() {
+        BloockClient client = getSdk();
 
-        Message message = Message.fromHex(getRandomHexString());
-        List<Message> messages = new ArrayList<>();
-        messages.add(message);
+        Record record = Record.fromHex(getRandomHexString());
+        List<Record> records = new ArrayList<>();
+        records.add(record);
 
-        List<MessageReceipt> receipts = client.sendMessages(messages).blockingGet();
+        List<RecordReceipt> receipts = client.sendRecords(records).blockingGet();
         assertNotNull(receipts);
 
         client.waitAnchor(receipts.get(0).getAnchor()).blockingSubscribe();
 
-        Proof proof = client.getProof(messages).blockingGet();
+        Proof proof = client.getProof(records).blockingGet();
         int timestamp = client.verifyProof(proof);
 
         assertTrue(timestamp > 0);
     }
 
-    private EnchainteClient getSdk() {
+    private BloockClient getSdk() {
         String apiKey = System.getenv("API_KEY");
-        return new EnchainteClient(apiKey, ConfigEnvironment.TEST);
+        String apiHost = System.getenv("API_HOST");
+        BloockClient client = new BloockClient(apiKey);
+        client.setApiHost(apiHost);
+        return client;
     }
 
     private String getRandomHexString() {

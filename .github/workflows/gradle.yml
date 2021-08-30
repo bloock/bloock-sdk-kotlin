@@ -1,4 +1,4 @@
-name: Enchainté Kotlin SDK CI
+name: Bloock Kotlin SDK CI
 
 on:
   push:
