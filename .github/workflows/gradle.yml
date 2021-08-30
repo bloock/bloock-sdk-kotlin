@@ -33,7 +33,7 @@ jobs:
       - name: Unit test
         run: ./gradlew check
       - name: Integration test
-        run: API_KEY=${{ secrets.API_KEY }} ./gradlew integrationTest
+        run: API_KEY=${{ secrets.API_KEY }} API_HOST=${{ secrets.API_HOST }} ./gradlew integrationTest
   publish:
     runs-on: ubuntu-latest
     needs: tests
