@@ -1,4 +1,4 @@
 package com.bloock.sdk.infrastructure.http.exception
 
-class HttpRequestException internal constructor(record: String?) :
-    Exception("HttpClient response was not successful: ${record ?: "unknown error"}.")
+class HttpRequestException internal constructor(message: String?) :
+    Exception("HttpClient response was not successful: ${message ?: "unknown error"}.")

@@ -31,7 +31,7 @@ internal class HttpClientTest {
                     }
                     "https://api.bloock.com/error" -> {
                         val responseHeaders = headersOf("Content-Type" to listOf(ContentType.Application.Json.toString()))
-                        respond("{'record': '${request.headers["X-Api-Key"]}'}", HttpStatusCode.BadRequest, headers = responseHeaders)
+                        respond("{'message': '${request.headers["X-Api-Key"]}'}", HttpStatusCode.BadRequest, headers = responseHeaders)
                     }
                     else -> error("Unhandled ${request.url.fullUrl}")
                 }
