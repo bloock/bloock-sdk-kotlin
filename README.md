@@ -144,7 +144,10 @@ val records = listOf(
 )
 
 val proof = client.getProof(records).blockingGet()
-val valid = client.verifyProof(proof).blockingGet()
+val timestamp = client.verifyProof(proof).blockingGet()
+if (timestamp > 0) {
+    println("Record is valid")
+}
 ```
 
 ### Full example
