@@ -127,10 +127,13 @@ dependencies {
     testImplementation("io.mockk:mockk:${DependencyVersions.MOCKK_VERSION}")
 }
 
-
-val MAVEN_UPLOAD_USER: String? by project
-val MAVEN_UPLOAD_PWD: String? by project
 publishing {
+    val MAVEN_UPLOAD_USER: String? = System.getenv("SONATYPE_USER")
+    val MAVEN_UPLOAD_PWD: String? = System.getenv("SONATYPE_PASSWORD")
+
+    System.out.println(MAVEN_UPLOAD_USER)
+    System.out.println(MAVEN_UPLOAD_PWD)
+
     repositories {
         maven {
             name = "MavenCentral"
@@ -182,9 +185,10 @@ publishing {
 }
 
 signing {
-    val      PGP_SIGNING_KEY: String? by project
-    val PGP_SIGNING_PASSWORD: String? by project
+    val           PGP_KEY_ID: String? = System.getenv("PGP_KEY_ID")
+    val      PGP_SIGNING_KEY: String? = System.getenv("PGP_SIGNING_KEY")
+    val PGP_SIGNING_PASSWORD: String? = System.getenv("PGP_SIGNING_PASSWORD")
 
-    useInMemoryPgpKeys(PGP_SIGNING_KEY, PGP_SIGNING_PASSWORD)
+    useInMemoryPgpKeys(PGP_KEY_ID, PGP_SIGNING_KEY, PGP_SIGNING_PASSWORD)
     sign(publishing.publications["mavenJava"])
 }

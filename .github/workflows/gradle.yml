@@ -46,4 +46,10 @@ jobs:
           distribution: 'zulu'
           java-version: '15'
       - name: Publish
-        run: ./gradlew -PMAVEN_UPLOAD_USER=${{ secrets.MAVEN_UPLOAD_USER }} -PMAVEN_UPLOAD_PWD=${{ secrets.MAVEN_UPLOAD_PWD }}  -PPGP_SIGNING_KEY="${{ secrets.PGP_SIGNING_KEY }}" -PPGP_SIGNING_PASSWORD="${{ secrets.PGP_SIGNING_PASSWORD }}" publish
+        env:
+          SONATYPE_USER: ${{ secrets.SONATYPE_USER }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          PGP_KEY_ID: ${{ secrets.PGP_KEY_ID }}
+          PGP_SIGNING_KEY: ${{ secrets.PGP_SIGNING_KEY }}
+          PGP_SIGNING_PASSWORD: ${{ secrets.PGP_SIGNING_PASSWORD }}
+        run: ./gradlew publish
