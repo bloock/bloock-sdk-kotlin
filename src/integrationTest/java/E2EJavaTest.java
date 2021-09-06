@@ -1,4 +1,5 @@
 import com.bloock.sdk.BloockClient;
+import com.bloock.sdk.config.entity.Network;
 import com.bloock.sdk.record.entity.Record;
 import com.bloock.sdk.record.entity.RecordReceipt;
 import com.bloock.sdk.proof.entity.Proof;
@@ -27,7 +28,7 @@ public class E2EJavaTest {
         client.waitAnchor(receipts.get(0).getAnchor()).blockingSubscribe();
 
         Proof proof = client.getProof(records).blockingGet();
-        int timestamp = client.verifyProof(proof);
+        int timestamp = client.verifyProof(proof, Network.BLOOCK_CHAIN);
 
         assertTrue(timestamp > 0);
     }

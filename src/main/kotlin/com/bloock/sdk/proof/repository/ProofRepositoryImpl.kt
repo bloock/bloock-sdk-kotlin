@@ -1,5 +1,6 @@
 package com.bloock.sdk.proof.repository
 
+import com.bloock.sdk.config.entity.Network
 import com.bloock.sdk.config.service.ConfigService
 import com.bloock.sdk.infrastructure.BlockchainClient
 import com.bloock.sdk.infrastructure.HttpClient
@@ -76,7 +77,7 @@ internal class ProofRepositoryImpl(
         }
     }
 
-    override fun validateRoot(root: Record): Int {
-        return blockchainClient.validateRoot(root.getHash())
+    override fun validateRoot(root: Record, network: Network): Int {
+        return blockchainClient.validateRoot(root.getHash(), network)
     }
 }

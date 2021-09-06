@@ -1,4 +1,5 @@
 import com.bloock.sdk.BloockClient
+import com.bloock.sdk.config.entity.Network
 import com.bloock.sdk.record.entity.Record
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
@@ -120,7 +121,7 @@ class FunctionalTest {
         val proof = client.getProof(records).blockingGet()
         assertNotNull(proof)
 
-        val timestamp = client.verifyProof(proof)
+        val timestamp = client.verifyProof(proof, Network.BLOOCK_CHAIN)
         assertTrue(timestamp > 0)
     }
 }

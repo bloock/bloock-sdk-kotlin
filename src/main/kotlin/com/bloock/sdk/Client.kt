@@ -2,6 +2,8 @@ package com.bloock.sdk
 
 import com.bloock.sdk.anchor.entity.Anchor
 import com.bloock.sdk.anchor.service.AnchorService
+import com.bloock.sdk.config.entity.Network
+import com.bloock.sdk.config.entity.NetworkConfiguration
 import com.bloock.sdk.config.service.ConfigService
 import com.bloock.sdk.infrastructure.HttpClient
 import com.bloock.sdk.record.entity.Record
@@ -50,6 +52,16 @@ class BloockClient(private val apiKey: String) {
      */
     fun setApiHost(host: String) {
         this.configService.setApiHost(host)
+    }
+
+    /**
+     * Overrides a blockchain network configuration
+     *
+     * @param network The network to modify
+     * @param config The new configuration for the specified network
+     */
+    fun setNetworkConfiguration(network: Network, config: NetworkConfiguration) {
+        this.configService.setNetworkConfiguration(network, config)
     }
 
     /**
@@ -134,8 +146,11 @@ class BloockClient(private val apiKey: String) {
      * @return a [Boolean] that returns true if valid, false if not
      * @throws [Web3Exception] Error connecting to blockchain.
      */
+    fun verifyProof(proof: Proof, network: Network = Network.ETHEREUM_MAINNET): Int {
+        return proofService.verifyProof(proof, network)
+    }
     fun verifyProof(proof: Proof): Int {
-        return proofService.verifyProof(proof)
+        return proofService.verifyProof(proof, Network.ETHEREUM_MAINNET)
     }
 
     /**
@@ -148,9 +163,14 @@ class BloockClient(private val apiKey: String) {
      * @throws [HttpRequestException] Error returned by Bloock's API.
      * @throws [Web3Exception] Error connecting to blockchain.
      */
+    fun verifyRecords(records: List<Record>, network: Network = Network.ETHEREUM_MAINNET): Single<Int> {
+        return rxSingle {
+            proofService.verifyRecords(records, network)
+        }
+    }
     fun verifyRecords(records: List<Record>): Single<Int> {
         return rxSingle {
-            proofService.verifyRecords(records)
+            proofService.verifyRecords(records, Network.ETHEREUM_MAINNET)
         }
     }
 

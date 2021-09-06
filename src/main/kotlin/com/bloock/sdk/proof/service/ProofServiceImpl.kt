@@ -1,5 +1,6 @@
 package com.bloock.sdk.proof.service
 
+import com.bloock.sdk.config.entity.Network
 import com.bloock.sdk.record.entity.Record
 import com.bloock.sdk.record.entity.exception.InvalidRecordException
 import com.bloock.sdk.proof.entity.Proof
@@ -20,13 +21,13 @@ internal class ProofServiceImpl(private val proofRepository: ProofRepository) : 
         return proofRepository.retrieveProof(sorted)
     }
 
-    override suspend fun verifyRecords(records: List<Record>): Int {
+    override suspend fun verifyRecords(records: List<Record>, network: Network): Int {
         val proof = retrieveProof(records)
-        return verifyProof(proof)
+        return verifyProof(proof, network)
     }
 
-    override fun verifyProof(proof: Proof): Int {
+    override fun verifyProof(proof: Proof, network: Network): Int {
         val root = proofRepository.verifyProof(proof)
-        return proofRepository.validateRoot(root)
+        return proofRepository.validateRoot(root, network)
     }
 }

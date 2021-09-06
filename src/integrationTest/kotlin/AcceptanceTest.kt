@@ -1,5 +1,6 @@
 import com.bloock.sdk.BloockClient
 import com.bloock.sdk.anchor.entity.exception.WaitAnchorTimeoutException
+import com.bloock.sdk.config.entity.Network
 import com.bloock.sdk.infrastructure.http.exception.HttpRequestException
 import com.bloock.sdk.record.entity.Record
 import com.bloock.sdk.record.entity.exception.InvalidRecordException
@@ -42,7 +43,7 @@ class AcceptanceTest {
         client.waitAnchor(receipts[0].anchor).blockingGet()
 
         val proof = client.getProof(records).blockingGet()
-        val timestamp = client.verifyProof(proof)
+        val timestamp = client.verifyProof(proof, Network.BLOOCK_CHAIN)
 
         assertTrue(timestamp > 0)
     }
@@ -245,7 +246,7 @@ class AcceptanceTest {
             Record.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994aG")
         )
 
-        client.verifyRecords(records)
+        client.verifyRecords(records, Network.BLOOCK_CHAIN)
             .test()
             .await()
             .assertFailure(InvalidRecordException::class.java)
@@ -260,7 +261,7 @@ class AcceptanceTest {
             Record.fromHash("e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994")
         )
 
-        client.verifyRecords(records)
+        client.verifyRecords(records, Network.BLOOCK_CHAIN)
             .test()
             .await()
             .assertFailure(InvalidRecordException::class.java)
@@ -275,7 +276,7 @@ class AcceptanceTest {
             Record.fromHash("0xe016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994bb")
         )
 
-        client.verifyRecords(records)
+        client.verifyRecords(records, Network.BLOOCK_CHAIN)
             .test()
             .await()
             .assertFailure(InvalidRecordException::class.java)
@@ -285,7 +286,7 @@ class AcceptanceTest {
     fun test_verify_records_empty_record_input() {
         val client = getSdk()
 
-        client.verifyRecords(emptyList())
+        client.verifyRecords(emptyList(), Network.BLOOCK_CHAIN)
             .test()
             .await()
             .assertFailure(InvalidArgumentException::class.java)
@@ -299,7 +300,7 @@ class AcceptanceTest {
             Record.fromHash("0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef")
         )
 
-        client.verifyRecords(records)
+        client.verifyRecords(records, Network.BLOOCK_CHAIN)
             .test()
             .await()
             .assertFailure(HttpRequestException::class.java)
