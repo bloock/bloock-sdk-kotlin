@@ -50,7 +50,6 @@ internal class HttpClientImpl(private val client: KtorHttpClient, private val ht
             return Gson().fromJson(response, type)
         } catch (t: ResponseException) {
             val errorText = t.response.readText(Charset.defaultCharset())
-                println(errorText)
             val error: ApiError = Gson().fromJson(errorText, object : TypeToken<ApiError>() {}.type)
             throw HttpRequestException(error.message)
         } catch (t: Throwable) {

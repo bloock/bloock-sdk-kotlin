@@ -5,7 +5,7 @@
 # verifyProof  
 [jvm]  
 Content  
-fun [verifyProof](verify-proof.md)(proof: [Proof](../../com.bloock.sdk.proof.entity/-proof/index.md)): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)  
+fun [verifyProof](verify-proof.md)(proof: [Proof](../../com.bloock.sdk.proof.entity/-proof/index.md), network: [Network](../../com.bloock.sdk.config.entity/-network/index.md) = Network.ETHEREUM_MAINNET): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)  
 More info  
 
 
@@ -26,7 +26,7 @@ jvm
   
 |  Name|  Summary| 
 |---|---|
-| <a name="com.bloock.sdk/BloockClient/verifyProof/#com.bloock.sdk.proof.entity.Proof/PointingToDeclaration/"></a>proof| <a name="com.bloock.sdk/BloockClient/verifyProof/#com.bloock.sdk.proof.entity.Proof/PointingToDeclaration/"></a><br><br>to validate<br><br>
+| <a name="com.bloock.sdk/BloockClient/verifyProof/#com.bloock.sdk.proof.entity.Proof#com.bloock.sdk.config.entity.Network/PointingToDeclaration/"></a>proof| <a name="com.bloock.sdk/BloockClient/verifyProof/#com.bloock.sdk.proof.entity.Proof#com.bloock.sdk.config.entity.Network/PointingToDeclaration/"></a><br><br>to validate<br><br>
   
 
 
@@ -34,8 +34,13 @@ jvm
   
 |  Name|  Summary| 
 |---|---|
-| <a name="com.bloock.sdk/BloockClient/verifyProof/#com.bloock.sdk.proof.entity.Proof/PointingToDeclaration/"></a>Web3Exception| <a name="com.bloock.sdk/BloockClient/verifyProof/#com.bloock.sdk.proof.entity.Proof/PointingToDeclaration/"></a><br><br>Error connecting to blockchain.<br><br>
+| <a name="com.bloock.sdk/BloockClient/verifyProof/#com.bloock.sdk.proof.entity.Proof#com.bloock.sdk.config.entity.Network/PointingToDeclaration/"></a>Web3Exception| <a name="com.bloock.sdk/BloockClient/verifyProof/#com.bloock.sdk.proof.entity.Proof#com.bloock.sdk.config.entity.Network/PointingToDeclaration/"></a><br><br>Error connecting to blockchain.<br><br>
   
+
+
+[jvm]  
+Content  
+fun [verifyProof](verify-proof.md)(proof: [Proof](../../com.bloock.sdk.proof.entity/-proof/index.md)): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)  
 
 
 

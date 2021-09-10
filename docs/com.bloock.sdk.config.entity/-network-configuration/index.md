@@ -1,9 +1,9 @@
-//[docs](../../index.md)/[com.bloock.sdk.record.entity](../index.md)/[RecordReceipt](index.md)
+//[docs](../../index.md)/[com.bloock.sdk.config.entity](../index.md)/[NetworkConfiguration](index.md)
 
 
 
-# RecordReceipt  
- [jvm] class [RecordReceipt](index.md)(**anchor**: [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html), **client**: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), **record**: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), **status**: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html))   
+# NetworkConfiguration  
+ [jvm] class [NetworkConfiguration](index.md)(**CONTRACT_ADDRESS**: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), **CONTRACT_ABI**: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), **HTTP_PROVIDER**: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html))   
 
 
 ## Functions  
@@ -19,8 +19,7 @@
   
 |  Name|  Summary| 
 |---|---|
-| <a name="com.bloock.sdk.record.entity/RecordReceipt/anchor/#/PointingToDeclaration/"></a>[anchor](anchor.md)| <a name="com.bloock.sdk.record.entity/RecordReceipt/anchor/#/PointingToDeclaration/"></a> [jvm] val [anchor](anchor.md): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)   <br>
-| <a name="com.bloock.sdk.record.entity/RecordReceipt/client/#/PointingToDeclaration/"></a>[client](client.md)| <a name="com.bloock.sdk.record.entity/RecordReceipt/client/#/PointingToDeclaration/"></a> [jvm] val [client](client.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)   <br>
-| <a name="com.bloock.sdk.record.entity/RecordReceipt/record/#/PointingToDeclaration/"></a>[record](record.md)| <a name="com.bloock.sdk.record.entity/RecordReceipt/record/#/PointingToDeclaration/"></a> [jvm] val [record](record.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)   <br>
-| <a name="com.bloock.sdk.record.entity/RecordReceipt/status/#/PointingToDeclaration/"></a>[status](status.md)| <a name="com.bloock.sdk.record.entity/RecordReceipt/status/#/PointingToDeclaration/"></a> [jvm] val [status](status.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)   <br>
+| <a name="com.bloock.sdk.config.entity/NetworkConfiguration/CONTRACT_ABI/#/PointingToDeclaration/"></a>[CONTRACT_ABI](-c-o-n-t-r-a-c-t_-a-b-i.md)| <a name="com.bloock.sdk.config.entity/NetworkConfiguration/CONTRACT_ABI/#/PointingToDeclaration/"></a> [jvm] var [CONTRACT_ABI](-c-o-n-t-r-a-c-t_-a-b-i.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)   <br>
+| <a name="com.bloock.sdk.config.entity/NetworkConfiguration/CONTRACT_ADDRESS/#/PointingToDeclaration/"></a>[CONTRACT_ADDRESS](-c-o-n-t-r-a-c-t_-a-d-d-r-e-s-s.md)| <a name="com.bloock.sdk.config.entity/NetworkConfiguration/CONTRACT_ADDRESS/#/PointingToDeclaration/"></a> [jvm] var [CONTRACT_ADDRESS](-c-o-n-t-r-a-c-t_-a-d-d-r-e-s-s.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)   <br>
+| <a name="com.bloock.sdk.config.entity/NetworkConfiguration/HTTP_PROVIDER/#/PointingToDeclaration/"></a>[HTTP_PROVIDER](-h-t-t-p_-p-r-o-v-i-d-e-r.md)| <a name="com.bloock.sdk.config.entity/NetworkConfiguration/HTTP_PROVIDER/#/PointingToDeclaration/"></a> [jvm] var [HTTP_PROVIDER](-h-t-t-p_-p-r-o-v-i-d-e-r.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)   <br>
 

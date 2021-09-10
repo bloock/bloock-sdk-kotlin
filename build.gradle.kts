@@ -131,9 +131,6 @@ publishing {
     val MAVEN_UPLOAD_USER: String? = System.getenv("SONATYPE_USER")
     val MAVEN_UPLOAD_PWD: String? = System.getenv("SONATYPE_PASSWORD")
 
-    System.out.println(MAVEN_UPLOAD_USER)
-    System.out.println(MAVEN_UPLOAD_PWD)
-
     repositories {
         maven {
             name = "MavenCentral"

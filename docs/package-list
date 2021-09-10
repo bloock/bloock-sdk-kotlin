@@ -4,6 +4,7 @@ $dokka.linkExtension:md
 com.bloock.sdk
 com.bloock.sdk.anchor.entity
 com.bloock.sdk.anchor.entity.exception
+com.bloock.sdk.config.entity
 com.bloock.sdk.infrastructure.http.exception
 com.bloock.sdk.proof.entity
 com.bloock.sdk.proof.entity.exception
