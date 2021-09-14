@@ -175,6 +175,6 @@ class BloockClient(private val apiKey: String) {
     }
 
     companion object {
-        const val VERSION: String = "1.3.0"
+        const val VERSION: String = "1.3.1"
     }
 }

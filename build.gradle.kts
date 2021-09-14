@@ -7,7 +7,7 @@ object Library {
     const val LIBRARY_NAME = "Bloock SDK"
     const val GROUP_ID = "com.bloock.sdk"
     const val ARTIFACT_NAME = "bloock-sdk"
-    const val VERSION = "1.3.0"
+    const val VERSION = "1.3.1"
 
     const val DESCRIPTION = "Bloock SDK for Java / Kotlin"
     const val SITE_URL = "https://www.bloock.com"

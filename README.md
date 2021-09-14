@@ -18,7 +18,7 @@ This SDK offers all the features available in the Bloock Toolset:
 Add this dependency to your project's build file:
 
 ```groovy
-implementation 'com.bloock.sdk:bloock-sdk:1.3.0'
+implementation 'com.bloock.sdk:bloock-sdk:1.3.1'
 ```
 
 ### Maven users
@@ -29,7 +29,7 @@ Add this dependency to your project's POM:
 <dependency>
     <groupId>com.bloock.sdk</groupId>
     <artifactId>bloock-sdk</artifactId>
-    <version>1.3.0</version>
+    <version>1.3.1</version>
 </dependency>
 ```
 
