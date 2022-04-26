@@ -10,7 +10,7 @@ abstract class Document<T>(src: T, args: DocumentLoadArgs) {
     var ready: Deferred<Unit>
     protected var data: T? = null
     protected var payload: T? = null
-    protected lateinit var signatures: Signatures
+    protected var signatures: Signatures? = Signatures(mutableListOf())
     protected var proof: Proof? = null
 
     init {
@@ -30,57 +30,67 @@ abstract class Document<T>(src: T, args: DocumentLoadArgs) {
 
     suspend fun fetchSignatures(): Deferred<Signatures> {
         return GlobalScope.async {
-            return@async fetchMetadata("signature").await()?.let {
-                if (it != Unit) {
-                    it as Map<String, Any>
+            return@async fetchMetadata("signatures").await()?.let {
+                if (it != null) {
+                    it as MutableList<Any>
 
-                    Signatures(it["signatures"] as List<Any>)
+                    return@let Signatures(it)
                 }
-                null
+                Signatures(mutableListOf())
 
-            } ?: Signatures(emptyList())
+            } ?: Signatures(mutableListOf())
         }
     }
 
     suspend fun fetchProof(): Proof? {
         var proof = fetchMetadata("proof").await()
-        if (proof != Unit) return proof as Proof
-        return null
+        return proof?.let {
+            return proof as Proof
+
+        }
+
     }
 
     protected suspend abstract fun setup(src: T): Deferred<Unit>
     protected suspend abstract fun fetchMetadata(key: String): Deferred<Any?>
     protected suspend fun fetchPayload(): Deferred<T> {
-        var signatures = Signatures(emptyList<Signature>())
-        signatures?.let {
-            signatures = this.signatures
+        var metadata = mutableMapOf<String, Any>()
+        this.signatures?.value?.let {
+            if (it.isNotEmpty()) {
+
+                metadata.put("signatures", this.signatures!!)
+            }
         }
 
-        return this.buildFile(mapOf(Pair("signatures", signatures)))
+        return this.buildFile(metadata)
     }
 
 
     suspend fun build(): Deferred<T> {
-        var metadata = SignatureWithProof(null, emptyList())
+        var metadata = SignatureWithProof(null, mutableListOf())
         this.proof?.let {
             metadata.proof = this.proof
         }
         this.signatures?.let {
-            metadata.signatures = this.signatures.value
+            it.value?.let {
+
+                metadata.signatures = it
+            }
         }
 
-        return mapOf(Pair("signatures",metadata.signatures))?.let { this.buildFile(it) }
+        return mapOf(Pair("signatures", metadata.signatures))?.let { this.buildFile(it) }
     }
 
     abstract suspend fun buildFile(metadata: Map<String, *>): Deferred<T>
 
     abstract fun getDocPayload(): Any
     abstract fun getDocData(): Any
-    abstract fun getDocSignatures(): Signatures
+    abstract fun getDocSignatures(): Signatures?
     abstract fun addSignature(signatures: Signatures)
 }
 
-open class Signatures(open var value: List<Any>?) {
+open class Signatures(open var value: MutableList<Any>?) {
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Signatures) return false
@@ -95,7 +105,7 @@ open class Signatures(open var value: List<Any>?) {
     }
 }
 
-data class SignatureWithProof(var proof: Proof?, var signatures: List<Any>?) : Signatures(signatures)
+data class SignatureWithProof(var proof: Proof?, var signatures: MutableList<Any>?) : Signatures(signatures)
 
 open class DocumentLoadArgs()
 
