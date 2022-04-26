@@ -11,6 +11,7 @@ class JsonDocument(src: JsonDocumentContent, args: JsonDocumentLoadArgs) : Docum
     private val META_DATA_KEY = "_metadata_"
     private lateinit var source: JsonDocumentContent
 
+
     override suspend fun setup(src: JsonDocumentContent): Deferred<Unit> {
         return GlobalScope.async {
             setSource(src)
@@ -30,7 +31,12 @@ class JsonDocument(src: JsonDocumentContent, args: JsonDocumentLoadArgs) : Docum
     private fun fetchDataAsync(): JsonDocumentContent {
         this.source.let {
             it.content[DATA_KEY]?.let {
-                return JsonDocumentContent(Gson().fromJson(it.toString(), MutableMap::class.java) as MutableMap<String, Any>)
+                return JsonDocumentContent(
+                    Gson().fromJson(
+                        it.toString(),
+                        MutableMap::class.java
+                    ) as MutableMap<String, Any>
+                )
             } ?: return this.source.copy()
         }
     }
@@ -41,35 +47,52 @@ class JsonDocument(src: JsonDocumentContent, args: JsonDocumentLoadArgs) : Docum
         }
     }
 
-    private fun fetchMetadataAsync(key: String): Any {
+    private fun fetchMetadataAsync(key: String): Any? {
         return this.source?.let {
             var metadata = it.content[META_DATA_KEY]
-            if (metadata != null) it.content[key]
+
+            if (metadata != null) {
+                metadata = Gson().fromJson(
+                    metadata.toString(),
+                    MutableMap::class.java
+                ) as MutableMap<String, Any>
+
+                return metadata[key]
+            }
+            return null
+
         }
     }
 
     override suspend fun buildFile(metadata: Map<String, *>): Deferred<JsonDocumentContent> {
         return GlobalScope.async {
-            buildFileAsync(metadata)
+            buildFileAsync(metadata)?.let { JsonDocumentContent(it) } ?: JsonDocumentContent(mutableMapOf())
         }
 
     }
 
-    private fun buildFileAsync(metadata: Map<String, *>): JsonDocumentContent {
+    private fun buildFileAsync(metadata: Map<String, *>): MutableMap<String, Any>? {
         if (metadata.isNotEmpty()) {
-            var output = this.source.copy()
-            output.content.put(this.data?.content.toString(), metadata)
+            var output = mutableMapOf<String, Any>()
+            output.put(DATA_KEY, Gson().toJson(this.data?.content))
+            output.put(META_DATA_KEY, metadata)
             return output
         } else {
-            return this.data?.copy() ?: JsonDocumentContent(mutableMapOf())
+            return this.data?.content
         }
     }
 
     override fun getDocPayload() = Gson().toJson(this.payload?.content)
     override fun getDocData() = Gson().toJson(this.data?.content)
-    override fun getDocSignatures() = this.signatures
+    override fun getDocSignatures(): Signatures? = this.signatures
     override fun addSignature(signatures: Signatures) {
-        this.signatures = signatures
+
+        synchronized(this) {
+            signatures?.value?.forEach {
+                this.signatures?.value?.add(it)
+            }
+        }
+
     }
 
 }
