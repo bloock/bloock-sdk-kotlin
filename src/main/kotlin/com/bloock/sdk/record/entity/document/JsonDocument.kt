@@ -7,10 +7,12 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 
+private val DATA_KEY: String = "_data_"
+private val META_DATA_KEY: String = "_metadata_"
+
 class JsonDocument(src: JsonDocumentContent, args: JsonDocumentLoadArgs) : Document<JsonDocumentContent>(src, args) {
 
-    private val DATA_KEY = "_data_"
-    private val META_DATA_KEY = "_metadata_"
+
     private lateinit var source: JsonDocumentContent
 
 
@@ -54,11 +56,7 @@ class JsonDocument(src: JsonDocumentContent, args: JsonDocumentLoadArgs) : Docum
             var metadata = it.content[META_DATA_KEY]
 
             if (metadata != null) {
-                metadata = Gson().fromJson(
-                    metadata.toString(),
-                    MutableMap::class.java
-                ) as MutableMap<String, Any>
-
+                metadata as Map<String, Any>
                 return metadata[key]
             }
             return null

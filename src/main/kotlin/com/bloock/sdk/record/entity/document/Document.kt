@@ -74,10 +74,16 @@ abstract class Document<T>(src: T, args: DocumentLoadArgs) {
     abstract fun getDocPayload(): Any
     abstract fun getDocData(): Any
     fun getDocSignatures() = this.signatures
-    fun addSignature(signatures: Signature) {
-        if (!this.signatures.isNullOrEmpty()) {
-            this.signatures!!.add(signatures)
+    fun addSignature(signatures: Signature): Deferred<Unit> {
+        if (this.signatures.isNullOrEmpty()) {
+            this.signatures = mutableListOf()
         }
+        this.signatures!!.add(signatures)
+
+        return GlobalScope.async {
+            this@Document.payload = this@Document.fetchPayload().await()
+        }
+
     }
 
     fun getDocProf() = this.proof
