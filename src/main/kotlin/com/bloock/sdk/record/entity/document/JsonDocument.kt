@@ -1,5 +1,7 @@
 package com.bloock.sdk.record.entity.document
 
+import com.bloock.sdk.proof.entity.Proof
+import com.bloock.sdk.shared.Signature
 import com.google.gson.Gson
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
@@ -84,16 +86,6 @@ class JsonDocument(src: JsonDocumentContent, args: JsonDocumentLoadArgs) : Docum
 
     override fun getDocPayload() = Gson().toJson(this.payload?.content)
     override fun getDocData() = Gson().toJson(this.data?.content)
-    override fun getDocSignatures(): Signatures? = this.signatures
-    override fun addSignature(signatures: Signatures) {
-
-        synchronized(this) {
-            signatures?.value?.forEach {
-                this.signatures?.value?.add(it)
-            }
-        }
-
-    }
 
 }
 

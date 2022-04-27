@@ -1,6 +1,8 @@
 package com.bloock.sdk.record.entity.document
 
 import com.bloock.sdk.proof.entity.Proof
+import com.bloock.sdk.shared.Headers
+import com.bloock.sdk.shared.Signature
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.jupiter.api.Test
@@ -15,7 +17,7 @@ class JsonDocumentTest {
 
         runBlocking {
 
-            file.ready.await()
+            file.ready
             val docPayload = file.getDocPayload()
             Assert.assertEquals(JSON_CONTENT, docPayload)
         }
@@ -23,17 +25,16 @@ class JsonDocumentTest {
 
     @Test
     fun testConstructorWithMetadata() {
-        val expectedContent = """{"hello":"world"}""".trimMargin()
         val signatures = mapOf<String, Any>(Pair("signatures", listOf("signature")))
 
-        var json = mutableMapOf<String, Any>(Pair("_data_", JSON_CONTENT), Pair("_metadata_", signatures))
+        var json = mutableMapOf(Pair("_data_", JSON_CONTENT), Pair("_metadata_", signatures))
         val file = JsonDocument(JsonDocumentContent(json), JsonDocumentLoadArgs())
 
         runBlocking {
-            file.ready.await()
+            file.ready
             val docData = file.getDocData()
 
-            Assert.assertEquals(expectedContent, docData)
+            Assert.assertEquals(JSON_CONTENT, docData)
         }
     }
 
@@ -41,23 +42,23 @@ class JsonDocumentTest {
     fun twoIdenticalFilesWithMetadataGeneratesSamePayload() {
         val signatures = mapOf<String, Any>(Pair("signatures", listOf("signature")))
 
-        var json = mutableMapOf<String, Any>(Pair("_data_", JSON_CONTENT), Pair("_metadata_", signatures))
+        var json = mutableMapOf(Pair("_data_", JSON_CONTENT), Pair("_metadata_", signatures))
         val file = JsonDocument(JsonDocumentContent(json), JsonDocumentLoadArgs())
         val file2 = JsonDocument(JsonDocumentContent(json), JsonDocumentLoadArgs())
 
         runBlocking {
 
-            file.ready.await()
+            file.ready
             val docPayload = file.getDocPayload()
             val docPayload2 = file2.getDocPayload()
-            val docProof = file.getDocPayload()
-            val docProof2 = file2.getDocPayload()
+            val docProof = file.getDocProf()
+            val docProof2 = file2.getDocProf()
             val docSignatures = file.getDocSignatures()
             val docSignatures2 = file2.getDocSignatures()
 
             Assert.assertEquals(docPayload, docPayload2)
             Assert.assertEquals(docProof, docProof2)
-            Assert.assertTrue(docSignatures?.value!!.isNotEmpty())
+            Assert.assertFalse(docSignatures.isNullOrEmpty())
             Assert.assertEquals(docSignatures, docSignatures2)
         }
     }
@@ -69,11 +70,11 @@ class JsonDocumentTest {
 
         runBlocking {
 
-            file.ready.await()
+            file.ready
             val docPayload = file.getDocPayload()
             val docPayload2 = file2.getDocPayload()
-            val docProof = file.getDocPayload()
-            val docProof2 = file2.getDocPayload()
+            val docProof = file.getDocProf()
+            val docProof2 = file2.getDocProf()
             val docSignatures = file.getDocSignatures()
             val docSignatures2 = file2.getDocSignatures()
 
@@ -86,17 +87,22 @@ class JsonDocumentTest {
     @Test
     fun testSetSignature() {
         val file = JsonDocument(JsonDocumentContent(mutableMapOf(Pair("hello", "world"))), JsonDocumentLoadArgs())
-        val signatures = Signatures(mutableListOf("someSignature", "someSignature2"))
+        val signatures =
+            mutableListOf(
+                Signature("signature1", Headers()),
+                Signature("signature2", Headers())
+            )
 
         runBlocking {
-            file.ready.await()
-            file.addSignature(signatures)
+            file.ready
+            file.addSignature(signatures.get(0))
+            file.addSignature(signatures.get(1))
             val docSignatures = file.getDocSignatures()
             Assert.assertEquals(signatures, docSignatures)
 
             var src = file.build().await()
             val file2 = JsonDocument(src, JsonDocumentLoadArgs())
-            file2.ready.await()
+            file2.ready
 
             val docSignatures2 = file2.getDocSignatures()
             Assert.assertEquals(docSignatures2, docSignatures)
@@ -105,31 +111,36 @@ class JsonDocumentTest {
     }
 
     @Test
-    fun testSetSignatureWithProof() {
+    fun testSetSignatureAndProof() {
 
         val file = JsonDocument(JsonDocumentContent(mutableMapOf(Pair("hello", "world"))), JsonDocumentLoadArgs())
-        var signatures: MutableList<Any>?
-        signatures = mutableListOf("someSignature", "someSignature2")
-        val proof = SignatureWithProof(
-            Proof(
-                leaves = listOf("leave1"),
-                nodes = listOf("node1"),
-                "deepth",
-                "bitmap"
-            ),
-            signatures = signatures
+        val expectedSignatures =
+            mutableListOf(
+                Signature("signature1", Headers()),
+                Signature("signature2", Headers())
+            )
+        var expectedProof = Proof(
+            leaves = listOf("leave1"),
+            nodes = listOf("node1"),
+            "deepth",
+            "bitmap"
         )
+
         runBlocking {
 
-            file.ready.await()
-            file.addSignature(proof)
+            file.ready
+            file.addSignature(expectedSignatures.get(0))
+            file.addSignature(expectedSignatures.get(1))
+            file.setDocProof(expectedProof)
 
             val docSignatures = file.getDocSignatures()
-            Assert.assertEquals(proof.signatures, docSignatures?.value)
+            val docProf = file.getDocProf()
+            Assert.assertEquals(expectedSignatures, docSignatures)
+            Assert.assertEquals(expectedProof, docProf)
 
             var src = file.build().await()
             val file2 = JsonDocument(src, JsonDocumentLoadArgs())
-            file2.ready.await()
+            file2.ready
 
             val docSignatures2 = file2.getDocSignatures()
             Assert.assertEquals(docSignatures2, docSignatures)

@@ -1,16 +1,17 @@
 package com.bloock.sdk.record.entity.document
 
 import com.bloock.sdk.proof.entity.Proof
+import com.bloock.sdk.shared.Signature
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 
 abstract class Document<T>(src: T, args: DocumentLoadArgs) {
-    var ready: Deferred<Unit>
+    var ready: Unit
     protected var data: T? = null
     protected var payload: T? = null
-    protected var signatures: Signatures? = Signatures(mutableListOf())
+    protected var signatures: MutableList<Signature?>? = null
     protected var proof: Proof? = null
 
     init {
@@ -21,24 +22,17 @@ abstract class Document<T>(src: T, args: DocumentLoadArgs) {
                 signatures = fetchSignatures().await()
                 data = fetchData().await()
                 payload = fetchPayload().await()
-
-            }
+            }.await()
         }
     }
 
     abstract suspend fun fetchData(): Deferred<T?>
 
-    suspend fun fetchSignatures(): Deferred<Signatures> {
+    suspend fun fetchSignatures(): Deferred<MutableList<Signature?>?> {
         return GlobalScope.async {
             return@async fetchMetadata("signatures").await()?.let {
-                if (it != null) {
-                    it as MutableList<Any>
-
-                    return@let Signatures(it)
-                }
-                Signatures(mutableListOf())
-
-            } ?: Signatures(mutableListOf())
+                it as MutableList<Signature?>?
+            }
         }
     }
 
@@ -55,11 +49,8 @@ abstract class Document<T>(src: T, args: DocumentLoadArgs) {
     protected suspend abstract fun fetchMetadata(key: String): Deferred<Any?>
     protected suspend fun fetchPayload(): Deferred<T> {
         var metadata = mutableMapOf<String, Any>()
-        this.signatures?.value?.let {
-            if (it.isNotEmpty()) {
-
-                metadata.put("signatures", this.signatures!!)
-            }
+        this.signatures?.let {
+            metadata.put("signatures", this.signatures!!)
         }
 
         return this.buildFile(metadata)
@@ -67,58 +58,34 @@ abstract class Document<T>(src: T, args: DocumentLoadArgs) {
 
 
     suspend fun build(): Deferred<T> {
-        var metadata = SignatureWithProof(null, mutableListOf())
+        var metadata = mutableMapOf<String, Any>()
         this.proof?.let {
-            metadata.proof = this.proof
+            metadata.put("proof", it)
         }
         this.signatures?.let {
-            it.value?.let {
-
-                metadata.signatures = it
-            }
+            metadata.put("signatures", it)
         }
 
-        return mapOf(Pair("signatures", metadata.signatures))?.let { this.buildFile(it) }
+        return this.buildFile(metadata)
     }
 
     abstract suspend fun buildFile(metadata: Map<String, *>): Deferred<T>
 
     abstract fun getDocPayload(): Any
     abstract fun getDocData(): Any
-    abstract fun getDocSignatures(): Signatures?
-    abstract fun addSignature(signatures: Signatures)
-}
-
-open class Signatures(open var value: MutableList<Any>?) {
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Signatures) return false
-
-        if (value != other.value) return false
-
-        return true
+    fun getDocSignatures() = this.signatures
+    fun addSignature(signatures: Signature) {
+        if (!this.signatures.isNullOrEmpty()) {
+            this.signatures!!.add(signatures)
+        }
     }
 
-    override fun hashCode(): Int {
-        return value?.hashCode() ?: 0
+    fun getDocProf() = this.proof
+    fun setDocProof(proof: Proof) {
+        this.proof = proof
     }
 }
-
-data class SignatureWithProof(var proof: Proof?, var signatures: MutableList<Any>?) : Signatures(signatures)
 
 open class DocumentLoadArgs()
 
-data class Signature(
-    val signature: String,
-    val header: Headers
-)
-
-data class Headers(
-    val kty: String?,
-    val crv: String?,
-    val alg: String?,
-    val kid: String?,
-    val propName: Map<String, Any>
-)
 
