@@ -83,7 +83,6 @@ abstract class Document<T>(src: T, args: DocumentLoadArgs) {
         return GlobalScope.async {
             this@Document.payload = this@Document.fetchPayload().await()
         }
-
     }
 
     fun getDocProf() = this.proof
@@ -93,5 +92,3 @@ abstract class Document<T>(src: T, args: DocumentLoadArgs) {
 }
 
 open class DocumentLoadArgs()
-
-

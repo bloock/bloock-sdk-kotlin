@@ -1,7 +1,5 @@
 package com.bloock.sdk.record.entity.document
 
-import com.bloock.sdk.proof.entity.Proof
-import com.bloock.sdk.shared.Signature
 import com.google.gson.Gson
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
@@ -12,9 +10,7 @@ private val META_DATA_KEY: String = "_metadata_"
 
 class JsonDocument(src: JsonDocumentContent, args: JsonDocumentLoadArgs) : Document<JsonDocumentContent>(src, args) {
 
-
     private lateinit var source: JsonDocumentContent
-
 
     override suspend fun setup(src: JsonDocumentContent): Deferred<Unit> {
         return GlobalScope.async {
@@ -28,58 +24,47 @@ class JsonDocument(src: JsonDocumentContent, args: JsonDocumentLoadArgs) : Docum
 
     override suspend fun fetchData(): Deferred<JsonDocumentContent?> {
         return GlobalScope.async {
-            fetchDataAsync()
-        }
-    }
-
-    private fun fetchDataAsync(): JsonDocumentContent {
-        this.source.let {
-            it.content[DATA_KEY]?.let {
-                return JsonDocumentContent(
-                    Gson().fromJson(
-                        it.toString(),
-                        MutableMap::class.java
-                    ) as MutableMap<String, Any>
-                )
-            } ?: return this.source.copy()
+            this@JsonDocument.source.let {
+                it.content[DATA_KEY]?.let {
+                    JsonDocumentContent(
+                        Gson().fromJson(
+                            it.toString(),
+                            MutableMap::class.java
+                        ) as MutableMap<String, Any>
+                    )
+                } ?: this@JsonDocument.source.copy()
+            }
         }
     }
 
     override suspend fun fetchMetadata(key: String): Deferred<Any?> {
         return GlobalScope.async {
-            fetchMetadataAsync(key)
-        }
-    }
+            this@JsonDocument.source?.let {
+                var metadata = it.content[META_DATA_KEY]
 
-    private fun fetchMetadataAsync(key: String): Any? {
-        return this.source?.let {
-            var metadata = it.content[META_DATA_KEY]
-
-            if (metadata != null) {
-                metadata as Map<String, Any>
-                return metadata[key]
+                if (metadata != null) {
+                    metadata as Map<String, Any>
+                    return@async metadata[key]
+                }
+                return@async null
             }
-            return null
-
         }
     }
 
     override suspend fun buildFile(metadata: Map<String, *>): Deferred<JsonDocumentContent> {
         return GlobalScope.async {
-            buildFileAsync(metadata)?.let { JsonDocumentContent(it) } ?: JsonDocumentContent(mutableMapOf())
+            if (metadata.isNotEmpty()) {
+                var output = mutableMapOf<String, Any>()
+                output.put(DATA_KEY, Gson().toJson(this@JsonDocument.data?.content))
+                output.put(META_DATA_KEY, metadata)
+                return@async JsonDocumentContent(output)
+            } else {
+                return@async this@JsonDocument.data?.content.let {
+                    JsonDocumentContent(it!!)
+                }
+            }
         }
 
-    }
-
-    private fun buildFileAsync(metadata: Map<String, *>): MutableMap<String, Any>? {
-        if (metadata.isNotEmpty()) {
-            var output = mutableMapOf<String, Any>()
-            output.put(DATA_KEY, Gson().toJson(this.data?.content))
-            output.put(META_DATA_KEY, metadata)
-            return output
-        } else {
-            return this.data?.content
-        }
     }
 
     override fun getDocPayload() = Gson().toJson(this.payload?.content)
