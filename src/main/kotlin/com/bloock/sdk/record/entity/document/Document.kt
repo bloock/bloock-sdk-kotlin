@@ -2,27 +2,24 @@ package com.bloock.sdk.record.entity.document
 
 import com.bloock.sdk.proof.entity.Proof
 import com.bloock.sdk.shared.Signature
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 
 abstract class Document<T>(src: T, args: DocumentLoadArgs) {
-    var ready: Unit
+
     protected var data: T? = null
     protected var payload: T? = null
-    protected var signatures: MutableList<Signature?>? = null
+    private var signatures: MutableList<Signature?>? = null
     protected var proof: Proof? = null
 
     init {
         runBlocking {
-            ready = GlobalScope.async {
+            withContext(Dispatchers.Default) {
                 setup(src).await()
                 proof = fetchProof()
                 signatures = fetchSignatures().await()
                 data = fetchData().await()
                 payload = fetchPayload().await()
-            }.await()
+            }
         }
     }
 
@@ -85,7 +82,7 @@ abstract class Document<T>(src: T, args: DocumentLoadArgs) {
         }
     }
 
-    fun getDocProf() = this.proof
+    fun getDocProof() = this.proof
     fun setDocProof(proof: Proof) {
         this.proof = proof
     }
