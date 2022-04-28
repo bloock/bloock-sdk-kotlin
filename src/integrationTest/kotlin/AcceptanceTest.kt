@@ -7,6 +7,7 @@ import com.bloock.sdk.record.entity.exception.InvalidRecordException
 import com.bloock.sdk.shared.entity.exception.InvalidArgumentException
 import org.junit.jupiter.api.Test
 import kotlin.test.assertNotNull
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class AcceptanceTest {
@@ -150,12 +151,9 @@ class AcceptanceTest {
     fun test_get_anchor_non_existing_anchor() {
         val client = getSdk()
 
-        client.getAnchor(999999999)
-            .test()
-            .await()
-            .assertFailure(HttpRequestException::class.java)
-
-        // assertEquals(exception.record, "Anchor not found")
+        val anchor = client.getAnchor(999999999).blockingGet()
+        assertEquals(anchor.id, 999999999)
+        assertEquals(anchor.status, "Pending")
     }
 
     @Test
