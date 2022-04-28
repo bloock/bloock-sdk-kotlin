@@ -17,7 +17,7 @@ class JsonDocumentTest {
 
         runBlocking {
 
-            file.ready
+            
             val docPayload = file.getDocPayload()
             Assert.assertEquals(JSON_CONTENT, docPayload)
         }
@@ -31,7 +31,7 @@ class JsonDocumentTest {
         val file = JsonDocument(JsonDocumentContent(json), JsonDocumentLoadArgs())
 
         runBlocking {
-            file.ready
+            
             val docData = file.getDocData()
 
             Assert.assertEquals(JSON_CONTENT, docData)
@@ -48,11 +48,11 @@ class JsonDocumentTest {
 
         runBlocking {
 
-            file.ready
+            
             val docPayload = file.getDocPayload()
             val docPayload2 = file2.getDocPayload()
-            val docProof = file.getDocProf()
-            val docProof2 = file2.getDocProf()
+            val docProof = file.getDocProof()
+            val docProof2 = file2.getDocProof()
             val docSignatures = file.getDocSignatures()
             val docSignatures2 = file2.getDocSignatures()
 
@@ -70,11 +70,11 @@ class JsonDocumentTest {
 
         runBlocking {
 
-            file.ready
+            
             val docPayload = file.getDocPayload()
             val docPayload2 = file2.getDocPayload()
-            val docProof = file.getDocProf()
-            val docProof2 = file2.getDocProf()
+            val docProof = file.getDocProof()
+            val docProof2 = file2.getDocProof()
             val docSignatures = file.getDocSignatures()
             val docSignatures2 = file2.getDocSignatures()
 
@@ -94,7 +94,7 @@ class JsonDocumentTest {
             )
 
         runBlocking {
-            file.ready
+            
             file.addSignature(signatures.get(0))
             file.addSignature(signatures.get(1))
             val docSignatures = file.getDocSignatures()
@@ -102,7 +102,7 @@ class JsonDocumentTest {
 
             var src = file.build().await()
             val file2 = JsonDocument(src, JsonDocumentLoadArgs())
-            file2.ready
+            
 
             val docSignatures2 = file2.getDocSignatures()
             Assert.assertEquals(docSignatures2, docSignatures)
@@ -128,19 +128,19 @@ class JsonDocumentTest {
 
         runBlocking {
 
-            file.ready
+            
             file.addSignature(expectedSignatures.get(0))
             file.addSignature(expectedSignatures.get(1))
             file.setDocProof(expectedProof)
 
             val docSignatures = file.getDocSignatures()
-            val docProf = file.getDocProf()
+            val docProf = file.getDocProof()
             Assert.assertEquals(expectedSignatures, docSignatures)
             Assert.assertEquals(expectedProof, docProf)
 
             var src = file.build().await()
             val file2 = JsonDocument(src, JsonDocumentLoadArgs())
-            file2.ready
+            
 
             val docSignatures2 = file2.getDocSignatures()
             Assert.assertEquals(docSignatures2, docSignatures)
