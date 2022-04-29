@@ -34,7 +34,8 @@ class ProofRepositoryTest {
                 "0616067c793ac533815ae2d48d785d339e0330ce5bb5345b5e6217dd9d1dbeab",
                 "68b8f6b25cc700e64ed3e3d33f2f246e24801f93d29786589fbbab3b11f5bcee"
             ),
-            root = "c6372dab6a48637173a457e3ae0c54a500bb50346e847eccf2b818ade94d8ccf"
+            root = "c6372dab6a48637173a457e3ae0c54a500bb50346e847eccf2b818ade94d8ccf",
+            networks = emptyList()
         )
 
         val proofRepository: ProofRepository = ProofRepositoryImpl(httpClient, blockchainClient, configService)
@@ -52,6 +53,7 @@ class ProofRepositoryTest {
                 "0616067c793ac533815ae2d48d785d339e0330ce5bb5345b5e6217dd9d1dbeab",
                 "68b8f6b25cc700e64ed3e3d33f2f246e24801f93d29786589fbbab3b11f5bcee"
             ))
+            assertEquals(proof.networks, emptyList())
         }
     }
 

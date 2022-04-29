@@ -5,5 +5,6 @@ internal data class ProofRetrieveResponse(
     val nodes: List<String>?,
     val depth: String?,
     val bitmap: String?,
-    val root: String?
+    val root: String?,
+    val networks: List<String>?
 )

@@ -1,13 +1,12 @@
 package com.bloock.sdk.proof.entity
 
-import com.bloock.sdk.anchor.entity.Network
 import com.bloock.sdk.shared.Utils
 import kotlin.math.floor
 
 class Proof(
     val leaves: List<String>,
     val nodes: List<String>,
-    val networks: List<Network>,
+    val networks: List<String>,
     val depth: String,
     val bitmap: String
 ) {
