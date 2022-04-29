@@ -12,5 +12,7 @@ data class Headers(
     val kid: String?,
     val other: Map<String, Any>
 ) {
-    constructor() : this(null,null,null,null, emptyMap())
+    constructor() : this("","","","", emptyMap())
+
+
 }

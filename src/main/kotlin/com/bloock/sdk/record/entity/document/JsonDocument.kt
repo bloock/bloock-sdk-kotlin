@@ -69,7 +69,8 @@ class JsonDocument(src: JsonDocumentContent, args: JsonDocumentLoadArgs) : Docum
 
     override fun getDocPayload() = Gson().toJson(this.payload?.content)
     override fun getDocData() = Gson().toJson(this.data?.content)
-
+    override fun getDataBytes() = this.data?.content.toString().toByteArray()
+    override fun getPayloadBytes() = this.payload?.content.toString().toByteArray()
 }
 
 

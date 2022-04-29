@@ -3,7 +3,7 @@ package com.bloock.sdk.proof.entity
 import com.bloock.sdk.shared.Utils
 import kotlin.math.floor
 
-class Proof(
+data class Proof(
     val leaves: List<String>,
     val nodes: List<String>,
     val depth: String,

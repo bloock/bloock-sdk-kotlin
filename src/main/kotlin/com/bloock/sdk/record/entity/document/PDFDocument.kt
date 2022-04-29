@@ -1,5 +1,6 @@
 package com.bloock.sdk.record.entity.document
 
+import com.bloock.sdk.shared.Signature
 import com.google.gson.Gson
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
@@ -7,18 +8,19 @@ import kotlinx.coroutines.async
 import org.apache.pdfbox.cos.COSString
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.PDDocumentInformation
-import java.io.ByteArrayOutputStream
+import java.io.BufferedOutputStream
+import java.io.File
 
 const val METADATA_KEY = "_metadata_"
 const val PROOF_KEY = "proof"
 const val SIGNATURES_KEY = "signatures"
 
 class PDFDocument(src: PdfDocumentContent, args: DocumentLoadArgs) : Document<PdfDocumentContent>(src, args) {
-    private var source: PDDocument? = null
+    private lateinit var source: PDDocument
 
     override suspend fun fetchData(): Deferred<PdfDocumentContent?> {
         return GlobalScope.async {
-            this@PDFDocument.source?.let {
+            this@PDFDocument.source.let {
                 var clone = it
 
                 var metadataMap = getMetadataMap(clone)
@@ -28,20 +30,25 @@ class PDFDocument(src: PdfDocumentContent, args: DocumentLoadArgs) : Document<Pd
                     removeMetadataValues(metadataMap, SIGNATURES_KEY, clone)
                 }
 
-                savePdf(clone)
+                return@async savePdfCopyOf(clone)
             }
         }
     }
 
-    private fun savePdf(document: PDDocument): PdfDocumentContent {
-        var byteArrayOutputStream = ByteArrayOutputStream()
-        document.save(byteArrayOutputStream)
-        byteArrayOutputStream.close()
-        return PdfDocumentContent(byteArrayOutputStream.toByteArray())
+    private fun savePdfCopyOf(document: PDDocument): PdfDocumentContent {
+
+        var file = File.createTempFile("tmp", "pdf")
+        document.save(BufferedOutputStream(file.outputStream()))
+        try {
+            return PdfDocumentContent(file.readBytes())
+        } finally {
+            file.delete()
+        }
+
     }
 
     private fun removeMetadataValues(
-        metadataMap: MutableMap<String, MutableMap<String, Any>>,
+        metadataMap: MutableMap<String, Any>,
         key: String,
         clone: PDDocument
     ) {
@@ -53,7 +60,7 @@ class PDFDocument(src: PdfDocumentContent, args: DocumentLoadArgs) : Document<Pd
     }
 
 
-    private fun getMetadataMap(clone: PDDocument): MutableMap<String, MutableMap<String, Any>>? {
+    private fun getMetadataMap(clone: PDDocument): MutableMap<String, Any>? {
         var dictionaryObject = clone
             .documentInformation
             .cosObject
@@ -61,9 +68,9 @@ class PDFDocument(src: PdfDocumentContent, args: DocumentLoadArgs) : Document<Pd
         return dictionaryObject?.let {
             var metadata = (dictionaryObject as COSString).string
             var metadataMap = Gson()
-                .fromJson(metadata, MutableMap::class.java) as MutableMap<String, MutableMap<String, Any>>
+                .fromJson(metadata, MutableMap::class.java) as MutableMap<String, Any>
 
-            metadataMap
+           return metadataMap
 
         } ?: null
 
@@ -77,8 +84,14 @@ class PDFDocument(src: PdfDocumentContent, args: DocumentLoadArgs) : Document<Pd
 
     override suspend fun fetchMetadata(key: String): Deferred<Any?> {
         return GlobalScope.async {
-            this@PDFDocument.source?.let {
-                return@async it.documentInformation.getCustomMetadataValue(key)
+            this@PDFDocument.source.let { pdDocument ->
+
+                getMetadataMap(pdDocument)?.let { metadata ->
+                    if(metadata[key] is List<*>) {
+                        return@async metadata[key] as MutableList<Signature>
+                    }
+                    return@async metadata[key]
+                }
             }
         }
     }
@@ -90,15 +103,18 @@ class PDFDocument(src: PdfDocumentContent, args: DocumentLoadArgs) : Document<Pd
                 var documentInformation = clone.documentInformation
                 documentInformation.setCustomMetadataValue(METADATA_KEY, Gson().toJson(metadata))
 
-                savePdf(clone)
+                return@async savePdfCopyOf(clone)
             }!!
         }
     }
 
-    override fun getDocPayload() = Gson().toJson(this.payload?.content)
-
-    override fun getDocData() = Gson().toJson(this.data?.content)
-
+    override fun getPayloadBytes() = this.payload?.content
+    override fun getDataBytes() = this.data?.content
+    override fun getDocPayload(): MutableMap<*,*>? {
+        var customMetadataValue = PDDocument.load(getPayloadBytes()).documentInformation.getCustomMetadataValue(METADATA_KEY)
+        return Gson().fromJson(customMetadataValue,Map::class.java) as MutableMap<*,*>?
+    }
+    override fun getDocData() = getDataBytes()
 }
 
 

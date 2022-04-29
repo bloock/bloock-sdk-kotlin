@@ -2,6 +2,7 @@ package com.bloock.sdk.record.entity.document
 
 import com.bloock.sdk.proof.entity.Proof
 import com.bloock.sdk.shared.Signature
+import com.google.gson.Gson
 import kotlinx.coroutines.*
 
 abstract class Document<T>(src: T, args: DocumentLoadArgs) {
@@ -36,6 +37,9 @@ abstract class Document<T>(src: T, args: DocumentLoadArgs) {
     suspend fun fetchProof(): Proof? {
         var proof = fetchMetadata("proof").await()
         return proof?.let {
+            if(proof is Map<*,*>){
+                return Gson().fromJson(proof.toString(), Proof::class.java)
+            }
             return proof as Proof
 
         }
@@ -68,8 +72,10 @@ abstract class Document<T>(src: T, args: DocumentLoadArgs) {
 
     abstract suspend fun buildFile(metadata: Map<String, *>): Deferred<T>
 
-    abstract fun getDocPayload(): Any
-    abstract fun getDocData(): Any
+    abstract fun getDocPayload(): Any?
+    abstract fun getDocData(): Any?
+    abstract fun getDataBytes(): ByteArray?
+    abstract fun getPayloadBytes(): ByteArray?
     fun getDocSignatures() = this.signatures
     fun addSignature(signatures: Signature): Deferred<Unit> {
         if (this.signatures.isNullOrEmpty()) {
