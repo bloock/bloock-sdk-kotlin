@@ -37,7 +37,7 @@ class JsonDocument(src: JsonDocumentContent, args: JsonDocumentLoadArgs) : Docum
         }
     }
 
-    override suspend fun fetchMetadata(key: String): Deferred<Any?> {
+    override suspend fun fetchMetadata(key: String): Deferred<String?> {
         return GlobalScope.async {
             this@JsonDocument.source?.let {
                 var metadata = it.content[META_DATA_KEY]

@@ -155,7 +155,8 @@ class PDFDocumentTest {
             file.addSignature(signatures[1])
             file.setDocProof(expectedProof)
 
-            assertEquals(signatures, file.getDocSignatures())
+            var docSignatures = file.getDocSignatures()
+            assertEquals(signatures, docSignatures)
             assertEquals(expectedProof, file.getDocProof())
 
             var content = file.build().await()
@@ -164,7 +165,8 @@ class PDFDocumentTest {
                 DocumentLoadArgs()
             )
 
-            assertEquals(signatures, file2.getDocSignatures())
+            var docSignatures1 = file2.getDocSignatures()
+            assertEquals(signatures, docSignatures1)
             assertEquals(expectedProof, file2.getDocProof())
         }
     }
