@@ -70,7 +70,8 @@ class ProofRepositoryTest {
                 "54944fcea707a57048c17ca7453fa5078a031143b44629776750e7f0ff7940f0",
                 "d6f9bcd042be70b39b65dc2a8168858606b0a2fcf6d02c0a1812b1804efc0c37",
                 "e663ec001b81b96eceabd1b766d49ec5d99adedc3e5f03d245b0d90f603f66d3"
-            )
+            ),
+            networks = emptyList()
         )
 
         val blockchainClient = mockk<BlockchainClient>()
@@ -99,7 +100,8 @@ class ProofRepositoryTest {
                 "54944fcea707a57048c17ca7453fa5078a031143b44629776750e7f0ff7940f0",
                 "d6f9bcd042be70b39b65dc2a8168858606b0a2fcf6d02c0a1812b1804efc0c37",
                 "e663ec001b81b96eceabd1b766d49ec5d99adedc3e5f03d245b0d90f603f66d3"
-            )
+            ),
+            networks = emptyList()
         )
 
         val blockchainClient = mockk<BlockchainClient>()
@@ -119,7 +121,8 @@ class ProofRepositoryTest {
             leaves = listOf("0000000000000000000000000000000000000000000000000000000000000000"),
             nodes = listOf(
                 "f49d70da1c2c8989766908e06b8d2277a6954ec8533696b9a404b631b0b7735a"
-            )
+            ),
+            networks = emptyList()
         )
 
         val blockchainClient = mockk<BlockchainClient>()
