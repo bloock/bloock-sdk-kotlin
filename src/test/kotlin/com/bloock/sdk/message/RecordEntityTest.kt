@@ -43,20 +43,20 @@ class RecordEntityTest {
         assertEquals(Record.fromByteArray(array.toByteArray()).getHash(), "e016214a5c4abb88b8b614a916b1a6f075dfcf6fbc16c1e9d6e8ebcec81994a5")
     }
 
-    @Test
-    fun test_from_pdf() {
-        val bytes = File("src/test/kotlin/com/bloock/sdk/resources/dummy.pdf").readBytes()
-        val record = Record.fromPDF(bytes)
-        File("src/test/kotlin/com/bloock/sdk/resources/dummy-out.pdf").writeBytes(record.retrieve()!!)
-        assertEquals(record.getHash(), "cd5d993c67b0fe1f46e5169cdee04072ee72b3b110580f052988b3e6f8726f10")
-    }
-
-    @Test
-    fun test_from_pdf_with_metadata() {
-        val bytes = File("src/test/kotlin/com/bloock/sdk/resources/dummy-with-metadata.pdf").readBytes()
-        val record = Record.fromPDF(bytes)
-        assertEquals(record.getHash(), "c17a41c48474209c83dad03acee7a7e7cddd2f474de0466084c44e3e72acc3f0")
-    }
+//    @Test
+//    fun test_from_pdf() {
+//        val bytes = File("src/test/kotlin/com/bloock/sdk/resources/dummy.pdf").readBytes()
+//        val record = Record.fromPDF(bytes)
+//        File("src/test/kotlin/com/bloock/sdk/resources/dummy-out.pdf").writeBytes(record.retrieve()!!)
+//        assertEquals(record.getHash(), "cd5d993c67b0fe1f46e5169cdee04072ee72b3b110580f052988b3e6f8726f10")
+//    }
+//
+//    @Test
+//    fun test_from_pdf_with_metadata() {
+//        val bytes = File("src/test/kotlin/com/bloock/sdk/resources/dummy-with-metadata.pdf").readBytes()
+//        val record = Record.fromPDF(bytes)
+//        assertEquals(record.getHash(), "c17a41c48474209c83dad03acee7a7e7cddd2f474de0466084c44e3e72acc3f0")
+//    }
 
     @Test
     fun test_from_json() {
