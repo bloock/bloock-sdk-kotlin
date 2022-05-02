@@ -47,7 +47,6 @@ public class E2EJavaTest {
         while (sb.length() < 32) {
             sb.append(Integer.toHexString(r.nextInt()));
         }
-
         return sb.substring(0, 32);
     }
 }
