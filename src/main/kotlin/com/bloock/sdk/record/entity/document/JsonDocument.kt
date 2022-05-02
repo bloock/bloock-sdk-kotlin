@@ -1,80 +1,87 @@
 package com.bloock.sdk.record.entity.document
 
+import com.bloock.sdk.shared.Signature
+import com.bloock.sdk.shared.SignatureSerializer
+import com.bloock.sdk.shared.Utils
 import com.google.gson.Gson
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import java.lang.reflect.Type
 
-private val DATA_KEY: String = "_data_"
-private val META_DATA_KEY: String = "_metadata_"
+private const val DATA_KEY: String = "_data_"
+private const val METADATA_KEY: String = "_metadata_"
 
-class JsonDocument(src: JsonDocumentContent, args: JsonDocumentLoadArgs) : Document<JsonDocumentContent>(src, args) {
+class JsonDocument : Document<JsonElement> {
+    private var source: JsonElement? = null
+    private var args: JsonDocumentLoadArgs? = null
 
-    private lateinit var source: JsonDocumentContent
-
-    override suspend fun setup(src: JsonDocumentContent): Deferred<Unit> {
-        return GlobalScope.async {
-            setSource(src)
-        }
+    constructor(src: String, args: JsonDocumentLoadArgs? = null) : super(Gson().fromJson(src, JsonElement::class.java), args)
+    constructor(src: JsonElement, args: JsonDocumentLoadArgs? = null): super(src, args) {
+        this.source = src
+        this.args = args
     }
 
-    private fun setSource(src: JsonDocumentContent) {
+    override fun setup(src: JsonElement) {
         this.source = src
     }
 
-    override suspend fun fetchData(): Deferred<JsonDocumentContent?> {
-        return GlobalScope.async {
-            this@JsonDocument.source.let {
-                it.content[DATA_KEY]?.let {
-                    JsonDocumentContent(
-                        Gson().fromJson(
-                            it.toString(),
-                            MutableMap::class.java
-                        ) as MutableMap<String, Any>
-                    )
-                } ?: this@JsonDocument.source.copy()
+    override fun fetchMetadata(key: String): String? {
+        if (this.source != null && this.source!!.isJsonObject) {
+            val s = this.source!!.asJsonObject
+            if (s.has(METADATA_KEY) && s.get(METADATA_KEY).isJsonObject) {
+                val metadata = s.get(METADATA_KEY).asJsonObject
+                return Gson().toJson(metadata.get(key))
             }
         }
+        return null
     }
 
-    override suspend fun fetchMetadata(key: String): Deferred<String?> {
-        return GlobalScope.async {
-            this@JsonDocument.source?.let {
-                var metadata = it.content[META_DATA_KEY]
-
-                if (metadata != null) {
-                    metadata as Map<String, Any>
-                    return@async metadata[key]
-                }
-                return@async null
-            }
-        }
-    }
-
-    override suspend fun buildFile(metadata: Map<String, *>): Deferred<JsonDocumentContent> {
-        return GlobalScope.async {
-            if (metadata.isNotEmpty()) {
-                var output = mutableMapOf<String, Any>()
-                output.put(DATA_KEY, Gson().toJson(this@JsonDocument.data?.content))
-                output.put(META_DATA_KEY, metadata)
-                return@async JsonDocumentContent(output)
+    override fun fetchData(): JsonElement? {
+        if (this.source != null) {
+            return if (this.source!!.isJsonObject && this.source!!.asJsonObject.has(DATA_KEY)) {
+                this.source!!.asJsonObject.get(DATA_KEY).deepCopy()
             } else {
-                return@async this@JsonDocument.data?.content.let {
-                    JsonDocumentContent(it!!)
-                }
+                this.source!!.deepCopy()
+            }
+        }
+        return null
+    }
+
+    override fun buildFile(metadata: Map<String, *>): JsonElement {
+        val gson = GsonBuilder().registerTypeAdapter(Signature::class.java, SignatureSerializer()).create()
+        return if (metadata.isNotEmpty()) {
+            val output = JsonObject()
+            output.add(DATA_KEY, this.getData())
+            output.add(METADATA_KEY, gson.toJsonTree(metadata))
+            output
+        } else {
+            if (this.getData() != null) {
+                this.getData()!!
+            } else {
+                JsonObject()
             }
         }
 
     }
 
-    override fun getDocPayload() = Gson().toJson(this.payload?.content)
-    override fun getDocData() = Gson().toJson(this.data?.content)
-    override fun getDataBytes() = this.data?.content.toString().toByteArray()
-    override fun getPayloadBytes() = this.payload?.content.toString().toByteArray()
+    override fun getPayloadBytes(): ByteArray {
+        if (this.getPayload() != null) {
+            val jsonString = Gson().toJson(this.getPayload())
+            return Utils.stringToBytes(jsonString)
+        }
+        return ByteArray(0)
+    }
+
+    override fun getDataBytes(): ByteArray {
+        if (this.getData() != null) {
+            val jsonString = Gson().toJson(this.getData())
+            return Utils.stringToBytes(jsonString)
+        }
+
+        return ByteArray(0)
+    }
 }
 
 
 class JsonDocumentLoadArgs : DocumentLoadArgs()
-
-
-data class JsonDocumentContent(val content: MutableMap<String, Any>)

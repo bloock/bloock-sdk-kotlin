@@ -8,7 +8,7 @@ import com.bloock.sdk.proof.repository.ProofRepository
 import com.bloock.sdk.shared.entity.exception.InvalidArgumentException
 
 internal class ProofServiceImpl(private val proofRepository: ProofRepository) : ProofService {
-    override suspend fun retrieveProof(records: List<Record>): Proof {
+    override suspend fun retrieveProof(records: List<Record<Any>>): Proof {
         if (records.isEmpty()) {
             throw InvalidArgumentException()
         }
@@ -21,7 +21,7 @@ internal class ProofServiceImpl(private val proofRepository: ProofRepository) : 
         return proofRepository.retrieveProof(sorted)
     }
 
-    override suspend fun verifyRecords(records: List<Record>, network: Network): Int {
+    override suspend fun verifyRecords(records: List<Record<Any>>, network: Network): Int {
         val proof = retrieveProof(records)
         return verifyProof(proof, network)
     }

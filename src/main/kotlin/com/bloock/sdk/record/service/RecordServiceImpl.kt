@@ -9,7 +9,7 @@ internal class RecordServiceImpl internal constructor(
     private val recordRepository: RecordRepository
 ) : RecordService {
 
-    override suspend fun sendRecords(records: List<Record>): List<RecordReceipt> {
+    override suspend fun sendRecords(records: List<Record<Any>>): List<RecordReceipt> {
         if (records.isEmpty()) {
             return emptyList()
         }
@@ -35,7 +35,7 @@ internal class RecordServiceImpl internal constructor(
         return result
     }
 
-    override suspend fun getRecords(records: List<Record>): List<RecordReceipt> {
+    override suspend fun getRecords(records: List<Record<Any>>): List<RecordReceipt> {
         if (records.isEmpty()) {
             return emptyList()
         }

@@ -5,7 +5,7 @@ import com.bloock.sdk.record.entity.Record
 import com.bloock.sdk.proof.entity.Proof
 
 internal interface ProofService {
-    suspend fun retrieveProof(records: List<Record>): Proof
-    suspend fun verifyRecords(records: List<Record>, network: Network): Int
+    suspend fun retrieveProof(records: List<Record<Any>>): Proof
+    suspend fun verifyRecords(records: List<Record<Any>>, network: Network): Int
     fun verifyProof(proof: Proof, network: Network): Int
 }

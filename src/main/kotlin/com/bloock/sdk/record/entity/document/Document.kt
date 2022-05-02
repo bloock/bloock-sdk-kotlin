@@ -3,92 +3,96 @@ package com.bloock.sdk.record.entity.document
 import com.bloock.sdk.proof.entity.Proof
 import com.bloock.sdk.shared.Signature
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.*
 
-abstract class Document<T>(src: T, args: DocumentLoadArgs) {
+const val PROOF_KEY = "proof"
+const val SIGNATURES_KEY = "signatures"
 
-    protected var data: T? = null
-    protected var payload: T? = null
-    private var signatures: MutableList<Signature?>? = null
-    protected var proof: Proof? = null
+abstract class Document<T>(src: T, args: DocumentLoadArgs? = null) {
+
+    private var data: T? = null
+    private var payload: T? = null
+    private var signatures: MutableList<Signature>? = null
+    private var proof: Proof? = null
 
     init {
-        runBlocking {
-            withContext(Dispatchers.Default) {
-                setup(src).await()
-                proof = fetchProof().await()
-                signatures = fetchSignatures().await()
-                data = fetchData().await()
-                payload = fetchPayload().await()
-            }
+                setup(src)
+                proof = fetchProof()
+                signatures = fetchSignatures()
+                data = fetchData()
+                payload = fetchPayload()
+    }
+
+    abstract fun fetchData(): T?
+
+    private fun fetchSignatures(): MutableList<Signature>? {
+        val signatures = fetchMetadata(SIGNATURES_KEY)
+        if (signatures != null) {
+            val signatureList = object : TypeToken<ArrayList<Signature?>?>() {}.type
+            try {
+                return Gson().fromJson(signatures, signatureList)
+            } catch(_: Exception) {}
         }
+        return null
     }
 
-    abstract suspend fun fetchData(): Deferred<T?>
-
-    suspend fun fetchSignatures(): Deferred<MutableList<Signature>?> {
-        return GlobalScope.async {
-            return@async fetchMetadata("signatures").await()?.let {
-                it as MutableList<Signature?>?
-            }
+    private fun fetchProof(): Proof? {
+        val proof = fetchMetadata(PROOF_KEY)
+        if (proof != null) {
+            try {
+                return Gson().fromJson(proof, Proof::class.java)
+            } catch(_: Exception) {}
         }
+        return null
     }
 
-    suspend fun fetchProof(): Deferred<Proof?> {
-        return GlobalScope.async {
-            return@async fetchMetadata("proof").await()?.let {
-                Gson().fromJson(it, Proof::class.java)
-            }
+    protected abstract fun setup(src: T)
+    protected abstract fun fetchMetadata(key: String): String?
+
+    private fun fetchPayload(): T {
+        val metadata = mutableMapOf<String, Any>()
+        this.signatures?.let {
+            metadata.put(SIGNATURES_KEY, this.signatures!!)
         }
+
+        return this.buildFile(metadata)
     }
 
 
-protected suspend abstract fun setup(src: T): Deferred<Unit>
-protected suspend abstract fun fetchMetadata(key: String): Deferred<String?>
-protected suspend fun fetchPayload(): Deferred<T> {
-    var metadata = mutableMapOf<String, Any>()
-    this.signatures?.let {
-        metadata.put("signatures", this.signatures!!)
+    fun build(): T {
+        val metadata = mutableMapOf<String, Any>()
+        this.proof?.let {
+            metadata.put(PROOF_KEY, it)
+        }
+        this.signatures?.let {
+            metadata.put(SIGNATURES_KEY, it)
+        }
+
+        return this.buildFile(metadata)
     }
 
-    return this.buildFile(metadata)
-}
+    abstract fun buildFile(metadata: Map<String, *>): T
 
+    fun getData(): T? = this.data
+    fun getPayload(): T? = this.payload
 
-suspend fun build(): Deferred<T> {
-    var metadata = mutableMapOf<String, Any>()
-    this.proof?.let {
-        metadata.put("proof", it)
+    abstract fun getDataBytes(): ByteArray
+    abstract fun getPayloadBytes(): ByteArray
+    fun getSignatures() = this.signatures
+    fun addSignature(signatures: Signature) {
+        if (this.signatures.isNullOrEmpty()) {
+            this.signatures = mutableListOf()
+        }
+        this.signatures!!.add(signatures)
+
+        this.payload = this.fetchPayload()
     }
-    this.signatures?.let {
-        metadata.put("signatures", it)
-    }
 
-    return this.buildFile(metadata)
-}
-
-abstract suspend fun buildFile(metadata: Map<String, *>): Deferred<T>
-
-abstract fun getDocPayload(): Any?
-abstract fun getDocData(): Any?
-abstract fun getDataBytes(): ByteArray?
-abstract fun getPayloadBytes(): ByteArray?
-fun getDocSignatures() = this.signatures
-fun addSignature(signatures: Signature): Deferred<Unit> {
-    if (this.signatures.isNullOrEmpty()) {
-        this.signatures = mutableListOf()
-    }
-    this.signatures!!.add(signatures)
-
-    return GlobalScope.async {
-        this@Document.payload = this@Document.fetchPayload().await()
+    fun getProof() = this.proof
+    fun setProof(proof: Proof) {
+        this.proof = proof
     }
 }
 
-fun getDocProof() = this.proof
-fun setDocProof(proof: Proof) {
-    this.proof = proof
-}
-}
-
-open class DocumentLoadArgs()
+open class DocumentLoadArgs

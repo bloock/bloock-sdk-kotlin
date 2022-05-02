@@ -11,12 +11,12 @@ import com.bloock.sdk.record.entity.dto.RecordWriteResponse
 
 internal class RecordRepositoryImpl internal constructor(val httpClient: HttpClient, val configService: ConfigService) :
     RecordRepository {
-    override suspend fun sendRecords(records: List<Record>): RecordWriteResponse {
+    override suspend fun sendRecords(records: List<Record<Any>>): RecordWriteResponse {
         val url = "${this.configService.getApiBaseUrl()}/core/messages";
         return httpClient.post(url, RecordWriteRequest(messages = records.map { record -> record.getHash() }))
     }
 
-    override suspend fun fetchRecords(records: List<Record>): List<RecordRetrieveResponse> {
+    override suspend fun fetchRecords(records: List<Record<Any>>): List<RecordRetrieveResponse> {
         val url = "${this.configService.getApiBaseUrl()}/core/messages/fetch";
         return httpClient.post(url, RecordRetrieveRequest(messages = records.map { it.getHash() }))
     }
