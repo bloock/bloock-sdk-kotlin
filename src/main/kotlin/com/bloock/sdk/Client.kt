@@ -146,11 +146,19 @@ class BloockClient(private val apiKey: String) {
      * @return a [Boolean] that returns true if valid, false if not
      * @throws [Web3Exception] Error connecting to blockchain.
      */
-    fun verifyProof(proof: Proof, network: Network = Network.ETHEREUM_MAINNET): Int {
-        return proofService.verifyProof(proof, network)
+    fun verifyProof(proof: Proof): Record<*> {
+        return proofService.verifyProof(proof)
     }
-    fun verifyProof(proof: Proof): Int {
-        return proofService.verifyProof(proof, Network.ETHEREUM_MAINNET)
+
+    /**
+     * Validates if the root it's currently included in the blockchain.
+     * @param Record root root to validate
+     * @param Network network blockchain network where the record will be validated
+     * @returns Int A number representing the timestamp in milliseconds when the anchor was registered in Blockchain
+     * @throws Web3Exception Error connecting to blockchain.
+     */
+    fun validateRoot(root: Record<Any>, network: Network = Network.ETHEREUM_MAINNET): Int {
+        return proofService.validateRoot(root,network)
     }
 
     /**

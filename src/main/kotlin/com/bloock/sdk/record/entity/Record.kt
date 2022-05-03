@@ -1,15 +1,17 @@
 package com.bloock.sdk.record.entity
 
 import com.bloock.sdk.infrastructure.HashAlgorithm
-import com.bloock.sdk.infrastructure.hashing.Blake2b
 import com.bloock.sdk.infrastructure.hashing.Keccak
+import com.bloock.sdk.infrastructure.signing.SigningClientImpl
 import com.bloock.sdk.record.entity.document.Document
 import com.bloock.sdk.record.entity.document.JsonDocument
 import com.bloock.sdk.record.entity.document.PDFDocument
+import com.bloock.sdk.record.entity.exception.NoSignatureFoundException
 import com.bloock.sdk.shared.Utils
 import com.google.gson.JsonElement
 
 class Record<T>(private val hash: String, private val document: Document<T>? = null) : Comparable<Record<T>> {
+    private val signing = SigningClientImpl()
 
     companion object {
 
@@ -92,4 +94,12 @@ class Record<T>(private val hash: String, private val document: Document<T>? = n
 
     override fun compareTo(other: Record<T>): Int = this.getHash().compareTo(other.getHash())
     override fun toString(): String = hash
+    fun verify(): Boolean {
+        var signatures = this.document?.getSignatures()
+        if (signatures?.isNotEmpty() == true) {
+            return this.signing.verify(this.document?.getSignatures(),signatures)
+        }else{
+            throw NoSignatureFoundException()
+        }
+    }
 }
