@@ -22,6 +22,7 @@ internal class Web3(private val config: ConfigService) : BlockchainClient {
             DefaultGasProvider()
         )
 
-        return contract.getState(Utils.hexToBytes(root)).send().intValueExact()
+        var timestamp = contract.getState(Utils.hexToBytes(root)).send().intValueExact()
+        return timestamp
     }
 }
