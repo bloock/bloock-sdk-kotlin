@@ -3,6 +3,7 @@ import com.bloock.sdk.config.entity.Network;
 import com.bloock.sdk.record.entity.Record;
 import com.bloock.sdk.record.entity.RecordReceipt;
 import com.bloock.sdk.proof.entity.Proof;
+import io.reactivex.rxjava3.core.Single;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -14,11 +15,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class E2EJavaTest {
 
-    @Test
+
     public void BloockTest() {
         BloockClient client = getSdk();
 
         Record record = Record.fromHex(getRandomHexString());
+
         List<Record<Object>> records = new ArrayList<>();
         records.add(record);
 
@@ -26,11 +28,11 @@ public class E2EJavaTest {
         assertNotNull(receipts);
 
         client.waitAnchor(receipts.get(0).getAnchor()).blockingSubscribe();
-
         Proof proof = client.getProof(records).blockingGet();
-        int timestamp = client.verifyProof(proof, Network.BLOOCK_CHAIN);
+        Record<?> root = client.verifyProof(proof);
+        Single<Integer> timestamp = client.verifyRecords(records, Network.BLOOCK_CHAIN);
 
-        assertTrue(timestamp > 0);
+        assertTrue(timestamp.blockingGet() > 0);
     }
 
     private BloockClient getSdk() {

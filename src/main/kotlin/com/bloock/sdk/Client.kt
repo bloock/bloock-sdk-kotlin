@@ -157,7 +157,7 @@ class BloockClient(private val apiKey: String) {
      * @returns Int A number representing the timestamp in milliseconds when the anchor was registered in Blockchain
      * @throws Web3Exception Error connecting to blockchain.
      */
-    fun validateRoot(root: Record<Any>, network: Network = Network.ETHEREUM_MAINNET): Int {
+    fun validateRoot(root: Record<*>, network: Network = Network.ETHEREUM_MAINNET): Int {
         return proofService.validateRoot(root,network)
     }
 
@@ -171,7 +171,7 @@ class BloockClient(private val apiKey: String) {
      * @throws [HttpRequestException] Error returned by Bloock's API.
      * @throws [Web3Exception] Error connecting to blockchain.
      */
-    fun verifyRecords(records: List<Record<Any>>, network: Network = Network.ETHEREUM_MAINNET): Single<Int> {
+    fun verifyRecords(records: List<Record<*>>, network: Network = Network.ETHEREUM_MAINNET): Single<Int> {
         return rxSingle {
             proofService.verifyRecords(records, network)
         }
