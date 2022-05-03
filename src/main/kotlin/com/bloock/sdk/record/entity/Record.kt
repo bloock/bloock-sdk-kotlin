@@ -3,6 +3,7 @@ package com.bloock.sdk.record.entity
 import com.bloock.sdk.infrastructure.HashAlgorithm
 import com.bloock.sdk.infrastructure.hashing.Keccak
 import com.bloock.sdk.infrastructure.signing.SigningClientImpl
+import com.bloock.sdk.proof.entity.Proof
 import com.bloock.sdk.record.entity.document.Document
 import com.bloock.sdk.record.entity.document.JsonDocument
 import com.bloock.sdk.record.entity.document.PDFDocument
@@ -97,9 +98,14 @@ class Record<T>(private val hash: String, private val document: Document<T>? = n
     fun verify(): Boolean {
         var signatures = this.document?.getSignatures()
         if (signatures?.isNotEmpty() == true) {
-            return this.signing.verify(this.document?.getSignatures(),signatures)
-        }else{
+            return this.signing.verify(this.document?.getSignatures(), signatures)
+        } else {
             throw NoSignatureFoundException()
         }
     }
+
+    fun setProof(proof: Proof) = this.document?.setProof(proof) ?: Unit
+    fun getProof(proof: Proof) = this.document?.getProof() ?: Unit
+
+
 }
