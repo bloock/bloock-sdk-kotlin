@@ -1,5 +1,6 @@
 package com.bloock.sdk.proof
 
+import com.bloock.sdk.anchor.entity.Anchor
 import com.bloock.sdk.config.service.ConfigService
 import com.bloock.sdk.infrastructure.BlockchainClient
 import com.bloock.sdk.infrastructure.HttpClient
@@ -35,7 +36,14 @@ class ProofRepositoryTest {
                 "68b8f6b25cc700e64ed3e3d33f2f246e24801f93d29786589fbbab3b11f5bcee"
             ),
             root = "c6372dab6a48637173a457e3ae0c54a500bb50346e847eccf2b818ade94d8ccf",
-            networks = emptyList()
+            networks = emptyList(),
+            anchor = Anchor(
+                id = 0,
+                blockRoots = emptyList(),
+                networks = emptyList(),
+                root = "",
+                status = "Pending"
+            )
         )
 
         val proofRepository: ProofRepository = ProofRepositoryImpl(httpClient, blockchainClient, configService)
@@ -73,7 +81,14 @@ class ProofRepositoryTest {
                 "d6f9bcd042be70b39b65dc2a8168858606b0a2fcf6d02c0a1812b1804efc0c37",
                 "e663ec001b81b96eceabd1b766d49ec5d99adedc3e5f03d245b0d90f603f66d3"
             ),
-            networks = emptyList()
+            networks = emptyList(),
+            anchor = Anchor(
+                id = 0,
+                blockRoots = emptyList(),
+                networks = emptyList(),
+                root = "",
+                status = "Pending"
+            )
         )
 
         val blockchainClient = mockk<BlockchainClient>()
@@ -103,7 +118,14 @@ class ProofRepositoryTest {
                 "d6f9bcd042be70b39b65dc2a8168858606b0a2fcf6d02c0a1812b1804efc0c37",
                 "e663ec001b81b96eceabd1b766d49ec5d99adedc3e5f03d245b0d90f603f66d3"
             ),
-            networks = emptyList()
+            networks = emptyList(),
+            anchor = Anchor(
+                id = 0,
+                blockRoots = emptyList(),
+                networks = emptyList(),
+                root = "",
+                status = "Pending"
+            )
         )
 
         val blockchainClient = mockk<BlockchainClient>()
@@ -124,7 +146,14 @@ class ProofRepositoryTest {
             nodes = listOf(
                 "f49d70da1c2c8989766908e06b8d2277a6954ec8533696b9a404b631b0b7735a"
             ),
-            networks = emptyList()
+            networks = emptyList(),
+            anchor = Anchor(
+                id = 0,
+                blockRoots = emptyList(),
+                networks = emptyList(),
+                root = "",
+                status = "Pending"
+            )
         )
 
         val blockchainClient = mockk<BlockchainClient>()

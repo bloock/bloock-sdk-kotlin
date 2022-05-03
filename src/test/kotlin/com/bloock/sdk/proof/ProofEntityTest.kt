@@ -1,5 +1,6 @@
 package com.bloock.sdk.proof
 
+import com.bloock.sdk.anchor.entity.Anchor
 import com.bloock.sdk.proof.entity.Proof
 import org.junit.jupiter.api.Test
 import kotlin.test.assertFalse
@@ -17,7 +18,14 @@ class ProofEntityTest {
             ),
             networks = emptyList(),
             depth = "0004000600060005",
-            bitmap = "bfdf7000"
+            bitmap = "bfdf7000",
+            anchor = Anchor(
+                id = 0,
+                blockRoots = emptyList(),
+                networks = emptyList(),
+                root = "",
+                status = "Pending"
+            ),
         )
 
         assertTrue(Proof.isValid(proof))
@@ -30,7 +38,14 @@ class ProofEntityTest {
             nodes = emptyList(),
             depth = "0004",
             bitmap = "bf",
-            networks = emptyList()
+            networks = emptyList(),
+            anchor = Anchor(
+                id = 0,
+                blockRoots = emptyList(),
+                networks = emptyList(),
+                root = "",
+                status = "Pending"
+            )
         )
 
         assertTrue(Proof.isValid(proof))
@@ -47,7 +62,14 @@ class ProofEntityTest {
             ),
             depth = "0004000600060005",
             bitmap = "bfdf7000",
-            networks = emptyList()
+            networks = emptyList(),
+            anchor = Anchor(
+                id = 0,
+                blockRoots = emptyList(),
+                networks = emptyList(),
+                root = "",
+                status = "Pending"
+            )
         )
 
         assertFalse(Proof.isValid(proof))
@@ -64,7 +86,14 @@ class ProofEntityTest {
             ),
             depth = "0004000600060005",
             bitmap = "bfdf7000",
-            networks = emptyList()
+            networks = emptyList(),
+            anchor = Anchor(
+                id = 0,
+                blockRoots = emptyList(),
+                networks = emptyList(),
+                root = "",
+                status = "Pending"
+            )
         )
 
         assertFalse(Proof.isValid(proof))
@@ -87,7 +116,14 @@ class ProofEntityTest {
             ),
             depth = "0004000600060005000600060005000600060005",
             bitmap = "bf",
-            networks = emptyList()
+            networks = emptyList(),
+            anchor = Anchor(
+                id = 0,
+                blockRoots = emptyList(),
+                networks = emptyList(),
+                root = "",
+                status = "Pending"
+            )
         )
 
         assertFalse(Proof.isValid(proof))
@@ -104,7 +140,14 @@ class ProofEntityTest {
             ),
             depth = "000400060006000",
             bitmap = "bfdf7000",
-            networks = emptyList()
+            networks = emptyList(),
+            anchor = Anchor(
+                id = 0,
+                blockRoots = emptyList(),
+                networks = emptyList(),
+                root = "",
+                status = "Pending"
+            )
         )
 
         assertFalse(Proof.isValid(proof))
@@ -121,7 +164,14 @@ class ProofEntityTest {
             ),
             depth = "0004000600060",
             bitmap = "bfdf7000",
-            networks = emptyList()
+            networks = emptyList(),
+            anchor = Anchor(
+                id = 0,
+                blockRoots = emptyList(),
+                networks = emptyList(),
+                root = "",
+                status = "Pending"
+            )
         )
 
         assertFalse(Proof.isValid(proof))

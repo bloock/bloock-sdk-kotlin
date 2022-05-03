@@ -1,5 +1,6 @@
 package com.bloock.sdk.message.document
 
+import com.bloock.sdk.anchor.entity.Anchor
 import com.bloock.sdk.proof.entity.Proof
 import com.bloock.sdk.record.entity.document.PDFDocument
 import com.bloock.sdk.shared.Headers
@@ -55,7 +56,21 @@ class PDFDocumentTest {
     @Test
     fun `test set proof`() {
         val file = PDFDocument(bytes)
-        val proof = Proof(listOf("leave1"), listOf("node1"), "depth", "bitmap")
+        val proof = Proof(
+            leaves = listOf("leave1"),
+            nodes = listOf("node1"),
+            depth = "depth",
+            bitmap = "bitmap",
+            anchor = Anchor(
+                id = 0,
+                blockRoots = emptyList(),
+                networks = emptyList(),
+                root = "",
+                status = "Pending"
+            ),
+            networks = emptyList()
+        )
+
 
         file.setProof(proof)
         assertEquals(file.getProof(), proof)
@@ -87,7 +102,21 @@ class PDFDocumentTest {
         val signature = Signature("signature1", Headers())
         file.addSignature(signature)
 
-        val proof = Proof(listOf("leave1"), listOf("node1"), "depth", "bitmap")
+        val proof = Proof(
+            leaves = listOf("leave1"),
+            nodes = listOf("node1"),
+            depth = "depth",
+            bitmap = "bitmap",
+            anchor = Anchor(
+                id = 0,
+                blockRoots = emptyList(),
+                networks = emptyList(),
+                root = "",
+                status = "Pending"
+            ),
+            networks = emptyList()
+        )
+
         file.setProof(proof)
 
         assertEquals(file.getSignatures(), mutableListOf(signature))

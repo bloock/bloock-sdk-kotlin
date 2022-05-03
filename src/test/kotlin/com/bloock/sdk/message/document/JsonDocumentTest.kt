@@ -1,5 +1,6 @@
 package com.bloock.sdk.message.document
 
+import com.bloock.sdk.anchor.entity.Anchor
 import com.bloock.sdk.proof.entity.Proof
 import com.bloock.sdk.record.entity.document.JsonDocument
 import com.bloock.sdk.shared.Headers
@@ -26,9 +27,11 @@ class JsonDocumentTest {
     fun testConstructorWithMetadata() {
         val json = mutableMapOf(
             Pair("_data_", JSON_CONTENT),
-            Pair("_metadata_", mapOf<String, Any>(
-                Pair("signatures", listOf(Signature("signature1", Headers())))
-            ))
+            Pair(
+                "_metadata_", mapOf<String, Any>(
+                    Pair("signatures", listOf(Signature("signature1", Headers())))
+                )
+            )
         )
         val file = JsonDocument(Gson().toJson(json))
 
@@ -51,9 +54,11 @@ class JsonDocumentTest {
     fun twoIdenticalFilesGeneratesSamePayload() {
         val json = mutableMapOf(
             Pair("_data_", JSON_CONTENT),
-            Pair("_metadata_", mapOf<String, Any>(
-                Pair("signatures", listOf(Signature("signature1", Headers())))
-            ))
+            Pair(
+                "_metadata_", mapOf<String, Any>(
+                    Pair("signatures", listOf(Signature("signature1", Headers())))
+                )
+            )
         )
         val file = JsonDocument(Gson().toJson(json))
         val file2 = JsonDocument(file.build())
@@ -67,7 +72,20 @@ class JsonDocumentTest {
     @Test
     fun testSetProof() {
         val file = JsonDocument(JSON_CONTENT)
-        val proof = Proof(listOf("leave1"), listOf("node1"), "depth", "bitmap")
+        val proof = Proof(
+            leaves = listOf("leave1"),
+            nodes = listOf("node1"),
+            depth = "depth",
+            bitmap = "bitmap",
+            anchor = Anchor(
+                id = 0,
+                blockRoots = emptyList(),
+                networks = emptyList(),
+                root = "",
+                status = "Pending"
+            ),
+            networks = emptyList()
+        )
 
         file.setProof(proof)
         assertEquals(file.getProof(), proof)
@@ -99,7 +117,21 @@ class JsonDocumentTest {
         val signature = Signature("signature1", Headers())
         file.addSignature(signature)
 
-        val proof = Proof(listOf("leave1"), listOf("node1"), "depth", "bitmap")
+        val proof = Proof(
+            leaves = listOf("leave1"),
+            nodes = listOf("node1"),
+            depth = "depth",
+            bitmap = "bitmap",
+            anchor = Anchor(
+                id = 0,
+                blockRoots = emptyList(),
+                networks = emptyList(),
+                root = "",
+                status = "Pending"
+            ),
+            networks = emptyList()
+        )
+
         file.setProof(proof)
 
         assertEquals(file.getSignatures(), mutableListOf(signature))
