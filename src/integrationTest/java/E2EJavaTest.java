@@ -19,7 +19,7 @@ public class E2EJavaTest {
         BloockClient client = getSdk();
 
         Record record = Record.fromHex(getRandomHexString());
-        List<Record> records = new ArrayList<>();
+        List<Record<Object>> records = new ArrayList<>();
         records.add(record);
 
         List<RecordReceipt> receipts = client.sendRecords(records).blockingGet();

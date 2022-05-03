@@ -72,7 +72,7 @@ class BloockClient(private val apiKey: String) {
      * @throws [InvalidRecordException] At least one of the records sent was not well formed.
      * @throws [HttpRequestException] Error returned by Bloock's API.
      */
-    fun sendRecords(records: List<Record>): Single<List<RecordReceipt>> {
+    fun sendRecords(records: List<Record<Any>>): Single<List<RecordReceipt>> {
         return rxSingle {
             recordService.sendRecords(records)
         }
@@ -86,7 +86,7 @@ class BloockClient(private val apiKey: String) {
      * @throws [InvalidRecordException] At least one of the records sent was not well formed.
      * @throws [HttpRequestException] Error returned by Bloock's API.
      */
-    fun getRecords(records: List<Record>): Single<List<RecordReceipt>> {
+    fun getRecords(records: List<Record<Any>>): Single<List<RecordReceipt>> {
         return rxSingle {
             recordService.getRecords(records)
         }
@@ -132,7 +132,7 @@ class BloockClient(private val apiKey: String) {
      * @throws [InvalidRecordException] At least one of the records sent was not well formed.
      * @throws [HttpRequestException] Error returned by Bloock's API.
      */
-    fun getProof(records: List<Record>): Maybe<Proof> {
+    fun getProof(records: List<Record<Any>>): Maybe<Proof> {
         return rxMaybe {
             proofService.retrieveProof(records)
         }
@@ -163,12 +163,12 @@ class BloockClient(private val apiKey: String) {
      * @throws [HttpRequestException] Error returned by Bloock's API.
      * @throws [Web3Exception] Error connecting to blockchain.
      */
-    fun verifyRecords(records: List<Record>, network: Network = Network.ETHEREUM_MAINNET): Single<Int> {
+    fun verifyRecords(records: List<Record<Any>>, network: Network = Network.ETHEREUM_MAINNET): Single<Int> {
         return rxSingle {
             proofService.verifyRecords(records, network)
         }
     }
-    fun verifyRecords(records: List<Record>): Single<Int> {
+    fun verifyRecords(records: List<Record<Any>>): Single<Int> {
         return rxSingle {
             proofService.verifyRecords(records, Network.ETHEREUM_MAINNET)
         }

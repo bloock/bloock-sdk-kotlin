@@ -19,7 +19,7 @@ internal class ProofRepositoryImpl(
     private val configService: ConfigService
 ) : ProofRepository {
 
-    override suspend fun retrieveProof(records: List<Record>): Proof {
+    override suspend fun retrieveProof(records: List<Record<*>>): Proof {
         val url = "${this.configService.getApiBaseUrl()}/core/proof";
         val requestBody = ProofRetrieveRequest(records.map { it.getHash() })
         val response: ProofRetrieveResponse = httpClient.post(url, requestBody)
@@ -33,7 +33,7 @@ internal class ProofRepositoryImpl(
         )
     }
 
-    override fun verifyProof(proof: Proof): Record {
+    override fun verifyProof(proof: Proof): Record<*> {
         try {
             val leaves = proof.leaves.map { Record.fromHash(it).getByteArrayHash() }.toTypedArray()
             val hashes = proof.nodes.map { Utils.hexToBytes(it) }.toTypedArray()
@@ -78,7 +78,7 @@ internal class ProofRepositoryImpl(
         }
     }
 
-    override fun validateRoot(root: Record, network: Network): Int {
+    override fun validateRoot(root: Record<*>, network: Network): Int {
         return blockchainClient.validateRoot(root.getHash(), network)
     }
 }

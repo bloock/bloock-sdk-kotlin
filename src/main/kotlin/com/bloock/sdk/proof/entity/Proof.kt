@@ -4,7 +4,7 @@ import com.bloock.sdk.anchor.entity.Network
 import com.bloock.sdk.shared.Utils
 import kotlin.math.floor
 
-class Proof(
+data class Proof(
     val leaves: List<String>,
     val nodes: List<String>,
     val networks: List<Network>,
