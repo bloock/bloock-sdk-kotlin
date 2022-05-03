@@ -1,5 +1,6 @@
 package com.bloock.sdk.proof.entity
 
+import com.bloock.sdk.anchor.entity.Anchor
 import com.bloock.sdk.anchor.entity.Network
 import com.bloock.sdk.shared.Utils
 import kotlin.math.floor
@@ -9,7 +10,9 @@ data class Proof(
     val nodes: List<String>,
     val networks: List<Network>,
     val depth: String,
-    val bitmap: String
+    val bitmap: String,
+    val anchor: Anchor?
+
 ) {
     companion object {
         fun isValid(proof: Any): Boolean {

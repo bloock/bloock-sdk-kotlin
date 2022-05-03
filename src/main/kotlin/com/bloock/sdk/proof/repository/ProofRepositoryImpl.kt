@@ -29,7 +29,8 @@ internal class ProofRepositoryImpl(
             nodes = response.nodes ?: emptyList(),
             depth = response.depth ?: "",
             bitmap = response.bitmap ?: "",
-            networks = response.networks ?: emptyList()
+            networks = response.networks ?: emptyList(),
+            anchor = response.anchor
         )
     }
 
