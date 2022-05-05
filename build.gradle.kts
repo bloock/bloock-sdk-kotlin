@@ -99,9 +99,8 @@ dependencies {
     // Kotlin
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-
-    // Hashing
-
+    // PDF
+    implementation ("org.apache.pdfbox:pdfbox:2.0.26")
     // Utils
     implementation("commons-codec:commons-codec:${DependencyVersions.APACHE_COMMONS_VERSION}")
     api("io.reactivex.rxjava3:rxjava:${DependencyVersions.RXJAVA_VERSION}")

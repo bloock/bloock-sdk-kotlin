@@ -6,6 +6,8 @@ import com.bloock.sdk.record.entity.Record
 import com.bloock.sdk.record.entity.exception.InvalidRecordException
 import com.bloock.sdk.shared.entity.exception.InvalidArgumentException
 import org.junit.jupiter.api.Test
+import java.util.concurrent.TimeUnit
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
@@ -43,8 +45,11 @@ class AcceptanceTest {
         client.waitAnchor(receipts[0].anchor).blockingGet()
 
         val proof = client.getProof(records).blockingGet()
-        val timestamp = client.verifyProof(proof, Network.BLOOCK_CHAIN)
+        val root = client.verifyProof(proof)
+        val timestamp = client.validateRoot(root, Network.BLOOCK_CHAIN)
+        val isValid = client.verifyRecords(records,null)
 
+        assertTrue(isValid.blockingGet() > 0)
         assertTrue(timestamp > 0)
     }
 
@@ -147,15 +152,14 @@ class AcceptanceTest {
     }
 
     @Test
-    fun test_get_anchor_non_existing_anchor() {
+    fun test_await_anchor_non_existing_anchor() {
         val client = getSdk()
 
-        client.getAnchor(999999999)
+        client.waitAnchor(999999999, 3000)
             .test()
             .await()
-            .assertFailure(HttpRequestException::class.java)
+            .assertFailure(WaitAnchorTimeoutException::class.java)
 
-        // assertEquals(exception.record, "Anchor not found")
     }
 
     @Test

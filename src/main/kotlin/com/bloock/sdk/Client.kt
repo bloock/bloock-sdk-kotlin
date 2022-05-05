@@ -72,7 +72,7 @@ class BloockClient(private val apiKey: String) {
      * @throws [InvalidRecordException] At least one of the records sent was not well formed.
      * @throws [HttpRequestException] Error returned by Bloock's API.
      */
-    fun sendRecords(records: List<Record>): Single<List<RecordReceipt>> {
+    fun sendRecords(records: List<Record<Any>>): Single<List<RecordReceipt>> {
         return rxSingle {
             recordService.sendRecords(records)
         }
@@ -86,7 +86,7 @@ class BloockClient(private val apiKey: String) {
      * @throws [InvalidRecordException] At least one of the records sent was not well formed.
      * @throws [HttpRequestException] Error returned by Bloock's API.
      */
-    fun getRecords(records: List<Record>): Single<List<RecordReceipt>> {
+    fun getRecords(records: List<Record<Any>>): Single<List<RecordReceipt>> {
         return rxSingle {
             recordService.getRecords(records)
         }
@@ -132,7 +132,7 @@ class BloockClient(private val apiKey: String) {
      * @throws [InvalidRecordException] At least one of the records sent was not well formed.
      * @throws [HttpRequestException] Error returned by Bloock's API.
      */
-    fun getProof(records: List<Record>): Maybe<Proof> {
+    fun getProof(records: List<Record<Any>>): Maybe<Proof> {
         return rxMaybe {
             proofService.retrieveProof(records)
         }
@@ -146,11 +146,19 @@ class BloockClient(private val apiKey: String) {
      * @return a [Boolean] that returns true if valid, false if not
      * @throws [Web3Exception] Error connecting to blockchain.
      */
-    fun verifyProof(proof: Proof, network: Network = Network.ETHEREUM_MAINNET): Int {
-        return proofService.verifyProof(proof, network)
+    fun verifyProof(proof: Proof): Record<*> {
+        return proofService.verifyProof(proof)
     }
-    fun verifyProof(proof: Proof): Int {
-        return proofService.verifyProof(proof, Network.ETHEREUM_MAINNET)
+
+    /**
+     * Validates if the root it's currently included in the blockchain.
+     * @param Record root root to validate
+     * @param Network network blockchain network where the record will be validated
+     * @returns Int A number representing the timestamp in milliseconds when the anchor was registered in Blockchain
+     * @throws Web3Exception Error connecting to blockchain.
+     */
+    fun validateRoot(root: Record<*>, network: Network = Network.ETHEREUM_MAINNET): Int {
+        return proofService.validateRoot(root,network)
     }
 
     /**
@@ -163,14 +171,9 @@ class BloockClient(private val apiKey: String) {
      * @throws [HttpRequestException] Error returned by Bloock's API.
      * @throws [Web3Exception] Error connecting to blockchain.
      */
-    fun verifyRecords(records: List<Record>, network: Network = Network.ETHEREUM_MAINNET): Single<Int> {
+    fun verifyRecords(records: List<Record<*>>, network: Network?): Single<Int> {
         return rxSingle {
             proofService.verifyRecords(records, network)
-        }
-    }
-    fun verifyRecords(records: List<Record>): Single<Int> {
-        return rxSingle {
-            proofService.verifyRecords(records, Network.ETHEREUM_MAINNET)
         }
     }
 
