@@ -119,9 +119,10 @@ class FunctionalTest {
         client.waitAnchor(sendReceipt[0].anchor).blockingSubscribe()
 
         val proof = client.getProof(records).blockingGet()
-        assertNotNull(proof)
+        val root = client.verifyProof(proof)
+        val timestamp = client.validateRoot(root, Network.BLOOCK_CHAIN)
 
-        //val timestamp = client.validateRoot(proof, Network.BLOOCK_CHAIN)
-        //assertTrue(timestamp > 0)
+        assertNotNull(proof)
+        assertTrue(timestamp > 0)
     }
 }
