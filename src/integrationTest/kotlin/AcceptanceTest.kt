@@ -47,7 +47,7 @@ class AcceptanceTest {
         val proof = client.getProof(records).blockingGet()
         val root = client.verifyProof(proof)
         val timestamp = client.validateRoot(root, Network.BLOOCK_CHAIN)
-        val isValid = client.verifyRecords(records)
+        val isValid = client.verifyRecords(records,null)
 
         assertTrue(isValid.blockingGet() > 0)
         assertTrue(timestamp > 0)

@@ -171,14 +171,9 @@ class BloockClient(private val apiKey: String) {
      * @throws [HttpRequestException] Error returned by Bloock's API.
      * @throws [Web3Exception] Error connecting to blockchain.
      */
-    fun verifyRecords(records: List<Record<*>>, network: Network = Network.ETHEREUM_MAINNET): Single<Int> {
+    fun verifyRecords(records: List<Record<*>>, network: Network?): Single<Int> {
         return rxSingle {
             proofService.verifyRecords(records, network)
-        }
-    }
-    fun verifyRecords(records: List<Record<Any>>): Single<Int> {
-        return rxSingle {
-            proofService.verifyRecords(records, Network.ETHEREUM_MAINNET)
         }
     }
 

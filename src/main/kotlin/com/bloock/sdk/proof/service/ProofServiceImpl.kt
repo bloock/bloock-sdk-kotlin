@@ -24,17 +24,17 @@ internal class ProofServiceImpl(private val proofRepository: ProofRepository) : 
         return proofRepository.retrieveProof(sorted)
     }
 
-    override suspend fun verifyRecords(records: List<Record<*>>, network: Network): Int {
+    override suspend fun verifyRecords(records: List<Record<*>>, network: Network?): Int {
         val proof = retrieveProof(records)
         val verified = this.verifySignatures(records)
         if(!verified) throw InvalidSignatureException()
         if (proof == null) throw InvalidProofException()
 
-        var finalNetwork: Network
+        val finalNetwork: Network
         if (network != null) {
             finalNetwork = network
         } else {
-            finalNetwork = network.selectNetwork(proof.anchor?.networks ?: emptyList())
+            finalNetwork = selectNetwork(proof.anchor?.networks ?: emptyList())
         }
 
         val root = this.verifyProof(proof)
@@ -59,13 +59,13 @@ internal class ProofServiceImpl(private val proofRepository: ProofRepository) : 
     }
 }
 
-private fun Network.selectNetwork(networks: List<com.bloock.sdk.anchor.entity.Network>): Network {
+private fun selectNetwork(networks: List<com.bloock.sdk.anchor.entity.Network>): Network {
     for (n in networks) {
         if (n.name == Network.ETHEREUM_MAINNET.name) {
             return Network.ETHEREUM_MAINNET
         }
     }
-    return when (networks[0].name) {
+    return when (networks[0].name.toUpperCase()) {
         Network.BLOOCK_CHAIN.name -> Network.BLOOCK_CHAIN
         Network.ETHEREUM_RINKEBY.name -> Network.ETHEREUM_RINKEBY
         else -> Network.ETHEREUM_MAINNET
