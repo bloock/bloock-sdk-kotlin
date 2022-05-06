@@ -117,6 +117,7 @@ dependencies {
 
     //signature
     implementation ("com.nimbusds:nimbus-jose-jwt:9.22")
+    implementation("org.web3j:crypto:4.9.1")
 
 
     // Testing
