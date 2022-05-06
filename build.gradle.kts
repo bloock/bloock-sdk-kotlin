@@ -115,6 +115,10 @@ dependencies {
     // Blockchain
     implementation("org.web3j:core:${DependencyVersions.WEB3_VERSION}")
 
+    //signature
+    implementation ("com.nimbusds:nimbus-jose-jwt:9.22")
+
+
     // Testing
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")

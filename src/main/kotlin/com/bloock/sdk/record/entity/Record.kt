@@ -7,7 +7,6 @@ import com.bloock.sdk.proof.entity.Proof
 import com.bloock.sdk.record.entity.document.Document
 import com.bloock.sdk.record.entity.document.JsonDocument
 import com.bloock.sdk.record.entity.document.PDFDocument
-import com.bloock.sdk.record.entity.exception.NoSignatureFoundException
 import com.bloock.sdk.shared.Utils
 import com.google.gson.JsonElement
 
@@ -98,7 +97,7 @@ class Record<T>(private val hash: String, private val document: Document<T>? = n
     fun verify(): Boolean {
         val signatures = this.document?.getSignatures()
         if (signatures?.isNotEmpty() == true) {
-            return this.signing.verify(this.document?.getSignatures(), signatures)
+            return this.signing.verify(this.document?.getDataBytes(), signatures)
         } else {
            //TODO throw NoSignatureFoundException()
             return true
