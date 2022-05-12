@@ -12,10 +12,12 @@ import com.nimbusds.jose.crypto.ECDSASigner
 import com.nimbusds.jose.crypto.ECDSAVerifier
 import com.nimbusds.jose.jwk.Curve
 import com.nimbusds.jose.jwk.ECKey
+import com.nimbusds.jose.jwk.gen.ECKeyGenerator
 import com.nimbusds.jose.util.Base64URL
+import io.ktor.util.*
+import io.ktor.utils.io.core.*
 import org.bouncycastle.util.encoders.Hex
 import org.web3j.crypto.Sign
-import sun.security.ec.ECPrivateKeyImpl
 import java.math.BigInteger
 
 
@@ -27,29 +29,30 @@ class SigningClientImpl : SigningClient {
 
         try {
 
-            val privateKey = rawPrivateKey.encodeToByteArray()
-            val publicKey = Sign.publicKeyFromPrivate(BigInteger(rawPrivateKey,16)).toByteArray()
-            val josePrivateKey = generateJWK(publicKey = publicKey, privateKey = privateKey)
+            var privKey = BigInteger(rawPrivateKey, 16)
+            var publicKey = Sign.publicKeyFromPrivate(privKey)
 
+            val josePrivateKey = generateJWK(publicKey = publicKey.toByteArray(), privateKey = privKey.toByteArray())
 
             val unprotectedHeader: MutableMap<String, Any> = mutableMapOf()
             unprotectedHeader.put("kty", configData.configuration.KEY_TYPE_ALGORITHM)
             unprotectedHeader.put("crv", configData.configuration.ELLIPTIC_CURVE_KEY)
             unprotectedHeader.put("alg", configData.configuration.SIGNATURE_ALGORITHM)
-            unprotectedHeader.put("kid", Hex.encode(publicKey).toString())
+            unprotectedHeader.put("kid", Hex.encode(publicKey.toByteArray()).decodeToString())
             unprotectedHeader.putAll(headers)
 
             val jws = JWSObject(JWSHeader.parse(unprotectedHeader), Payload(payload))
-            jws.sign(ECDSASigner(josePrivateKey!!.toECPrivateKey(), Curve.SECP256K1))
+            jws.sign(ECDSASigner(josePrivateKey?.toECPrivateKey(), Curve.SECP256K1))
 
             val header = Headers(
                 alg = jws.header.algorithm.name,
                 crv = configData.configuration.ELLIPTIC_CURVE_KEY,
                 kid = jws.header.keyID,
                 kty = configData.configuration.KEY_TYPE_ALGORITHM,
-                other = jws.header.customParams
+                other = headers
             )
-            return Signature(jws.signature.decodeToString(), header)
+
+            return Signature(jws.signature.toString(), header)
 
         } catch (e: Exception) {
             throw InvalidPrivateKeyException()
@@ -59,16 +62,16 @@ class SigningClientImpl : SigningClient {
     override fun verify(payload: ByteArray?, signatures: List<Signature>): Boolean {
         for (signature in signatures) {
             if (signature.header.kid != null) {
+
                 try {
-                    val signingKey = signature.header.kid.encodeToByteArray()
+                    val signingKey = signature.header.kid.toByteArray()
                     val josePublicKey = generateJWK(signingKey, null)
 
-                    val header = JWSHeader.Builder(JWSAlgorithm.ES256K)
-                        .keyID(josePublicKey!!.getKeyID()).build()
+                    val header = JWSHeader.Builder(JWSAlgorithm.ES256K).build()
                     val payloadObj = Payload(payload)
-                    val jwsObject = JWSObject(header, payloadObj)
-
-                    val verifier: JWSVerifier = ECDSAVerifier(josePublicKey)
+                    val jwsObject =
+                        JWSObject(header.toBase64URL(), payloadObj.toBase64URL(), Base64URL.encode(signature.signature))
+                    val verifier = ECDSAVerifier(josePublicKey?.toECPublicKey())
 
                     return jwsObject.verify(verifier)
 
@@ -77,12 +80,12 @@ class SigningClientImpl : SigningClient {
                 }
             }
         }
-        return true
+        return false
     }
 
     private fun generateJWK(publicKey: ByteArray, privateKey: ByteArray?): ECKey? {
         val configData = ConfigData()
-        val x = Base64URL.encode(publicKey.sliceArray(IntRange(1, 32)))
+        val x = Base64URL.encode(publicKey.sliceArray(IntRange(0, 32)))
         val y = Base64URL.encode(publicKey.sliceArray(IntRange(33, 64)))
 
         return if (privateKey != null) {
@@ -90,10 +93,10 @@ class SigningClientImpl : SigningClient {
             ECKey.Builder(Curve.forStdName(configData.configuration.ELLIPTIC_CURVE_KEY), x, y)
                 .d(d).build()
         } else {
-            ECKey.Builder(Curve.forStdName(configData.configuration.ELLIPTIC_CURVE_KEY), x, y)
-                .privateKey(ECPrivateKeyImpl(privateKey))
-                .build()
+         ECKeyGenerator(Curve.SECP256K1)
+                .keyID(publicKey.decodeToString())
+                .generate()
         }
     }
-
 }
+

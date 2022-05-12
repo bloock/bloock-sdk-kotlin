@@ -13,7 +13,7 @@ class SigningClientImplTest {
     @Test
     fun shouldSign() {
         val payload = """{"hello":"world"}""".toByteArray()
-        val privateKey = "ecb8e554bba690eff53f1bc914941d34ae7ec446e0508d14bab3388d3e5c945"
+        val privateKey = "ecb8e554bba690eff53f1bc914941d34ae7ec446e0508d14bab3388d3e5c9457"
         val headers = mapOf(Pair("some", "header"))
         var signature = signingClient.sign(payload, privateKey, headers)
 
@@ -59,13 +59,14 @@ class SigningClientImplTest {
     }
 
     @Test
-    internal fun shouldVerify_ValidJWS() {
-        val payload = """{"hello":"world"}""".toByteArray()
-        val privateKey = "ecb8e554bba690eff53f1bc914941d34ae7ec446e0508d14bab3388d3e5c945"
-        val headers = mapOf(Pair("some", "header"))
+    fun shouldVerify_ValidJWS() {
+        val payload = "hello world".toByteArray()
+        val privateKey = "ecb8e554bba690eff53f1bc914941d34ae7ec446e0508d14bab3388d3e5c9457"
+        val headers = mapOf(Pair("optional", "optional"))
         var signature = signingClient.sign(payload, privateKey, headers)
 
-        signingClient.verify(payload, listOf(signature))
+        var verify = signingClient.verify(payload, listOf(signature))
 
+        assertTrue(verify)
     }
 }

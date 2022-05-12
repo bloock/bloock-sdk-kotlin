@@ -117,6 +117,8 @@ dependencies {
 
     //signature
     implementation ("com.nimbusds:nimbus-jose-jwt:9.22")
+    implementation("org.bitbucket.b_c:jose4j:0.7.12")
+
     implementation("org.web3j:crypto:4.9.1")
 
 
