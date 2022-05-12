@@ -20,16 +20,29 @@ internal class ProofServiceImpl(private val proofRepository: ProofRepository) : 
             throw InvalidRecordException()
         }
 
+        if (records.size == 1) {
+            val proof = records[0].getProof()
+            if (proof != null) {
+                return proof
+            }
+        }
+
         val sorted = Record.sort(records as List<Record<Any>>)
 
 
-        return proofRepository.retrieveProof(sorted)
+        val proof = proofRepository.retrieveProof(sorted)
+
+        if (sorted.size == 1) {
+            sorted[0].setProof(proof)
+        }
+
+        return proof
     }
 
     override suspend fun verifyRecords(records: List<Record<*>>, network: Network?): Int {
         val proof = retrieveProof(records)
         val verified = this.verifySignatures(records)
-        if(!verified) throw InvalidSignatureException()
+        if (!verified) throw InvalidSignatureException()
         if (proof == null) throw InvalidProofException()
 
         val finalNetwork: Network
