@@ -106,7 +106,7 @@ class Record<T>(private val hash: String, private val document: Document<T>? = n
     }
 
     fun setProof(proof: Proof) = this.document?.setProof(proof) ?: Unit
-    fun getProof(proof: Proof) = this.document?.getProof() ?: Unit
+    fun getProof() = this.document?.getProof() ?: Unit
 
 
 }

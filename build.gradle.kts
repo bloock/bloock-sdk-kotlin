@@ -118,6 +118,8 @@ dependencies {
     // Testing
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core")
+
     testImplementation("io.ktor:ktor-client-mock:${DependencyVersions.KTOR_VERSION}")
     testImplementation("org.web3j:web3j-unit:${DependencyVersions.WEB3_VERSION}")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:${DependencyVersions.JUNIT_VERSION}")

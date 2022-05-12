@@ -21,6 +21,8 @@ internal class ProofServiceImpl(private val proofRepository: ProofRepository) : 
         }
 
         val sorted = Record.sort(records as List<Record<Any>>)
+
+
         return proofRepository.retrieveProof(sorted)
     }
 
